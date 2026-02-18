@@ -1,0 +1,12 @@
+{
+  "name": "dex-uniswap-v2-monorepo",
+  "private": true,
+  "workspaces": [
+    "v2-core",
+    "v2-periphery"
+  ],
+  "scripts": {
+    "setup": "./scripts/setup.sh",
+    "test:all": "./scripts/test-all.sh"
+  }
+}

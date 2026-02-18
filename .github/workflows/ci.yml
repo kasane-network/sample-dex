@@ -1,0 +1,42 @@
+name: Uniswap V2 Monorepo CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        project:
+          - v2-core
+          - v2-periphery
+    defaults:
+      run:
+        working-directory: ${{ matrix.project }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "16.20.2"
+
+      - name: Setup Python 3.10 for node-gyp
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        env:
+          npm_config_python: ${{ env.pythonLocation }}/bin/python
+        run: npx -y yarn@1.22.22 install --frozen-lockfile --force
+
+      - name: Compile contracts
+        run: npx -y yarn@1.22.22 compile
+
+      - name: Run tests
+        run: npx -y yarn@1.22.22 test
