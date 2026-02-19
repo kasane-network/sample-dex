@@ -7,6 +7,13 @@
   ],
   "scripts": {
     "setup": "./scripts/setup.sh",
-    "test:all": "./scripts/test-all.sh"
+    "setup:interface": "./scripts/setup-interface.sh",
+    "test:all": "./scripts/test-all.sh",
+    "compile:core": "cd v2-core && ./node_modules/.bin/waffle .waffle.json",
+    "compile:periphery": "cd v2-periphery && ./node_modules/.bin/waffle .waffle.json",
+    "compile:all": "npm run compile:core && npm run compile:periphery",
+    "deploy:testnet": "node ./scripts/deploy-dex-v2.js",
+    "deploy:test-tokens": "node ./scripts/deploy-test-tokens.js",
+    "frontend:start": "cd v2-interface && bun web start"
   }
 }

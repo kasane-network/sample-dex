@@ -7,7 +7,16 @@ set -euo pipefail
 # - why: provide one stable entrypoint for initial environment setup
 
 ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
-YARN_CMD=(npx -y yarn@1.22.22)
+
+build_yarn_cmd() {
+  # Prefer locally-installed Yarn to avoid network access during routine runs.
+  if command -v yarn >/dev/null 2>&1 && yarn -v >/dev/null 2>&1; then
+    YARN_CMD=(yarn)
+    return
+  fi
+
+  YARN_CMD=(npx -y yarn@1.22.22)
+}
 
 load_nvm_and_use_project_node() {
   if [ -s "${HOME}/.nvm/nvm.sh" ]; then
@@ -45,6 +54,7 @@ configure_python_for_node_gyp() {
 require_cmd node
 load_nvm_and_use_project_node
 configure_python_for_node_gyp
+build_yarn_cmd
 
 install_repo "v2-core"
 install_repo "v2-periphery"

@@ -1,0 +1,18 @@
+{
+  "chainId": 4801360,
+  "deployer": "0x1166b69700371fF4fe3f17Bb8905dBe5844fDc5F",
+  "recipient": "0x1166b69700371fF4fe3f17Bb8905dBe5844fDc5F",
+  "testETH": {
+    "address": "0xd55577f68db301104f9ee3b2f27f25a08942bff9",
+    "symbol": "testETH",
+    "decimals": 18,
+    "wholeSupply": "1000000"
+  },
+  "testUSDC": {
+    "address": "0x6052dfc3d327bbe13d182e31a207e4c82cf34a5e",
+    "symbol": "testUSDC",
+    "decimals": 6,
+    "wholeSupply": "1000000000"
+  },
+  "deployedAt": "2026-02-19T05:38:27.274Z"
+}

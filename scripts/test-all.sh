@@ -7,7 +7,6 @@ set -euo pipefail
 # - why: quick smoke validation after setup and before edits
 
 ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
-YARN_CMD=(npx -y yarn@1.22.22)
 
 load_nvm_and_use_project_node() {
   if [ -s "${HOME}/.nvm/nvm.sh" ]; then
@@ -24,8 +23,8 @@ run_repo_checks() {
   echo "==> testing: ${repo_dir}"
   (
     cd "${ROOT_DIR}/${repo_dir}"
-    "${YARN_CMD[@]}" compile
-    "${YARN_CMD[@]}" test
+    ./node_modules/.bin/waffle .waffle.json
+    ./node_modules/.bin/mocha
   )
 }
 

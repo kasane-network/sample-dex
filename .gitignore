@@ -3,3 +3,5 @@ node_modules/
 **/build/
 **/.git.backup/
 *.log
+docs/deployments/*.env
+v2-interface/

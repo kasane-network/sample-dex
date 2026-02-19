@@ -1,0 +1,9 @@
+{
+  "chainId": 4801360,
+  "deployer": "0x1166b69700371fF4fe3f17Bb8905dBe5844fDc5F",
+  "feeToSetter": "0x1166b69700371fF4fe3f17Bb8905dBe5844fDc5F",
+  "weth": "0x4dfc4b47164ac7d42507bf1f9cca1bcddc0eee79",
+  "factory": "0x697c9e9ea0686515fea69f526f85b48d8569ec86",
+  "router02": "0xe5455e558b8701a32b12f8881ff72a35d771b672",
+  "deployedAt": "2026-02-19T06:37:34.333Z"
+}

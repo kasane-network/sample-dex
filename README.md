@@ -6,6 +6,7 @@
 
 - `v2-core`: `Uniswap/v2-core` のクローン
 - `v2-periphery`: `Uniswap/v2-periphery` のクローン
+- `v2-interface`: `Uniswap/interface` のクローン（フロント）
 - `scripts/setup.sh`: 依存インストール
 - `scripts/test-all.sh`: compile/test 一括実行
 - `package.json`: Yarn workspaces ルート設定
@@ -27,6 +28,63 @@ yarn setup
 ```bash
 yarn test:all
 ```
+
+## 最短デプロイ（安全ガード付き）
+
+まず artifact を作成します（Yarn 非依存）。
+
+```bash
+npm run compile:all
+```
+
+次に、`Factory` / `WETH9` / `Router02` をデプロイします。  
+誤デプロイ防止のため、`CONFIRM_DEPLOY=YES` と `EXPECTED_CHAIN_ID` が必須です。
+
+```bash
+CONFIRM_DEPLOY=YES \
+RPC_URL="https://rpc-testnet.kasane.network" \
+PRIVATE_KEY="<DEPLOYER_PRIVATE_KEY>" \
+FEE_TO_SETTER="<FEE_TO_SETTER_ADDRESS>" \
+EXPECTED_CHAIN_ID=4801360 \
+npm run deploy:testnet
+```
+
+デプロイ結果は `docs/deployments/latest-testnet.json` に保存されます。
+
+### テストトークンのデプロイ（testETH / testUSDC）
+
+`KasaneTestERC20` を使って `testETH(18桁)` と `testUSDC(6桁)` を同時にデプロイします。
+
+```bash
+CONFIRM_DEPLOY=YES \
+RPC_URL="https://rpc-testnet.kasane.network" \
+PRIVATE_KEY="<DEPLOYER_PRIVATE_KEY>" \
+EXPECTED_CHAIN_ID=4801360 \
+npm run deploy:test-tokens
+```
+
+必要に応じて以下を上書きできます。
+
+- `TOKEN_RECIPIENT`（初期発行先。未指定時はデプロイヤー）
+- `TEST_ETH_SUPPLY`（整数文字列。既定: `1000000`）
+- `TEST_USDC_SUPPLY`（整数文字列。既定: `1000000000`）
+
+出力先は `docs/deployments/latest-testnet.tokens.json` です。
+
+## フロント起動（Uniswap interface fork）
+
+`v2-interface` は `bun` と `node v22.13.1` が前提です。
+
+```bash
+npm run setup:interface
+npm run frontend:start
+```
+
+`bun` が未導入の場合は、先に Bun をインストールしてください。
+
+Kasane専用のカスタムページは `v2-interface` 起動後に以下でアクセスできます。
+
+- `/swap/kasane`
 
 ## 対象チェーン情報（testnet）
 
