@@ -74,6 +74,7 @@ npm run deploy:test-tokens
 ## フロント起動（Uniswap interface fork）
 
 `v2-interface` は `bun` と `node v22.13.1` が前提です。
+このforkは通常 `Web` 起動（`bun web start`）を対象とし、`apps/mobile` の実行は前提にしません。
 
 ```bash
 npm run setup:interface

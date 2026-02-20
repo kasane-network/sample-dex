@@ -9,12 +9,6 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 
 build_yarn_cmd() {
-  # Prefer locally-installed Yarn to avoid network access during routine runs.
-  if command -v yarn >/dev/null 2>&1 && yarn -v >/dev/null 2>&1; then
-    YARN_CMD=(yarn)
-    return
-  fi
-
   YARN_CMD=(npx -y yarn@1.22.22)
 }
 

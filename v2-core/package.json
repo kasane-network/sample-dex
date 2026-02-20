@@ -38,11 +38,11 @@
     "lint": "yarn prettier ./test/*.ts --check",
     "lint:fix": "yarn prettier ./test/*.ts --write",
     "clean": "rimraf ./build/",
-    "precompile": "yarn clean",
+    "precompile": "npm run clean",
     "compile": "waffle .waffle.json",
-    "pretest": "yarn compile",
+    "pretest": "npm run compile",
     "test": "mocha",
-    "prepublishOnly": "yarn test"
+    "prepublishOnly": "npm test"
   },
   "license": "GPL-3.0-or-later"
 }

@@ -13,8 +13,8 @@ const { Wallet, providers, ContractFactory, Contract, utils } = require('../v2-p
 const ROOT_DIR = path.resolve(__dirname, '..');
 const DEFAULT_OUTPUT = path.join(ROOT_DIR, 'docs', 'deployments', 'latest-testnet.json');
 
-function requiredEnv(name) {
-  const value = process.env[name];
+function requiredEnv(name, env = process.env) {
+  const value = env[name];
   if (!value) {
     throw new Error(`Missing required env: ${name}`);
   }
@@ -33,15 +33,16 @@ function loadArtifact(artifactPath) {
   return artifact;
 }
 
-function buildTxOverrides() {
+function buildTxOverrides(env = process.env, parseUnits = utils.parseUnits) {
   const overrides = {};
-  const gasPriceGwei = process.env.GAS_PRICE_GWEI;
+  const gasPriceGwei = env.GAS_PRICE_GWEI;
   if (!gasPriceGwei) {
     return overrides;
   }
-  overrides.gasPrice = utils.parseUnits(gasPriceGwei, 'gwei');
 
-  const gasLimitRaw = process.env.GAS_LIMIT;
+  overrides.gasPrice = parseUnits(gasPriceGwei, 'gwei');
+
+  const gasLimitRaw = env.GAS_LIMIT;
   if (gasLimitRaw) {
     const gasLimit = Number(gasLimitRaw);
     if (!Number.isInteger(gasLimit) || gasLimit <= 0) {
@@ -49,10 +50,11 @@ function buildTxOverrides() {
     }
     overrides.gasLimit = gasLimit;
   }
+
   return overrides;
 }
 
-async function deploy(name, artifact, wallet, args, txOverrides) {
+async function deploy(name, artifact, wallet, args, txOverrides, sleepFn = (ms) => new Promise((resolve) => setTimeout(resolve, ms))) {
   const factory = new ContractFactory(artifact.abi, artifact.bytecode, wallet);
   const contract = await factory.deploy(...args, txOverrides);
   const txHash = contract.deployTransaction.hash;
@@ -69,8 +71,9 @@ async function deploy(name, artifact, wallet, args, txOverrides) {
     if (receipt) {
       break;
     }
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    await sleepFn(2000);
   }
+
   if (!receipt) {
     throw new Error(`Deployment timeout for ${name}: ${txHash}`);
   }
@@ -85,53 +88,60 @@ async function deploy(name, artifact, wallet, args, txOverrides) {
   return new Contract(receipt.contractAddress, artifact.abi, wallet);
 }
 
-async function main() {
-  const confirm = process.env.CONFIRM_DEPLOY;
+async function runDeployDex(deps = {}, env = process.env) {
+  const log = deps.log || console.log;
+  const loadArtifactFn = deps.loadArtifact || loadArtifact;
+  const deployFn = deps.deploy || deploy;
+  const providerFactory = deps.providerFactory || ((rpcUrl) => new providers.JsonRpcProvider(rpcUrl));
+  const walletFactory = deps.walletFactory || ((privateKey, provider) => new Wallet(privateKey, provider));
+  const nowIso = deps.nowIso || (() => new Date().toISOString());
+
+  const confirm = env.CONFIRM_DEPLOY;
   if (confirm !== 'YES') {
     throw new Error('Set CONFIRM_DEPLOY=YES to proceed.');
   }
 
-  const rpcUrl = requiredEnv('RPC_URL');
-  const privateKey = requiredEnv('PRIVATE_KEY');
-  const feeToSetter = requiredEnv('FEE_TO_SETTER');
-  const expectedChainIdRaw = requiredEnv('EXPECTED_CHAIN_ID');
-  const outputPath = process.env.DEPLOY_OUTPUT || DEFAULT_OUTPUT;
+  const rpcUrl = requiredEnv('RPC_URL', env);
+  const privateKey = requiredEnv('PRIVATE_KEY', env);
+  const feeToSetter = requiredEnv('FEE_TO_SETTER', env);
+  const expectedChainIdRaw = requiredEnv('EXPECTED_CHAIN_ID', env);
+  const outputPath = env.DEPLOY_OUTPUT || DEFAULT_OUTPUT;
 
   const expectedChainId = Number(expectedChainIdRaw);
   if (!Number.isInteger(expectedChainId) || expectedChainId <= 0) {
     throw new Error('EXPECTED_CHAIN_ID must be a positive integer');
   }
 
-  const provider = new providers.JsonRpcProvider(rpcUrl);
+  const provider = deps.provider || providerFactory(rpcUrl);
   const network = await provider.getNetwork();
   if (network.chainId !== expectedChainId) {
     throw new Error(`Chain ID mismatch: expected ${expectedChainId}, got ${network.chainId}`);
   }
 
-  const wallet = new Wallet(privateKey, provider);
+  const wallet = deps.wallet || walletFactory(privateKey, provider);
   const balance = await wallet.getBalance();
   if (balance.isZero()) {
     throw new Error(`Deployer has zero balance: ${wallet.address}`);
   }
 
-  console.log(`[network] chainId=${network.chainId}`);
-  console.log(`[deployer] address=${wallet.address}`);
-  console.log(`[feeToSetter] address=${feeToSetter}`);
-  if (process.env.GAS_PRICE_GWEI) {
-    console.log(`[gasPrice] ${process.env.GAS_PRICE_GWEI} gwei`);
+  log(`[network] chainId=${network.chainId}`);
+  log(`[deployer] address=${wallet.address}`);
+  log(`[feeToSetter] address=${feeToSetter}`);
+  if (env.GAS_PRICE_GWEI) {
+    log(`[gasPrice] ${env.GAS_PRICE_GWEI} gwei`);
   }
-  if (process.env.GAS_LIMIT) {
-    console.log(`[gasLimit] ${process.env.GAS_LIMIT}`);
+  if (env.GAS_LIMIT) {
+    log(`[gasLimit] ${env.GAS_LIMIT}`);
   }
 
-  const wethArtifact = loadArtifact('v2-periphery/build/WETH9.json');
-  const factoryArtifact = loadArtifact('v2-core/build/UniswapV2Factory.json');
-  const routerArtifact = loadArtifact('v2-periphery/build/UniswapV2Router02.json');
-  const txOverrides = buildTxOverrides();
+  const wethArtifact = loadArtifactFn('v2-periphery/build/WETH9.json');
+  const factoryArtifact = loadArtifactFn('v2-core/build/UniswapV2Factory.json');
+  const routerArtifact = loadArtifactFn('v2-periphery/build/UniswapV2Router02.json');
+  const txOverrides = buildTxOverrides(env, deps.parseUnits || utils.parseUnits);
 
-  const weth = await deploy('WETH9', wethArtifact, wallet, [], txOverrides);
-  const factory = await deploy('UniswapV2Factory', factoryArtifact, wallet, [feeToSetter], txOverrides);
-  const router02 = await deploy('UniswapV2Router02', routerArtifact, wallet, [factory.address, weth.address], txOverrides);
+  const weth = await deployFn('WETH9', wethArtifact, wallet, [], txOverrides, deps.sleepFn);
+  const factory = await deployFn('UniswapV2Factory', factoryArtifact, wallet, [feeToSetter], txOverrides, deps.sleepFn);
+  const router02 = await deployFn('UniswapV2Router02', routerArtifact, wallet, [factory.address, weth.address], txOverrides, deps.sleepFn);
 
   const routerFactory = await router02.factory();
   const routerWeth = await router02.WETH();
@@ -149,16 +159,36 @@ async function main() {
     weth: weth.address,
     factory: factory.address,
     router02: router02.address,
-    deployedAt: new Date().toISOString(),
+    deployedAt: nowIso(),
   };
 
-  fs.mkdirSync(path.dirname(outputPath), { recursive: true });
-  fs.writeFileSync(outputPath, `${JSON.stringify(result, null, 2)}\n`, 'utf8');
-  console.log(`[output] ${outputPath}`);
-  console.log(JSON.stringify(result, null, 2));
+  if (deps.writeOutput) {
+    deps.writeOutput(outputPath, result);
+  } else {
+    fs.mkdirSync(path.dirname(outputPath), { recursive: true });
+    fs.writeFileSync(outputPath, `${JSON.stringify(result, null, 2)}\n`, 'utf8');
+  }
+
+  log(`[output] ${outputPath}`);
+  log(JSON.stringify(result, null, 2));
+  return result;
 }
 
-main().catch((error) => {
-  console.error(`[error] ${error.message}`);
-  process.exit(1);
-});
+async function main() {
+  await runDeployDex();
+}
+
+if (require.main === module) {
+  main().catch((error) => {
+    console.error(`[error] ${error.message}`);
+    process.exit(1);
+  });
+}
+
+module.exports = {
+  requiredEnv,
+  loadArtifact,
+  buildTxOverrides,
+  deploy,
+  runDeployDex,
+};

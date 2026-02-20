@@ -23,8 +23,8 @@ run_repo_checks() {
   echo "==> testing: ${repo_dir}"
   (
     cd "${ROOT_DIR}/${repo_dir}"
-    ./node_modules/.bin/waffle .waffle.json
-    ./node_modules/.bin/mocha
+    npm run compile
+    npm test
   )
 }
 

@@ -13,8 +13,8 @@ const { Wallet, providers, ContractFactory, Contract, utils } = require('../v2-p
 const ROOT_DIR = path.resolve(__dirname, '..');
 const DEFAULT_OUTPUT = path.join(ROOT_DIR, 'docs', 'deployments', 'latest-testnet.tokens.json');
 
-function requiredEnv(name) {
-  const value = process.env[name];
+function requiredEnv(name, env = process.env) {
+  const value = env[name];
   if (!value) {
     throw new Error(`Missing required env: ${name}`);
   }
@@ -33,22 +33,22 @@ function loadArtifact(artifactPath) {
   return artifact;
 }
 
-function parseWholeTokenAmount(value, decimals, envName) {
+function parseWholeTokenAmount(value, decimals, envName, parseUnits = utils.parseUnits) {
   if (!/^\d+$/.test(value)) {
     throw new Error(`${envName} must be an integer string`);
   }
-  return utils.parseUnits(value, decimals);
+  return parseUnits(value, decimals);
 }
 
-function buildTxOverrides() {
-  const gasPriceGwei = process.env.GAS_PRICE_GWEI;
+function buildTxOverrides(env = process.env, parseUnits = utils.parseUnits) {
+  const gasPriceGwei = env.GAS_PRICE_GWEI;
   if (!gasPriceGwei) {
     return {};
   }
-  return { gasPrice: utils.parseUnits(gasPriceGwei, 'gwei') };
+  return { gasPrice: parseUnits(gasPriceGwei, 'gwei') };
 }
 
-async function deployToken(artifact, wallet, params, txOverrides) {
+async function deployToken(artifact, wallet, params, txOverrides, sleepFn = (ms) => new Promise((resolve) => setTimeout(resolve, ms))) {
   const factory = new ContractFactory(artifact.abi, artifact.bytecode, wallet);
   const token = await factory.deploy(
     params.name,
@@ -72,8 +72,9 @@ async function deployToken(artifact, wallet, params, txOverrides) {
     if (receipt) {
       break;
     }
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    await sleepFn(2000);
   }
+
   if (!receipt) {
     throw new Error(`Deployment timeout for ${params.symbol}: ${txHash}`);
   }
@@ -88,69 +89,77 @@ async function deployToken(artifact, wallet, params, txOverrides) {
   return new Contract(receipt.contractAddress, artifact.abi, wallet);
 }
 
-async function main() {
-  const confirm = process.env.CONFIRM_DEPLOY;
+async function runDeployTestTokens(deps = {}, env = process.env) {
+  const log = deps.log || console.log;
+  const loadArtifactFn = deps.loadArtifact || loadArtifact;
+  const deployTokenFn = deps.deployToken || deployToken;
+  const providerFactory = deps.providerFactory || ((rpcUrl) => new providers.JsonRpcProvider(rpcUrl));
+  const walletFactory = deps.walletFactory || ((privateKey, provider) => new Wallet(privateKey, provider));
+  const nowIso = deps.nowIso || (() => new Date().toISOString());
+
+  const confirm = env.CONFIRM_DEPLOY;
   if (confirm !== 'YES') {
     throw new Error('Set CONFIRM_DEPLOY=YES to proceed.');
   }
 
-  const rpcUrl = requiredEnv('RPC_URL');
-  const privateKey = requiredEnv('PRIVATE_KEY');
-  const expectedChainIdRaw = requiredEnv('EXPECTED_CHAIN_ID');
-  const outputPath = process.env.TOKEN_OUTPUT || DEFAULT_OUTPUT;
+  const rpcUrl = requiredEnv('RPC_URL', env);
+  const privateKey = requiredEnv('PRIVATE_KEY', env);
+  const expectedChainIdRaw = requiredEnv('EXPECTED_CHAIN_ID', env);
+  const outputPath = env.TOKEN_OUTPUT || DEFAULT_OUTPUT;
 
   const expectedChainId = Number(expectedChainIdRaw);
   if (!Number.isInteger(expectedChainId) || expectedChainId <= 0) {
     throw new Error('EXPECTED_CHAIN_ID must be a positive integer');
   }
 
-  const provider = new providers.JsonRpcProvider(rpcUrl);
+  const provider = deps.provider || providerFactory(rpcUrl);
   const network = await provider.getNetwork();
   if (network.chainId !== expectedChainId) {
     throw new Error(`Chain ID mismatch: expected ${expectedChainId}, got ${network.chainId}`);
   }
 
-  const wallet = new Wallet(privateKey, provider);
+  const wallet = deps.wallet || walletFactory(privateKey, provider);
   const balance = await wallet.getBalance();
   if (balance.isZero()) {
     throw new Error(`Deployer has zero balance: ${wallet.address}`);
   }
 
-  const recipient = process.env.TOKEN_RECIPIENT || wallet.address;
+  const recipient = env.TOKEN_RECIPIENT || wallet.address;
   try {
     utils.getAddress(recipient);
   } catch (_error) {
     throw new Error(`TOKEN_RECIPIENT is not a valid address: ${recipient}`);
   }
 
-  const testEthWhole = process.env.TEST_ETH_SUPPLY || '1000000';
-  const testUsdcWhole = process.env.TEST_USDC_SUPPLY || '1000000000';
-  const testEthRaw = parseWholeTokenAmount(testEthWhole, 18, 'TEST_ETH_SUPPLY');
-  const testUsdcRaw = parseWholeTokenAmount(testUsdcWhole, 6, 'TEST_USDC_SUPPLY');
+  const testEthWhole = env.TEST_ETH_SUPPLY || '1000000';
+  const testUsdcWhole = env.TEST_USDC_SUPPLY || '1000000000';
+  const parseUnits = deps.parseUnits || utils.parseUnits;
+  const testEthRaw = parseWholeTokenAmount(testEthWhole, 18, 'TEST_ETH_SUPPLY', parseUnits);
+  const testUsdcRaw = parseWholeTokenAmount(testUsdcWhole, 6, 'TEST_USDC_SUPPLY', parseUnits);
 
-  console.log(`[network] chainId=${network.chainId}`);
-  console.log(`[deployer] address=${wallet.address}`);
-  console.log(`[recipient] address=${recipient}`);
-  if (process.env.GAS_PRICE_GWEI) {
-    console.log(`[gasPrice] ${process.env.GAS_PRICE_GWEI} gwei`);
+  log(`[network] chainId=${network.chainId}`);
+  log(`[deployer] address=${wallet.address}`);
+  log(`[recipient] address=${recipient}`);
+  if (env.GAS_PRICE_GWEI) {
+    log(`[gasPrice] ${env.GAS_PRICE_GWEI} gwei`);
   }
 
-  const artifact = loadArtifact('v2-periphery/build/KasaneTestERC20.json');
-  const txOverrides = buildTxOverrides();
-  const testEth = await deployToken(artifact, wallet, {
+  const artifact = loadArtifactFn('v2-periphery/build/KasaneTestERC20.json');
+  const txOverrides = buildTxOverrides(env, parseUnits);
+  const testEth = await deployTokenFn(artifact, wallet, {
     name: 'Kasane Test Ether',
     symbol: 'testETH',
     decimals: 18,
     totalSupplyRaw: testEthRaw,
     recipient,
-  }, txOverrides);
-  const testUsdc = await deployToken(artifact, wallet, {
+  }, txOverrides, deps.sleepFn);
+  const testUsdc = await deployTokenFn(artifact, wallet, {
     name: 'Kasane Test USD Coin',
     symbol: 'testUSDC',
     decimals: 6,
     totalSupplyRaw: testUsdcRaw,
     recipient,
-  }, txOverrides);
+  }, txOverrides, deps.sleepFn);
 
   const result = {
     chainId: network.chainId,
@@ -168,16 +177,37 @@ async function main() {
       decimals: 6,
       wholeSupply: testUsdcWhole,
     },
-    deployedAt: new Date().toISOString(),
+    deployedAt: nowIso(),
   };
 
-  fs.mkdirSync(path.dirname(outputPath), { recursive: true });
-  fs.writeFileSync(outputPath, `${JSON.stringify(result, null, 2)}\n`, 'utf8');
-  console.log(`[output] ${outputPath}`);
-  console.log(JSON.stringify(result, null, 2));
+  if (deps.writeOutput) {
+    deps.writeOutput(outputPath, result);
+  } else {
+    fs.mkdirSync(path.dirname(outputPath), { recursive: true });
+    fs.writeFileSync(outputPath, `${JSON.stringify(result, null, 2)}\n`, 'utf8');
+  }
+
+  log(`[output] ${outputPath}`);
+  log(JSON.stringify(result, null, 2));
+  return result;
 }
 
-main().catch((error) => {
-  console.error(`[error] ${error.message}`);
-  process.exit(1);
-});
+async function main() {
+  await runDeployTestTokens();
+}
+
+if (require.main === module) {
+  main().catch((error) => {
+    console.error(`[error] ${error.message}`);
+    process.exit(1);
+  });
+}
+
+module.exports = {
+  requiredEnv,
+  loadArtifact,
+  parseWholeTokenAmount,
+  buildTxOverrides,
+  deployToken,
+  runDeployTestTokens,
+};
