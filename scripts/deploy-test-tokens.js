@@ -8,7 +8,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const { Wallet, providers, ContractFactory, Contract, utils } = require('../v2-periphery/node_modules/ethers');
+const { Wallet, providers, ContractFactory, Contract, utils } = require('ethers');
 
 const ROOT_DIR = path.resolve(__dirname, '..');
 const DEFAULT_OUTPUT = path.join(ROOT_DIR, 'docs', 'deployments', 'latest-testnet.tokens.json');

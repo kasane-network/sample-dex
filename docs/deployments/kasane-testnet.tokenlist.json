@@ -1,0 +1,33 @@
+{
+  "name": "Kasane Testnet Token List",
+  "timestamp": "2026-02-22T00:00:00.000Z",
+  "version": {
+    "major": 1,
+    "minor": 0,
+    "patch": 0
+  },
+  "keywords": ["kasane", "testnet", "dex"],
+  "tokens": [
+    {
+      "chainId": 4801360,
+      "address": "0x4dfc4b47164ac7d42507bf1f9cca1bcddc0eee79",
+      "name": "Wrapped Kasane Test ETH",
+      "symbol": "WETH",
+      "decimals": 18
+    },
+    {
+      "chainId": 4801360,
+      "address": "0xd55577f68db301104f9ee3b2f27f25a08942bff9",
+      "name": "Kasane Test ETH",
+      "symbol": "testETH",
+      "decimals": 18
+    },
+    {
+      "chainId": 4801360,
+      "address": "0x6052dfc3d327bbe13d182e31a207e4c82cf34a5e",
+      "name": "Kasane Test USDC",
+      "symbol": "testUSDC",
+      "decimals": 6
+    }
+  ]
+}

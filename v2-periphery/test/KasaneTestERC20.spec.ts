@@ -1,8 +1,8 @@
 import chai, { expect } from 'chai'
 import { Contract } from 'ethers'
-import { AddressZero } from 'ethers/constants'
-import { bigNumberify } from 'ethers/utils'
-import { solidity, MockProvider, deployContract } from 'ethereum-waffle'
+import { AddressZero } from './shared/ethers'
+import { bigNumberify } from './shared/ethers'
+import { solidity, MockProvider, deployContract } from './shared/waffle'
 
 import KasaneTestERC20 from '../build/KasaneTestERC20.json'
 

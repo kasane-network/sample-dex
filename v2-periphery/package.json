@@ -16,29 +16,32 @@
   ],
   "dependencies": {
     "@uniswap/lib": "4.0.1-alpha",
-    "@uniswap/v2-core": "link:../v2-core"
+    "@uniswap/v2-core": "1.0.1"
   },
   "devDependencies": {
     "@types/chai": "^4.2.6",
     "@types/mocha": "^5.2.7",
     "chai": "^4.2.0",
-    "ethereum-waffle": "^2.4.1",
     "ethereumjs-util": "^6.2.0",
+    "ethers": "^5.7.2",
+    "hardhat": "^2.26.3",
     "mocha": "^6.2.2",
     "prettier": "^1.19.1",
-    "rimraf": "^3.0.0",
+    "rimraf": "^5.0.10",
     "solc": "0.6.6",
     "ts-node": "^8.5.4",
-    "typescript": "^3.7.3"
+    "typescript": "^3.7.3",
+    "@nomicfoundation/hardhat-chai-matchers": "^1.0.6",
+    "@nomiclabs/hardhat-ethers": "^2.2.3"
   },
   "scripts": {
     "lint": "yarn prettier ./test/*.ts --check",
     "lint:fix": "yarn prettier ./test/*.ts --write",
-    "clean": "rimraf ./build/",
+    "clean": "rimraf ./build/ ./artifacts/ ./cache/",
     "precompile": "npm run clean",
-    "compile": "waffle .waffle.json",
+    "compile": "hardhat compile && node ./scripts/export-build-artifacts.js",
     "pretest": "npm run compile",
-    "test": "mocha",
+    "test": "mocha --require hardhat/register",
     "prepublishOnly": "npm test"
   },
   "license": "GPL-3.0-or-later"

@@ -2,7 +2,11 @@ name: Uniswap V2 Monorepo CI
 
 on:
   push:
+    branches:
+      - main
   pull_request:
+    branches:
+      - main
 
 jobs:
   test:
@@ -10,12 +14,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        project:
-          - v2-core
-          - v2-periphery
-    defaults:
-      run:
-        working-directory: ${{ matrix.project }}
+        include:
+          - project: v2-core
+            workspace: "@uniswap/v2-core"
+          - project: v2-periphery
+            workspace: "@uniswap/v2-periphery"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -23,7 +26,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "16.20.2"
+          node-version: "22.13.1"
 
       - name: Setup Python 3.10 for node-gyp
         uses: actions/setup-python@v5
@@ -33,10 +36,14 @@ jobs:
       - name: Install dependencies
         env:
           npm_config_python: ${{ env.pythonLocation }}/bin/python
-        run: npx -y yarn@1.22.22 install --frozen-lockfile --force
+        run: npx -y yarn@1.22.22 install --frozen-lockfile
+
+      - name: Compile core artifacts for periphery tests
+        if: matrix.project == 'v2-periphery'
+        run: npx -y yarn@1.22.22 workspace @uniswap/v2-core run compile
 
       - name: Compile contracts
-        run: npx -y yarn@1.22.22 compile
+        run: npx -y yarn@1.22.22 workspace ${{ matrix.workspace }} run compile
 
       - name: Run tests
-        run: npx -y yarn@1.22.22 test
+        run: npx -y yarn@1.22.22 workspace ${{ matrix.workspace }} run test

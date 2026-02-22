@@ -1,6 +1,6 @@
 import { Contract, Wallet } from 'ethers'
 import { Web3Provider } from 'ethers/providers'
-import { deployContract } from 'ethereum-waffle'
+import { deployContract } from './waffle'
 
 import { expandTo18Decimals } from './utilities'
 

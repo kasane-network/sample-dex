@@ -1,6 +1,8 @@
 {
-  "extension": ["ts"],
+  "extension": [
+    "ts"
+  ],
   "spec": "./test/**/*.spec.ts",
-  "require": "ts-node/register",
+  "require": "ts-node/register/transpile-only",
   "timeout": 12000
 }
