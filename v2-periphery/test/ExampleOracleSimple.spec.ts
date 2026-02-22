@@ -1,7 +1,7 @@
 import chai, { expect } from 'chai'
 import { Contract } from 'ethers'
-import { BigNumber } from 'ethers/utils'
-import { solidity, MockProvider, createFixtureLoader, deployContract } from 'ethereum-waffle'
+import { BigNumber } from './shared/ethers'
+import { solidity, MockProvider, createFixtureLoader, deployContract } from './shared/waffle'
 
 import { expandTo18Decimals, mineBlock, encodePrice } from './shared/utilities'
 import { v2Fixture } from './shared/fixtures'

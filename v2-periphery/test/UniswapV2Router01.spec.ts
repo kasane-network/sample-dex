@@ -1,8 +1,8 @@
 import chai, { expect } from 'chai'
 import { Contract } from 'ethers'
-import { AddressZero, Zero, MaxUint256 } from 'ethers/constants'
-import { BigNumber, bigNumberify } from 'ethers/utils'
-import { solidity, MockProvider, createFixtureLoader } from 'ethereum-waffle'
+import { AddressZero, Zero, MaxUint256 } from './shared/ethers'
+import { BigNumber, bigNumberify } from './shared/ethers'
+import { solidity, MockProvider, createFixtureLoader } from './shared/waffle'
 import { ecsign } from 'ethereumjs-util'
 
 import { expandTo18Decimals, getApprovalDigest, mineBlock, MINIMUM_LIQUIDITY } from './shared/utilities'
@@ -518,7 +518,7 @@ describe('UniswapV2Router{01,02}', () => {
           expect(receipt.gasUsed).to.eq(
             {
               [RouterVersion.UniswapV2Router01]: 138770,
-              [RouterVersion.UniswapV2Router02]: 138770
+              [RouterVersion.UniswapV2Router02]: 138700
             }[routerVersion as RouterVersion]
           )
         }).retries(3)

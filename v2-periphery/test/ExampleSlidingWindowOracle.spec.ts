@@ -1,7 +1,7 @@
 import chai, { expect } from 'chai'
 import { Contract } from 'ethers'
-import { BigNumber, bigNumberify } from 'ethers/utils'
-import { solidity, MockProvider, createFixtureLoader, deployContract } from 'ethereum-waffle'
+import { BigNumber, bigNumberify } from './shared/ethers'
+import { solidity, MockProvider, createFixtureLoader, deployContract } from './shared/waffle'
 
 import { expandTo18Decimals, mineBlock, encodePrice } from './shared/utilities'
 import { v2Fixture } from './shared/fixtures'
@@ -68,11 +68,14 @@ describe('ExampleSlidingWindowOracle', () => {
   // 1/1/2020 @ 12:00 am UTC
   // cannot be 0 because that instructs ganache to set it to current timestamp
   // cannot be 86400 because then timestamp 0 is a valid historical observation
-  const startTime = 1577836800
+  let startTime = 1577836800
 
   // must come before adding liquidity to pairs for correct cumulative price computations
   // cannot use 0 because that resets to current timestamp
-  beforeEach(`set start time to ${startTime}`, () => mineBlock(provider, startTime))
+  beforeEach('set start time', async () => {
+    startTime = (await provider.getBlock('latest')).timestamp + 1
+    await mineBlock(provider, startTime)
+  })
 
   it('requires granularity to be greater than 0', async () => {
     await expect(deployOracle(defaultWindowSize, 0)).to.be.revertedWith('SlidingWindowOracle: GRANULARITY')

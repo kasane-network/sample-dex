@@ -1,7 +1,7 @@
-import { AddressZero, MaxUint256 } from 'ethers/constants'
+import { AddressZero, MaxUint256 } from './shared/ethers'
 import chai, { expect } from 'chai'
 import { Contract } from 'ethers'
-import { solidity, MockProvider, createFixtureLoader, deployContract } from 'ethereum-waffle'
+import { solidity, MockProvider, createFixtureLoader, deployContract } from './shared/waffle'
 
 import { expandTo18Decimals } from './shared/utilities'
 import { v2Fixture } from './shared/fixtures'

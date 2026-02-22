@@ -33,7 +33,7 @@ jobs:
       - name: Install dependencies
         env:
           npm_config_python: ${{ env.pythonLocation }}/bin/python
-        run: npx -y yarn@1.22.22 install --frozen-lockfile --silent
+        run: npx -y yarn@1.22.22 install --frozen-lockfile
 
       - name: Compile contracts
         run: npx -y yarn@1.22.22 compile

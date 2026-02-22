@@ -1,8 +1,8 @@
 import chai, { expect } from 'chai'
 import { Contract } from 'ethers'
-import { AddressZero } from 'ethers/constants'
-import { bigNumberify } from 'ethers/utils'
-import { solidity, MockProvider, createFixtureLoader } from 'ethereum-waffle'
+import { AddressZero } from './shared/ethers'
+import { bigNumberify } from './shared/ethers'
+import { solidity, MockProvider, createFixtureLoader } from './shared/waffle'
 
 import { getCreate2Address } from './shared/utilities'
 import { factoryFixture } from './shared/fixtures'

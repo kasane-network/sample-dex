@@ -1,8 +1,8 @@
 import chai, { expect } from 'chai'
-import { solidity, MockProvider, createFixtureLoader, deployContract } from 'ethereum-waffle'
+import { solidity, MockProvider, createFixtureLoader, deployContract } from './shared/waffle'
 import { Contract } from 'ethers'
-import { BigNumber, bigNumberify } from 'ethers/utils'
-import { MaxUint256 } from 'ethers/constants'
+import { BigNumber, bigNumberify } from './shared/ethers'
+import { MaxUint256 } from './shared/ethers'
 import IUniswapV2Pair from '@uniswap/v2-core/build/IUniswapV2Pair.json'
 
 import { v2Fixture } from './shared/fixtures'
