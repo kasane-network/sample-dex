@@ -2,6 +2,8 @@ node_modules/
 **/node_modules/
 **/build/
 **/.git.backup/
+.DS_Store
+**/.DS_Store
 *.log
 docs/deployments/*.env
 v2-interface/
