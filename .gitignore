@@ -1,6 +1,9 @@
 node_modules/
 **/node_modules/
 **/build/
+**/artifacts/
+**/cache/
+**/coverage/
 **/.git.backup/
 .DS_Store
 **/.DS_Store
