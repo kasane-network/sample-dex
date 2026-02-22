@@ -29,7 +29,7 @@
     "ethereumjs-util": "^6.2.0",
     "mocha": "^6.2.2",
     "prettier": "^1.19.1",
-    "rimraf": "^3.0.0",
+    "rimraf": "^5.0.10",
     "solc": "0.5.16",
     "ts-node": "^8.5.4",
     "typescript": "^3.7.3"
