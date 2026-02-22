@@ -1,0 +1,39 @@
+name: Token Search Indexer
+
+on:
+  schedule:
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: token-search-indexer
+  cancel-in-progress: false
+
+jobs:
+  run-indexer:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.13.1'
+
+      - name: Install dependencies
+        run: npx -y yarn@1.22.22 install --frozen-lockfile
+
+      - name: Run token search indexer
+        run: npx -y yarn@1.22.22 token-indexer:run
+        env:
+          INDEXER_CHAIN_ID: ${{ secrets.INDEXER_CHAIN_ID }}
+          INDEXER_TOKEN_LIST_URLS: ${{ secrets.INDEXER_TOKEN_LIST_URLS }}
+          INDEXER_RPC_URL: ${{ secrets.INDEXER_RPC_URL }}
+          INDEXER_V2_POOLS_JSON: ${{ secrets.INDEXER_V2_POOLS_JSON }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}

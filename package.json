@@ -14,6 +14,11 @@
     "compile:all": "npm run compile:core && npm run compile:periphery",
     "deploy:testnet": "node ./scripts/deploy-dex-v2.js",
     "deploy:test-tokens": "node ./scripts/deploy-test-tokens.js",
-    "frontend:start": "cd v2-interface && bun web start"
+    "frontend:start": "cd v2-interface && bun web start",
+    "token-indexer:run": "node ./scripts/token-indexer/runTokenSearchIndexer.mjs",
+    "token-indexer:test": "node --test ./scripts/token-indexer/test/*.test.mjs"
+  },
+  "dependencies": {
+    "viem": "^2.38.5"
   }
 }
