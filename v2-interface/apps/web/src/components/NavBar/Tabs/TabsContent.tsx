@@ -8,6 +8,7 @@ import { ElementName } from 'uniswap/src/features/telemetry/constants'
 export type TabsSection = {
   title: string
   href: string
+  external?: boolean
   isActive?: boolean
   disabled?: boolean
   items?: TabsItem[]
@@ -63,6 +64,11 @@ export const useTabsContent = (): TabsSection[] => {
       href: '/portfolio/tokens',
       isActive: pathname.startsWith('/portfolio'),
       disabled: true,
+    },
+    {
+      title: 'Faucet',
+      href: 'https://testnet-faucet.kasane.network/',
+      external: true,
     },
   ]
 }

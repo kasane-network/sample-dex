@@ -67,12 +67,14 @@ const Tab = ({
   label,
   isActive,
   path,
+  external,
   disabled,
   items,
 }: {
   label: string
   isActive?: boolean
   path: string
+  external?: boolean
   disabled?: boolean
   items?: TabsItem[]
 }) => {
@@ -93,6 +95,12 @@ const Tab = ({
     <TabText variant="subheading1" isActive={isActive || isOpen} cursor="not-allowed" opacity={0.5} aria-disabled>
       {label}
     </TabText>
+  ) : external ? (
+    <a href={path} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
+      <TabText variant="subheading1" isActive={isActive || isOpen}>
+        {label}
+      </TabText>
+    </a>
   ) : (
     <NavLink to={path} style={{ textDecoration: 'none' }}>
       <TabText variant="subheading1" isActive={isActive || isOpen}>
@@ -150,8 +158,16 @@ export function Tabs() {
   const tabsContent: TabsSection[] = useTabsContent()
   return (
     <>
-      {tabsContent.map(({ title, isActive, href, disabled, items }, index) => (
-        <Tab key={`${title}_${index}`} label={title} isActive={isActive} path={href} disabled={disabled} items={items} />
+      {tabsContent.map(({ title, isActive, href, external, disabled, items }, index) => (
+        <Tab
+          key={`${title}_${index}`}
+          label={title}
+          isActive={isActive}
+          path={href}
+          external={external}
+          disabled={disabled}
+          items={items}
+        />
       ))}
     </>
   )
