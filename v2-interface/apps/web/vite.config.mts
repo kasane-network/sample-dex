@@ -176,9 +176,7 @@ export default defineConfig(({ mode }) => {
             return null
           }
 
-          return transformWithOxc(code, id, {
-            jsx: { runtime: 'automatic' },
-          })
+          return transformWithOxc(code, id, { lang: 'jsx' })
         },
       },
       portWarningPlugin(isProduction),

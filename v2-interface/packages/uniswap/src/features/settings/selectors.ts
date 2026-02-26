@@ -13,7 +13,7 @@ export const selectWalletHideReportedActivitySetting = (state: UniswapState): bo
 export const selectCurrentLanguage = (state: UniswapState): Language => state.userSettings.currentLanguage
 
 export const selectIsTestnetModeEnabled = (state: UniswapState): boolean =>
-  state.userSettings.isTestnetModeEnabled ?? true
+  state.userSettings.isTestnetModeEnabled ?? false
 
 export const selectDeviceAccessTimeoutMinutes = (state: UniswapState): number | undefined =>
   deviceAccessTimeoutToMinutes(state.userSettings.deviceAccessTimeout)
