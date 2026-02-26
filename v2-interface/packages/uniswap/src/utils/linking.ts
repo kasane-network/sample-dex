@@ -1,4 +1,4 @@
-import * as WebBrowser from 'expo-web-browser'
+import * as WebBrowser from 'uniswap/src/utils/webBrowser'
 import { colorsLight } from 'ui/src/theme'
 import { NATIVE_TOKEN_PLACEHOLDER } from 'uniswap/src/constants/addresses'
 import { uniswapUrls } from 'uniswap/src/constants/urls'

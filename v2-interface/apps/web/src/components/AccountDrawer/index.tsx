@@ -1,7 +1,7 @@
 import DefaultMenu from 'components/AccountDrawer/DefaultMenu'
 import { useAccountDrawer } from 'components/AccountDrawer/MiniPortfolio/hooks'
 import { useRenderUkBanner } from 'components/TopLevelBanners/UkBanner'
-import { Web3StatusRef } from 'components/Web3Status'
+import { Web3StatusRef } from 'components/Web3Status/Web3StatusRef'
 import { WebNotificationToastWrapper } from 'features/notifications/WebNotificationToastWrapper'
 import useDisableScrolling from 'hooks/useDisableScrolling'
 import { useIsUniswapExtensionConnected } from 'hooks/useIsUniswapExtensionConnected'

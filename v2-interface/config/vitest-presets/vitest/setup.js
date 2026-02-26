@@ -42,21 +42,6 @@ vi.mock('redux-persist', () => {
   }
 })
 
-// Mock expo clipboard lib due to native deps
-vi.mock('expo-clipboard', () => ({
-  setString: vi.fn(),
-  setStringAsync: vi.fn(),
-  getStringAsync: () => Promise.resolve(),
-}))
-vi.mock('expo-blur', () => ({ BlurView: {} }))
-vi.mock('expo-haptics', () => ({
-  impactAsync: vi.fn(),
-  notificationAsync: vi.fn(),
-  ImpactFeedbackStyle: vi.fn(),
-}))
-vi.mock('expo-linear-gradient', () => ({ LinearGradient: () => 'ExpoLinearGradient' }))
-vi.mock('expo-screen-capture', () => ({ addScreenshotListener: vi.fn() }))
-
 // Mock Amplitude log reporting
 vi.mock('@amplitude/analytics-react-native', () => ({
   flush: () => vi.fn(),
@@ -137,9 +122,5 @@ vi.mock('@react-native-community/netinfo', () => ({
     other: 'other',
   },
 }))
-
-// TODO: Remove this mock after mocks in jest-expo are fixed
-// (see the issue: https://github.com/expo/expo/issues/26893)
-vi.mock('expo-web-browser', () => ({}))
 
 global.__DEV__ = true

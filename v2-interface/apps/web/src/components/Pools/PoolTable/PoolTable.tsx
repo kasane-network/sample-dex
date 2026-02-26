@@ -268,11 +268,17 @@ export function PoolsTable({
             ? buildCurrencyId(chainId, token1Address)
             : undefined
 
-        const parseVolume = (amount: number | undefined): string => {
-          if (amount === undefined || !Number.isFinite(amount)) {
+        const parseVolume = (amount: unknown): string => {
+          const normalizedAmount =
+            typeof amount === 'string' ? Number(amount) : typeof amount === 'number' ? amount : undefined
+          if (normalizedAmount === undefined || !Number.isFinite(normalizedAmount)) {
             return '-'
           }
-          return convertFiatAmountFormatted(amount, NumberType.FiatTokenStats)
+          if (normalizedAmount === 0) {
+            // `FiatTokenStats` maps zero to "-" by design, but pool tables should show an explicit $0.
+            return convertFiatAmountFormatted(normalizedAmount, NumberType.FiatTokenQuantity)
+          }
+          return convertFiatAmountFormatted(normalizedAmount, NumberType.FiatTokenStats)
         }
 
         return {

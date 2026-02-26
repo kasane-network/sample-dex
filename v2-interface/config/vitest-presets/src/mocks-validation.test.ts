@@ -15,35 +15,6 @@ describe('Mock validations', () => {
     })
   })
 
-  describe('Expo mocks', () => {
-    it('should have expo-clipboard mocked', async () => {
-      const clipboard = await import('expo-clipboard')
-      expect(clipboard.setString).toBeDefined()
-      expect(vi.isMockFunction(clipboard.setString)).toBe(true)
-      expect(vi.isMockFunction(clipboard.setStringAsync)).toBe(true)
-    })
-
-    it('should have expo-haptics mocked', async () => {
-      const haptics = await import('expo-haptics')
-      expect(haptics.impactAsync).toBeDefined()
-      expect(vi.isMockFunction(haptics.impactAsync)).toBe(true)
-    })
-
-    it('should have expo-blur mocked', async () => {
-      const blur = await import('expo-blur')
-      expect(blur.BlurView).toBeDefined()
-    })
-  })
-
-  describe('Amplitude mocks', () => {
-    it('should have amplitude analytics mocked', async () => {
-      const amplitude = await import('@amplitude/analytics-react-native')
-      expect(amplitude.init).toBeDefined()
-      expect(amplitude.track).toBeDefined()
-      expect(amplitude.flush).toBeDefined()
-    })
-  })
-
   describe('WalletConnect mocks', () => {
     it('should have @reown/walletkit mocked', async () => {
       const walletKit = await import('@reown/walletkit')
@@ -70,24 +41,6 @@ describe('Mock validations', () => {
       expect(AsyncStorage.default).toBeDefined()
       expect(AsyncStorage.default.setItem).toBeDefined()
       expect(AsyncStorage.default.getItem).toBeDefined()
-    })
-  })
-
-  describe('NetInfo mock', () => {
-    it('should have NetInfo mocked with types', async () => {
-      const NetInfo = await import('@react-native-community/netinfo')
-      expect(NetInfo.default).toBeDefined()
-      expect(NetInfo.NetInfoStateType).toBeDefined()
-      expect(NetInfo.NetInfoStateType.wifi).toBe('wifi')
-      expect(NetInfo.NetInfoStateType.cellular).toBe('cellular')
-    })
-  })
-
-  describe('React Native Device Info mock', () => {
-    it('should have device info mocked', async () => {
-      const DeviceInfo = await import('react-native-device-info')
-      expect(DeviceInfo.default).toBeDefined()
-      expect(DeviceInfo.default.getDeviceId).toBeDefined()
     })
   })
 

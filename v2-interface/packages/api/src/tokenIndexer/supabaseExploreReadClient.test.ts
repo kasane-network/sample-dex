@@ -94,6 +94,55 @@ describe('createSupabaseExploreReadClient', () => {
     expect(String(fetchImpl.mock.calls[0][0])).toContain('protocol_version=eq.v2')
   })
 
+  it('normalizes pool numeric fields when Supabase returns strings', async () => {
+    const fetchImpl = vi.fn(
+      async () =>
+        new Response(
+          JSON.stringify([
+            {
+              chain_id: 4801360,
+              address: '0xpool',
+              protocol_version: 'v2',
+              fee_tier_bps: '30',
+              token0_address: '0xt0',
+              token1_address: '0xt1',
+              token0_symbol: 'ICP',
+              token1_symbol: 'testETH',
+              token0_name: 'Internet Computer',
+              token1_name: 'Test ETH',
+              token0_decimals: '18',
+              token1_decimals: '18',
+              token0_logo_uri: null,
+              token1_logo_uri: null,
+              tvl_usd: '3988.071718',
+              volume_24h_usd: '0',
+              volume_30d_usd: '123.45',
+              boosted_apr: '1.25',
+              updated_at: '2026-02-23T12:00:00.000Z',
+            },
+          ]),
+          { status: 200 },
+        ),
+    )
+
+    const client = createSupabaseExploreReadClient({
+      supabaseUrl: 'https://example.supabase.co',
+      anonKey: 'anon',
+      fetchImpl,
+    })
+
+    const rows = await client.listTopPools({ chainId: 4801360, limit: 20, protocolVersion: 'v2' })
+
+    expect(rows).toHaveLength(1)
+    expect(rows[0].feeTierBps).toBe(30)
+    expect(rows[0].token0Decimals).toBe(18)
+    expect(rows[0].token1Decimals).toBe(18)
+    expect(rows[0].tvlUsd).toBe(3988.071718)
+    expect(rows[0].volume24hUsd).toBe(0)
+    expect(rows[0].volume30dUsd).toBe(123.45)
+    expect(rows[0].boostedApr).toBe(1.25)
+  })
+
   it('builds user v2 positions query and maps rows', async () => {
     const fetchImpl = vi.fn(
       async () =>

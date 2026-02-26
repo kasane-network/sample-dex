@@ -6,12 +6,13 @@ import { useAccountDrawer } from 'components/AccountDrawer/MiniPortfolio/hooks'
 import { Portal } from 'components/Popups/Portal'
 import StatusIcon from 'components/StatusIcon'
 import { RecentlyConnectedModal } from 'components/Web3Status/RecentlyConnectedModal'
+import { Web3StatusRef } from 'components/Web3Status/Web3StatusRef'
 import { useAccountIdentifier } from 'components/Web3Status/useAccountIdentifier'
 import { useShowPendingAfterDelay } from 'components/Web3Status/useShowPendingAfterDelay'
 import { useModalState } from 'hooks/useModalState'
-import { atom, useAtom } from 'jotai'
+import { useAtom } from 'jotai'
 import { deprecatedStyled } from 'lib/styled-components'
-import { forwardRef, RefObject, useCallback, useEffect, useRef } from 'react'
+import { forwardRef, useCallback, useEffect, useRef } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { AnimatePresence, Button, ButtonProps, Flex, Popover, Text } from 'ui/src'
 import { Unitag } from 'ui/src/components/icons/Unitag'
@@ -89,8 +90,6 @@ const ExistingUserCTAButton = forwardRef<HTMLDivElement, { onPress: () => void }
     </Button>
   )
 })
-
-export const Web3StatusRef = atom<RefObject<HTMLElement | null> | undefined>(undefined)
 
 function Web3StatusInner() {
   const activeAddresses = useActiveAddresses()

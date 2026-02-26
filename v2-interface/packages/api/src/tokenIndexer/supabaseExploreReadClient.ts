@@ -10,20 +10,20 @@ interface ExploreTokenRow {
   readonly address: string
   readonly symbol?: string
   readonly name?: string
-  readonly decimals?: number
+  readonly decimals?: number | string
   readonly logo_uri?: string | null
   readonly verified?: boolean
   readonly source_primary?: string
-  readonly liquidity_usd?: number
-  readonly volume_24h_usd?: number
-  readonly price_usd?: number
-  readonly price_change_1h_pct?: number
-  readonly price_change_1d_pct?: number
-  readonly fdv_usd?: number
-  readonly volume_1h_usd?: number
-  readonly volume_1w_usd?: number
-  readonly volume_1m_usd?: number
-  readonly volume_1y_usd?: number
+  readonly liquidity_usd?: number | string
+  readonly volume_24h_usd?: number | string
+  readonly price_usd?: number | string
+  readonly price_change_1h_pct?: number | string
+  readonly price_change_1d_pct?: number | string
+  readonly fdv_usd?: number | string
+  readonly volume_1h_usd?: number | string
+  readonly volume_1w_usd?: number | string
+  readonly volume_1m_usd?: number | string
+  readonly volume_1y_usd?: number | string
   readonly sparkline_1d?: number[]
   readonly updated_at: string
 }
@@ -32,27 +32,27 @@ interface ExplorePoolRow {
   readonly chain_id: number
   readonly address: string
   readonly protocol_version?: string
-  readonly fee_tier_bps?: number
+  readonly fee_tier_bps?: number | string
   readonly token0_address: string
   readonly token1_address: string
   readonly token0_symbol: string
   readonly token1_symbol: string
   readonly token0_name: string
   readonly token1_name: string
-  readonly token0_decimals: number
-  readonly token1_decimals: number
+  readonly token0_decimals: number | string
+  readonly token1_decimals: number | string
   readonly token0_logo_uri?: string | null
   readonly token1_logo_uri?: string | null
-  readonly tvl_usd?: number
-  readonly volume_24h_usd?: number
-  readonly volume_30d_usd?: number
-  readonly boosted_apr?: number
+  readonly tvl_usd?: number | string
+  readonly volume_24h_usd?: number | string
+  readonly volume_30d_usd?: number | string
+  readonly boosted_apr?: number | string
   readonly updated_at: string
 }
 
 interface ExplorePoolTotalRow {
   readonly chain_id: number
-  readonly total_tvl_usd?: number
+  readonly total_tvl_usd?: number | string
   readonly updated_at: string
 }
 
@@ -64,12 +64,12 @@ interface UserV2PositionRow {
   readonly token1_address: string
   readonly token0_symbol: string
   readonly token1_symbol: string
-  readonly token0_decimals: number
-  readonly token1_decimals: number
+  readonly token0_decimals: number | string
+  readonly token1_decimals: number | string
   readonly user_amount0_raw: string
   readonly user_amount1_raw: string
   readonly lp_balance_raw: string
-  readonly pool_share_ratio: number
+  readonly pool_share_ratio: number | string
   readonly updated_at: string
 }
 
@@ -159,26 +159,45 @@ function normalizeSparkline(value: unknown): readonly number[] {
   return value.filter((entry): entry is number => typeof entry === 'number' && Number.isFinite(entry))
 }
 
+function toFiniteNumber(value: number | string | undefined | null): number | undefined {
+  if (typeof value === 'number') {
+    return Number.isFinite(value) ? value : undefined
+  }
+  if (typeof value === 'string') {
+    const parsed = Number(value)
+    return Number.isFinite(parsed) ? parsed : undefined
+  }
+  return undefined
+}
+
+function toFiniteInteger(value: number | string | undefined | null, fallback: number): number {
+  const parsed = toFiniteNumber(value)
+  if (parsed === undefined) {
+    return fallback
+  }
+  return Math.trunc(parsed)
+}
+
 function toExploreTokenReadModel(row: ExploreTokenRow): ExploreTokenReadModel {
   return {
     chainId: row.chain_id,
     address: row.address,
     symbol: row.symbol ?? '',
     name: row.name ?? '',
-    decimals: row.decimals ?? 18,
+    decimals: toFiniteInteger(row.decimals, 18),
     logoUri: row.logo_uri ?? null,
     verified: row.verified ?? false,
     sourcePrimary: row.source_primary ?? '',
-    liquidityUsd: row.liquidity_usd ?? 0,
-    volume24hUsd: row.volume_24h_usd ?? 0,
-    priceUsd: row.price_usd ?? 0,
-    priceChange1hPct: row.price_change_1h_pct ?? 0,
-    priceChange1dPct: row.price_change_1d_pct ?? 0,
-    fdvUsd: row.fdv_usd ?? 0,
-    volume1hUsd: row.volume_1h_usd ?? 0,
-    volume1wUsd: row.volume_1w_usd ?? 0,
-    volume1mUsd: row.volume_1m_usd ?? 0,
-    volume1yUsd: row.volume_1y_usd ?? 0,
+    liquidityUsd: toFiniteNumber(row.liquidity_usd) ?? 0,
+    volume24hUsd: toFiniteNumber(row.volume_24h_usd) ?? 0,
+    priceUsd: toFiniteNumber(row.price_usd) ?? 0,
+    priceChange1hPct: toFiniteNumber(row.price_change_1h_pct) ?? 0,
+    priceChange1dPct: toFiniteNumber(row.price_change_1d_pct) ?? 0,
+    fdvUsd: toFiniteNumber(row.fdv_usd) ?? 0,
+    volume1hUsd: toFiniteNumber(row.volume_1h_usd) ?? 0,
+    volume1wUsd: toFiniteNumber(row.volume_1w_usd) ?? 0,
+    volume1mUsd: toFiniteNumber(row.volume_1m_usd) ?? 0,
+    volume1yUsd: toFiniteNumber(row.volume_1y_usd) ?? 0,
     sparkline1d: normalizeSparkline(row.sparkline_1d),
     updatedAt: row.updated_at,
   }
@@ -189,21 +208,21 @@ function toExplorePoolReadModel(row: ExplorePoolRow): ExplorePoolReadModel {
     chainId: row.chain_id,
     address: row.address,
     protocolVersion: row.protocol_version ?? 'v2',
-    feeTierBps: row.fee_tier_bps,
+    feeTierBps: toFiniteNumber(row.fee_tier_bps),
     token0Address: row.token0_address,
     token1Address: row.token1_address,
     token0Symbol: row.token0_symbol,
     token1Symbol: row.token1_symbol,
     token0Name: row.token0_name,
     token1Name: row.token1_name,
-    token0Decimals: row.token0_decimals,
-    token1Decimals: row.token1_decimals,
+    token0Decimals: toFiniteInteger(row.token0_decimals, 18),
+    token1Decimals: toFiniteInteger(row.token1_decimals, 18),
     token0LogoUri: row.token0_logo_uri ?? null,
     token1LogoUri: row.token1_logo_uri ?? null,
-    tvlUsd: row.tvl_usd ?? 0,
-    volume24hUsd: row.volume_24h_usd ?? 0,
-    volume30dUsd: row.volume_30d_usd ?? 0,
-    boostedApr: row.boosted_apr,
+    tvlUsd: toFiniteNumber(row.tvl_usd) ?? 0,
+    volume24hUsd: toFiniteNumber(row.volume_24h_usd) ?? 0,
+    volume30dUsd: toFiniteNumber(row.volume_30d_usd) ?? 0,
+    boostedApr: toFiniteNumber(row.boosted_apr),
     updatedAt: row.updated_at,
   }
 }
@@ -217,12 +236,12 @@ function toUserV2PositionReadModel(row: UserV2PositionRow): UserV2PositionReadMo
     token1Address: row.token1_address,
     token0Symbol: row.token0_symbol,
     token1Symbol: row.token1_symbol,
-    token0Decimals: row.token0_decimals,
-    token1Decimals: row.token1_decimals,
+    token0Decimals: toFiniteInteger(row.token0_decimals, 18),
+    token1Decimals: toFiniteInteger(row.token1_decimals, 18),
     userAmount0Raw: row.user_amount0_raw,
     userAmount1Raw: row.user_amount1_raw,
     lpBalanceRaw: row.lp_balance_raw,
-    poolShareRatio: row.pool_share_ratio,
+    poolShareRatio: toFiniteNumber(row.pool_share_ratio) ?? 0,
     updatedAt: row.updated_at,
   }
 }
@@ -275,7 +294,7 @@ export function createSupabaseExploreReadClient(config: SupabaseExploreReadClien
       const url = `${baseUrl}/rest/v1/v_pool_market_totals_public?chain_id=eq.${params.chainId}&select=chain_id,total_tvl_usd,updated_at&limit=1`
       const rows = await fetchRows<ExplorePoolTotalRow>({ fetchImpl, url, headers })
       const row = rows[0]
-      return row?.total_tvl_usd ?? 0
+      return toFiniteNumber(row?.total_tvl_usd) ?? 0
     },
 
     async listUserV2Positions(params: {
