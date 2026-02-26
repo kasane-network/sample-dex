@@ -1,7 +1,5 @@
 import PREVIEW_IMG_DARK from 'assets/images/portfolio-page-disconnected-preview/dark.svg'
 import PREVIEW_IMG_LIGHT from 'assets/images/portfolio-page-disconnected-preview/light.svg'
-import PREVIEW_IMG_MOBILE_DARK from 'assets/images/portfolio-page-disconnected-preview/mobile-dark.svg'
-import PREVIEW_IMG_MOBILE_LIGHT from 'assets/images/portfolio-page-disconnected-preview/mobile-light.svg'
 import { useAccountDrawer } from 'components/AccountDrawer/MiniPortfolio/hooks'
 import { TOTAL_INTERFACE_NAV_HEIGHT } from 'pages/Portfolio/constants'
 import { useTranslation } from 'react-i18next'
@@ -132,7 +130,7 @@ export default function PortfolioDisconnectedView() {
               overflow="hidden"
             >
               <img
-                src={isDarkMode ? PREVIEW_IMG_MOBILE_DARK : PREVIEW_IMG_MOBILE_LIGHT}
+                src={isDarkMode ? PREVIEW_IMG_DARK : PREVIEW_IMG_LIGHT}
                 alt="Portfolio overview mobile preview image"
                 style={{ width: '100%', height: 'auto' }}
               />

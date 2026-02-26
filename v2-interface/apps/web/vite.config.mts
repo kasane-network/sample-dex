@@ -1,14 +1,13 @@
 import { cloudflare } from '@cloudflare/vite-plugin'
 import { tamaguiPlugin } from '@tamagui/vite-plugin'
 import react from '@vitejs/plugin-react'
-import reactOxc from '@vitejs/plugin-react-oxc'
 import { execSync } from 'child_process'
 import { config as dotenvConfig } from 'dotenv'
 import fs from 'fs'
 import path from 'path'
 import process from 'process'
 import { fileURLToPath } from 'url'
-import { defineConfig, loadEnv, transformWithOxc, type ViteDevServer } from 'vite'
+import { defineConfig, loadEnv, transformWithEsbuild, type ViteDevServer } from 'vite'
 import bundlesize from 'vite-plugin-bundlesize'
 import commonjs from 'vite-plugin-commonjs'
 import { nodePolyfills } from 'vite-plugin-node-polyfills'
@@ -40,7 +39,7 @@ const reactPlugin = () =>
           plugins: [['babel-plugin-react-compiler', ReactCompilerConfig]],
         },
       })
-    : reactOxc()
+    : react()
 
 // Prints a warning if server automatically switches to a different port when `DEFAULT_PORT` is already in use
 const portWarningPlugin = (isProduction: boolean) =>
@@ -176,7 +175,7 @@ export default defineConfig(({ mode }) => {
             return null
           }
 
-          return transformWithOxc(code, id, { lang: 'jsx' })
+          return transformWithEsbuild(code, id, { loader: 'jsx' })
         },
       },
       portWarningPlugin(isProduction),

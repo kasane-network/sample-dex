@@ -1,11 +1,9 @@
-import uImage from 'assets/images/big_unicorn.png'
 import noise from 'assets/images/noise.png'
-import xlUnicorn from 'assets/images/xl_uni.png'
 import { AutoColumn } from 'components/deprecated/Column'
 import { deprecatedStyled } from 'lib/styled-components'
 
 export const CardBGImage = deprecatedStyled.span<{ desaturate?: boolean }>`
-  background: url(${uImage});
+  background: radial-gradient(circle at 30% 20%, rgba(255, 0, 122, 0.35), rgba(2, 29, 67, 0.35));
   width: 1000px;
   height: 600px;
   position: absolute;
@@ -19,7 +17,7 @@ export const CardBGImage = deprecatedStyled.span<{ desaturate?: boolean }>`
 `
 
 export const CardBGImageSmaller = deprecatedStyled.span<{ desaturate?: boolean }>`
-  background: url(${xlUnicorn});
+  background: radial-gradient(circle at 40% 30%, rgba(255, 255, 255, 0.2), rgba(2, 29, 67, 0.3));
   width: 1200px;
   height: 1200px;
   position: absolute;

@@ -1,7 +1,6 @@
 import type { Token } from '@uniswap/sdk-core'
 import dottedBackground from 'assets/images/dotted-grid.png'
 import dottedBackgroundDark from 'assets/images/dotted-grid-dark.png'
-import tokenLogo from 'assets/images/token-logo.png'
 import { formatTokenAmount } from 'components/Liquidity/LPIncentives/utils/formatTokenAmount'
 import { LP_INCENTIVES_REWARD_TOKEN } from 'components/LpIncentives/constants'
 import { lpIncentivesLastClaimedAtom } from 'hooks/useLpIncentives'
@@ -14,7 +13,6 @@ import {
   Flex,
   FlexLoader,
   FlexProps,
-  Image,
   Skeleton,
   Text,
   TouchableArea,
@@ -203,12 +201,9 @@ function LpIncentiveRewardsCard({
               <Flex row gap="$spacing8" alignItems="center">
                 {renderRewardsAmount()}
                 {!rewardsError && (
-                  <Image
-                    src={tokenLogo}
-                    width={isSmallScreen ? 24 : 28}
-                    height={isSmallScreen ? 24 : 28}
-                    objectFit="cover"
-                  />
+                  <Text variant={isSmallScreen ? 'body3' : 'body2'} color="$neutral2">
+                    {token.symbol}
+                  </Text>
                 )}
               </Flex>
               <Button

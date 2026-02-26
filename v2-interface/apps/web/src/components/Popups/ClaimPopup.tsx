@@ -1,5 +1,4 @@
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
-import tokenLogo from 'assets/images/token-logo.png'
 import { CardBGImage, CardNoise } from 'components/earn/styled'
 import { useAccount } from 'hooks/useAccount'
 import { useModalState } from 'hooks/useModalState'
@@ -76,12 +75,13 @@ export default function ClaimPopup() {
               <X color="$white" size="$icon.16" />
             </TouchableArea>
             <Flex centered py="$spacing32" zIndex={10}>
-              <img
-                width="48px"
-                src={tokenLogo}
-                style={{
-                  animation: `rotate 5s cubic-bezier(0.83, 0, 0.17, 1) infinite`,
-                }}
+              <Flex
+                width={48}
+                height={48}
+                borderRadius="$roundedFull"
+                backgroundColor="$surface1"
+                opacity={0.2}
+                $platform-web={{ animation: `rotate 5s cubic-bezier(0.83, 0, 0.17, 1) infinite` }}
               />{' '}
               <Text variant="heading2" color="white" mt="$spacing16">
                 {unclaimedAmount?.toFixed(0, { groupSeparator: ',' }) ?? '-'} UNI

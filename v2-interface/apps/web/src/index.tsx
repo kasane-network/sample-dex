@@ -27,7 +27,6 @@ import { StrictMode, useEffect, useMemo } from 'react'
 import { createRoot } from 'react-dom/client'
 import { Helmet, HelmetProvider } from 'react-helmet-async/lib/index'
 import { I18nextProvider } from 'react-i18next'
-import { configureReanimatedLogger } from 'react-native-reanimated'
 import { Provider } from 'react-redux'
 import { BrowserRouter, HashRouter, useLocation } from 'react-router'
 import store from 'state'
@@ -51,12 +50,6 @@ import { useAccount } from 'wagmi'
 
 if (window.ethereum) {
   window.ethereum.autoRefreshOnNetworkChange = false
-}
-
-if (__DEV__ && !isTestEnv()) {
-  configureReanimatedLogger({
-    strict: false,
-  })
 }
 
 initializePortfolioQueryOverrides({ store })
