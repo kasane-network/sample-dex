@@ -269,7 +269,10 @@ export function PoolsTable({
             : undefined
 
         const parseVolume = (amount: number | undefined): string => {
-          return amount ? convertFiatAmountFormatted(amount, NumberType.FiatTokenStats) : '-'
+          if (amount === undefined || !Number.isFinite(amount)) {
+            return '-'
+          }
+          return convertFiatAmountFormatted(amount, NumberType.FiatTokenStats)
         }
 
         return {

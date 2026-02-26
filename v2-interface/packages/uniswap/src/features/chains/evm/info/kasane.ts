@@ -72,7 +72,7 @@ export const KASANE_CHAIN_INFO = {
   statusPage: undefined,
   supportsV4: false,
   supportsNFTs: false,
-  testnet: true,
+  testnet: false,
   urlParam: 'kasane',
   wrappedNativeCurrency: {
     name: 'Wrapped ICP',

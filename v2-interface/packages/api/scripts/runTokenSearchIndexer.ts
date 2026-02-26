@@ -6,6 +6,7 @@ import { runTokenIndexerCycle } from '../src/tokenIndexer/pipeline.ts'
 import { SupabaseTokenIndexerRepository } from '../src/tokenIndexer/supabaseRest.ts'
 import { runV2UserPositionsIndexerCycle } from '../src/tokenIndexer/v2UserPositionsIndexer.ts'
 import { fetchBinanceNativeMarketStats } from '../src/tokenIndexer/binancePrice.ts'
+import { deriveTokenPricesFromPools, estimatePoolTvlUsd } from '../src/tokenIndexer/poolMarketPricing.ts'
 import { createPublicClient, getAddress, http } from 'viem'
 
 const KASANE_CHAIN_ID = 4801360
@@ -184,39 +185,6 @@ function toDecimal(raw: bigint, decimals: number): number {
   return normalized / 10 ** decimals
 }
 
-function putWeightedPrice(params: {
-  readonly map: Map<string, { weightedPriceSum: number; weight: number }>
-  readonly address: string
-  readonly priceUsd: number
-  readonly weight: number
-}): void {
-  if (!Number.isFinite(params.priceUsd) || params.priceUsd <= 0 || !Number.isFinite(params.weight) || params.weight <= 0) {
-    return
-  }
-  const key = params.address.toLowerCase()
-  const current = params.map.get(key)
-  if (!current) {
-    params.map.set(key, { weightedPriceSum: params.priceUsd * params.weight, weight: params.weight })
-    return
-  }
-  params.map.set(key, {
-    weightedPriceSum: current.weightedPriceSum + params.priceUsd * params.weight,
-    weight: current.weight + params.weight,
-  })
-}
-
-function finalizeWeightedPrices(
-  map: ReadonlyMap<string, { weightedPriceSum: number; weight: number }>,
-): Map<string, number> {
-  const result = new Map<string, number>()
-  for (const [address, value] of map.entries()) {
-    if (value.weight > 0) {
-      result.set(address, value.weightedPriceSum / value.weight)
-    }
-  }
-  return result
-}
-
 async function fetchTokenTotalSupplies(params: {
   readonly rpcUrl: string
   readonly tokenAddresses: readonly string[]
@@ -358,8 +326,8 @@ async function main(): Promise<void> {
     env.nativePriceTokenAddresses.length > 0
       ? env.nativePriceTokenAddresses
       : [...DEFAULT_NATIVE_PRICE_TOKEN_ADDRESSES.map((address) => getAddress(address).toLowerCase())]
-  const weightedPriceParts = new Map<string, { weightedPriceSum: number; weight: number }>()
   const tokenDecimalsByAddress = new Map<string, number>()
+  const nativeMarket = await fetchBinanceNativeMarketStats({ symbol: env.nativePriceSymbol })
 
   const tokenResult = await runTokenIndexerCycle({
     chainId: env.chainId,
@@ -382,38 +350,63 @@ async function main(): Promise<void> {
   })
 
   const updatedAt = new Date().toISOString()
+  const poolSnapshots = pools.map((pool) => {
+    const reserve0 = toDecimal(pool.reserve0Raw, pool.token0Decimals)
+    const reserve1 = toDecimal(pool.reserve1Raw, pool.token1Decimals)
+    tokenDecimalsByAddress.set(pool.token0Address.toLowerCase(), pool.token0Decimals)
+    tokenDecimalsByAddress.set(pool.token1Address.toLowerCase(), pool.token1Decimals)
+
+    return {
+      chainId: env.chainId,
+      address: pool.pairAddress.toLowerCase(),
+      token0Address: pool.token0Address.toLowerCase(),
+      token1Address: pool.token1Address.toLowerCase(),
+      token0Symbol: pool.token0Symbol,
+      token1Symbol: pool.token1Symbol,
+      token0Name: pool.token0Name,
+      token1Name: pool.token1Name,
+      token0Decimals: pool.token0Decimals,
+      token1Decimals: pool.token1Decimals,
+      reserve0,
+      reserve1,
+    }
+  })
+
+  const seedTokenPricesUsd = new Map<string, number>()
+  if (nativeMarket?.priceUsd) {
+    for (const nativeAddress of nativePriceTokenAddresses) {
+      seedTokenPricesUsd.set(nativeAddress.toLowerCase(), nativeMarket.priceUsd)
+    }
+  }
+  const tokenPriceByAddress = deriveTokenPricesFromPools({
+    stableTokenAddresses: [...stableSet],
+    pools: poolSnapshots.map((pool) => ({
+      token0Address: pool.token0Address,
+      token1Address: pool.token1Address,
+      reserve0: pool.reserve0,
+      reserve1: pool.reserve1,
+    })),
+    seedTokenPricesUsd,
+  })
+
   await repository.upsertPoolMarketSnapshot(
-    pools.map((pool) => {
-      const reserve0 = toDecimal(pool.reserve0Raw, pool.token0Decimals)
-      const reserve1 = toDecimal(pool.reserve1Raw, pool.token1Decimals)
-      const token0Stable = stableSet.has(pool.token0Address.toLowerCase())
-      const token1Stable = stableSet.has(pool.token1Address.toLowerCase())
-      const price0 = token0Stable ? 1 : token1Stable && reserve0 > 0 ? reserve1 / reserve0 : 0
-      const price1 = token1Stable ? 1 : token0Stable && reserve1 > 0 ? reserve0 / reserve1 : 0
-      const tvlUsd = reserve0 * price0 + reserve1 * price1
-      const stableReserveUsd = token0Stable ? reserve0 : token1Stable ? reserve1 : 0
-      putWeightedPrice({
-        map: weightedPriceParts,
-        address: pool.token0Address,
-        priceUsd: price0,
-        weight: stableReserveUsd,
+    poolSnapshots.map((pool) => {
+      const token0PriceUsd = tokenPriceByAddress.get(pool.token0Address)
+      const token1PriceUsd = tokenPriceByAddress.get(pool.token1Address)
+      const tvlUsd = estimatePoolTvlUsd({
+        reserve0: pool.reserve0,
+        reserve1: pool.reserve1,
+        token0PriceUsd,
+        token1PriceUsd,
       })
-      putWeightedPrice({
-        map: weightedPriceParts,
-        address: pool.token1Address,
-        priceUsd: price1,
-        weight: stableReserveUsd,
-      })
-      tokenDecimalsByAddress.set(pool.token0Address.toLowerCase(), pool.token0Decimals)
-      tokenDecimalsByAddress.set(pool.token1Address.toLowerCase(), pool.token1Decimals)
 
       return {
         chainId: env.chainId,
-        address: pool.pairAddress.toLowerCase(),
+        address: pool.address,
         protocolVersion: 'v2',
         feeTierBps: 30,
-        token0Address: pool.token0Address.toLowerCase(),
-        token1Address: pool.token1Address.toLowerCase(),
+        token0Address: pool.token0Address,
+        token1Address: pool.token1Address,
         token0Symbol: pool.token0Symbol,
         token1Symbol: pool.token1Symbol,
         token0Name: pool.token0Name,
@@ -430,8 +423,6 @@ async function main(): Promise<void> {
       }
     }),
   )
-
-  const tokenPriceByAddress = finalizeWeightedPrices(weightedPriceParts)
 
   const uniqueTokenAddresses = [...tokenDecimalsByAddress.keys()]
   const tokenSupplyByAddress = await fetchTokenTotalSupplies({
@@ -457,7 +448,6 @@ async function main(): Promise<void> {
     )
   }
 
-  const nativeMarket = await fetchBinanceNativeMarketStats({ symbol: env.nativePriceSymbol })
   const wrappedNativeAddress = nativePriceTokenAddresses[0]
   const fallbackNativePrice = wrappedNativeAddress ? tokenPriceByAddress.get(wrappedNativeAddress.toLowerCase()) : undefined
   const nativePriceUsd = nativeMarket?.priceUsd ?? fallbackNativePrice
