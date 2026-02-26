@@ -21,7 +21,7 @@ import { buildCurrency } from 'uniswap/src/features/dataApi/utils/buildCurrency'
 import { FORSupportedToken } from 'uniswap/src/features/fiatOnRamp/types'
 import { AVERAGE_L1_BLOCK_TIME_MS } from 'uniswap/src/features/transactions/hooks/usePollingIntervalByChain'
 import { areAddressesEqual } from 'uniswap/src/utils/addresses'
-import { getChainIdFromBackendChain, getChainIdFromChainUrlParam } from 'utils/chainParams'
+import { getChainIdFromBackendChain, getChainIdFromChainUrlParam, getChainUrlParam } from 'utils/chainParams'
 import { getNativeTokenDBAddress } from 'utils/nativeTokens'
 
 export enum PollingInterval {
