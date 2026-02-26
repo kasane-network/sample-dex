@@ -109,9 +109,18 @@ export default defineConfig(({ mode }) => {
 
   // External package aliases only
   const overrides = {
+    'react-native': 'react-native-web',
     'uniswap/src': path.resolve(__dirname, '../../packages/uniswap/src'),
     'utilities/src': path.resolve(__dirname, '../../packages/utilities/src'),
     'ui/src': path.resolve(__dirname, '../../packages/ui/src'),
+    'expo-clipboard': path.resolve(__dirname, 'src/lib/expo-clipboard.jsx'),
+    'expo-web-browser': path.resolve(__dirname, 'src/lib/expo-web-browser.ts'),
+    'react-native-localize': path.resolve(__dirname, 'src/lib/react-native-localize.ts'),
+    'react-native-image-colors/lib/module/module.web': path.resolve(
+      __dirname,
+      'src/lib/react-native-image-colors-web.ts',
+    ),
+    '@gorhom/bottom-sheet': path.resolve(__dirname, 'src/lib/gorhom-bottom-sheet.tsx'),
     jsbi: path.resolve(__dirname, '../../node_modules/jsbi/dist/jsbi.mjs'), // force consistent ESM build
   }
 

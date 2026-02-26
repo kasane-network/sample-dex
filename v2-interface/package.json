@@ -53,19 +53,6 @@
     ]
   },
   "private": true,
-  "patchedDependenciesComments": {
-    "immer": "this fixes typecheck in mobile app, see https://github.com/reduxjs/redux-toolkit/issues/1806",
-    "@tanstack/react-query@5.77.2": "Fixes an issue with importing this package from packages/uniswap via apps/web. We can remove this once we move away from craco.",
-    "@typescript-eslint/eslint-plugin": "Fixes a conflict between our eslint configs and the configs of external packages, like '@react-native-community/eslint-config'.",
-    "@typescript-eslint/parser": "Fixes a conflict between our eslint configs and the configs of external packages.",
-    "eslint-plugin-react": "Fixes a conflict between our eslint configs and the configs of external packages.",
-    "eslint-plugin-react-hooks": "Fixes a conflict between our eslint configs and the configs of external packages.",
-    "eslint-plugin-jest": "Fixes a conflict between our eslint configs and the configs of external packages.",
-    "@gorhom/bottom-sheet@4.6.4": "Fixes bottom sheet dynamic snap point backdrop flickering.",
-    "@tamagui/portal@1.136.1": "Fixes issue with not rendering content in sheets on mweb (e.g. Selecting a token on swap flow) on web production builds.",
-    "@tamagui/static@1.136.1": "Fixes applying styles (e.g. with hoverStyle) for buttons on web production builds.",
-    "webpack@5.90.0": "Fixes issues with incompatible webpack typings in storybook"
-  },
   "resolutions": {
     "@apollo/client": "3.11.10",
     "@babel/preset-env": "7.26.0",
@@ -184,12 +171,5 @@
     "apps/*",
     "packages/*",
     "config/*"
-  ],
-  "patchedDependencies": {
-    "multiformats@9.9.0": "patches/multiformats@9.9.0.patch",
-    "@tanstack/react-query@5.77.2": "patches/@tanstack%2Freact-query@5.77.2.patch",
-    "@vercel/og@0.5.8": "patches/@vercel%2Fog@0.5.8.patch",
-    "@tamagui/portal@1.136.1": "patches/@tamagui%2Fportal@1.136.1.patch",
-    "@tamagui/static@1.136.1": "patches/@tamagui%2Fstatic@1.136.1.patch"
-  }
+  ]
 }
