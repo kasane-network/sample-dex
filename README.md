@@ -109,19 +109,6 @@ npm run frontend:start
 
 Kasane専用のカスタムページは `v2-interface` 起動後に以下でアクセスできます。
 
-- `/swap/kasane`
-
-## Supabase運用ディレクトリ（一本化）
-
-Supabase の migration / reset / push は **必ず** `v2-interface/supabase` を使用してください。  
-ルートの `supabase/` は CLI 一時ファイル置き場のみで、migration 管理対象ではありません。
-
-```bash
-cd /Users/0xhude/Desktop/Kasane/dex/v2-interface
-supabase migration list --linked
-supabase db push --linked
-supabase db reset --linked --yes
-```
 
 ## 対象チェーン情報（testnet）
 
@@ -137,16 +124,6 @@ supabase db reset --linked --yes
 ## monorepo 化について
 
 `v2-core` / `v2-periphery` は単一のルート Git で管理します。
-
-## フォーク運用の基本
-
-各リポジトリで `upstream` は公式を維持し、`origin` に自分の fork を設定してください。
-
-```bash
-# core
-cd v2-core
-git remote rename origin upstream
-git remote add origin <YOUR_FORK_REPO_URL>
 
 # periphery
 cd ../v2-periphery
