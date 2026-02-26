@@ -5,7 +5,7 @@ import {
   getTransactionTypeTranslation,
   TransactionType,
   useAllTransactions,
-} from 'appGraphql/data/useAllTransactions'
+} from 'dataLayer/data/useAllTransactions'
 import { ApolloError } from '@apollo/client'
 import { createColumnHelper } from '@tanstack/react-table'
 import { GraphQLApi } from '@universe/api'

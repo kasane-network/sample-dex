@@ -1,0 +1,44 @@
+name: Token Search Indexer
+
+on:
+  schedule:
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: token-search-indexer
+  cancel-in-progress: false
+
+jobs:
+  run-indexer:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: v2-interface/packages/api
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.1
+
+      - name: Install dependencies
+        working-directory: v2-interface
+        run: bun install --frozen-lockfile
+
+      - name: Run token search indexer
+        run: bun run token-indexer:run
+        env:
+          INDEXER_CHAIN_ID: ${{ secrets.INDEXER_CHAIN_ID }}
+          INDEXER_TOKEN_LIST_URLS: ${{ secrets.INDEXER_TOKEN_LIST_URLS }}
+          INDEXER_RPC_URL: ${{ secrets.INDEXER_RPC_URL }}
+          INDEXER_V2_POOLS_JSON: ${{ secrets.INDEXER_V2_POOLS_JSON }}
+          INDEXER_EXPLORE_API_KEY: ${{ secrets.INDEXER_EXPLORE_API_KEY }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}

@@ -1,4 +1,4 @@
-import { getTokenExploreURL } from 'appGraphql/data/util'
+import { getTokenExploreURL } from 'dataLayer/data/util'
 import { SharedEventName } from '@uniswap/analytics-events'
 import { FeatureFlags, useFeatureFlag } from '@universe/gating'
 import PoolNotFoundModal from 'components/NotFoundModal/PoolNotFoundModal'
@@ -6,14 +6,12 @@ import TokenNotFoundModal from 'components/NotFoundModal/TokenNotFoundModal'
 import { ExploreTopPoolTable } from 'components/Pools/PoolTable/PoolTable'
 import { MAX_WIDTH_MEDIA_BREAKPOINT } from 'components/Tokens/constants'
 import { TopTokensTable } from 'components/Tokens/TokenTable'
-import TableNetworkFilter from 'components/Tokens/TokenTable/NetworkFilter'
 import SearchBar from 'components/Tokens/TokenTable/SearchBar'
 import VolumeTimeFrameSelector from 'components/Tokens/TokenTable/VolumeTimeFrameSelector'
 import { ToucanTable } from 'components/Toucan/TopAuctionsTable'
 import { useResetAtom } from 'jotai/utils'
 import { ExploreTab } from 'pages/Explore/constants'
 import ExploreStatsSection from 'pages/Explore/ExploreStatsSection'
-import ProtocolFilter from 'pages/Explore/ProtocolFilter'
 import { useExploreParams } from 'pages/Explore/redirects'
 import RecentTransactions from 'pages/Explore/tables/RecentTransactions'
 import { NamedExoticComponent, useEffect, useMemo, useRef, useState } from 'react'
@@ -27,9 +25,10 @@ import { ClickableTamaguiStyle } from 'theme/components/styles'
 import { Button, Flex, styled, Text, useMedia } from 'ui/src'
 import { Plus } from 'ui/src/components/icons/Plus'
 import { getChainInfo } from 'uniswap/src/features/chains/chainInfo'
+import { UniverseChainId } from 'uniswap/src/features/chains/types'
 import { ElementName, InterfacePageName, ModalName } from 'uniswap/src/features/telemetry/constants'
 import Trace from 'uniswap/src/features/telemetry/Trace'
-import { getChainUrlParam, useChainIdFromUrlParam } from 'utils/chainParams'
+import { getChainUrlParam } from 'utils/chainParams'
 
 interface Page {
   title: React.ReactNode
@@ -164,10 +163,9 @@ const Explore = ({ initialTab }: { initialTab?: ExploreTab }) => {
   const { tab: tabName } = useExploreParams()
   const tab = tabName ?? ExploreTab.Tokens
 
-  const urlChainId = useChainIdFromUrlParam()
   const chainInfo = useMemo(() => {
-    return urlChainId ? getChainInfo(urlChainId) : undefined
-  }, [urlChainId])
+    return getChainInfo(UniverseChainId.Kasane)
+  }, [])
 
   useEffect(() => {
     const tabIndex = Pages.findIndex((page) => page.key === tab)
@@ -179,7 +177,7 @@ const Explore = ({ initialTab }: { initialTab?: ExploreTab }) => {
 
   return (
     <Trace logImpression page={InterfacePageName.ExplorePage} properties={{ chainName: chainInfo?.backendChain.chain }}>
-      <ExploreContextProvider chainId={chainInfo?.id}>
+      <ExploreContextProvider chainId={UniverseChainId.Kasane}>
         <Flex width="100%" minWidth={320} pt="$spacing24" pb="$spacing48" px="$spacing40" $md={{ p: '$spacing16' }}>
           <ExploreStatsSection shouldHideStats={false} />
           <Flex
@@ -237,9 +235,7 @@ const Explore = ({ initialTab }: { initialTab?: ExploreTab }) => {
                   </Button>
                 </Flex>
               )}
-              <TableNetworkFilter />
               {currentKey === ExploreTab.Tokens && <VolumeTimeFrameSelector />}
-              {currentKey === ExploreTab.Pools && <ProtocolFilter />}
               <SearchBar tab={currentKey} />
             </Flex>
           </Flex>

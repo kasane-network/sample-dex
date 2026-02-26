@@ -1,4 +1,4 @@
-import { gqlToCurrency, unwrapToken } from 'appGraphql/data/util'
+import { gqlToCurrency, unwrapToken } from 'dataLayer/data/util'
 import { LiquidityPositionInfoBadges } from 'components/Liquidity/LiquidityPositionInfoBadges'
 import { LPIncentiveRewardsBadge } from 'components/Liquidity/LPIncentives/LPIncentiveRewardsBadge'
 import { DoubleCurrencyLogo } from 'components/Logo/DoubleLogo'

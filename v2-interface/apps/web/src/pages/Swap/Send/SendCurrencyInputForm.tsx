@@ -1,4 +1,4 @@
-import { PrefetchBalancesWrapper } from 'appGraphql/data/apollo/AdaptiveTokenBalancesProvider'
+import { PrefetchBalancesWrapper } from 'dataLayer/data/apollo/AdaptiveTokenBalancesProvider'
 import { type Currency } from '@uniswap/sdk-core'
 import { PortfolioLogo } from 'components/AccountDrawer/MiniPortfolio/PortfolioLogo'
 import { isInputGreaterThanDecimals } from 'components/NumericalInput'

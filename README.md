@@ -71,6 +71,30 @@ npm run deploy:test-tokens
 
 出力先は `docs/deployments/latest-testnet.tokens.json` です。
 
+### ペア作成 + 初期流動性追加（WICP-testUSDC / WICP-tes）
+
+`Router02.addLiquidity` はペア未作成なら内部で `createPair` されるため、1コマンドで「ペア作成 + 流動性追加」を行えます。
+Kasane の tx パラメータ基準は `docs/kasane_tx_baseline.md` を参照してください。
+
+```bash
+CONFIRM_DEPLOY=YES \
+RPC_URL="https://rpc-testnet.kasane.network" \
+PRIVATE_KEY="<DEPLOYER_PRIVATE_KEY>" \
+EXPECTED_CHAIN_ID=4801360 \
+PAIR_KIND=WICP_TESTUSDC \
+AMOUNT_A="10" \
+AMOUNT_B="2000" \
+GAS_PRICE_GWEI="250" \
+GAS_LIMIT="5000000" \
+npm run seed:liquidity
+```
+
+- `PAIR_KIND=WICP_TESTUSDC` の場合: `latest-testnet.json` の `weth` と `latest-testnet.tokens.json` の `testUSDC` を使用
+- `PAIR_KIND=WICP_TES` の場合: `weth` と `TES_ADDRESS`（未指定時は `testETH`）を使用
+- `PAIR_KIND` を未指定にすると `TOKEN_A` / `TOKEN_B` を直接指定可能
+
+実行結果は `docs/deployments/latest-testnet.liquidity.json` に保存されます。
+
 ## フロント起動（Uniswap interface fork）
 
 `v2-interface` は `bun` と `node v22.13.1` が前提です。

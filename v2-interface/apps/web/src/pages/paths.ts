@@ -13,6 +13,8 @@ export const paths = [
   '/explore/auctions/:chainName/:id',
   '/swap',
   '/positions',
+  '/positions/create',
+  '/positions/create/:version',
   '/positions/v2/:chainName/:pairAddress',
   '/add/v2',
   '/remove/v2/:currencyIdA/:currencyIdB',

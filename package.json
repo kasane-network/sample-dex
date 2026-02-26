@@ -14,6 +14,8 @@
     "compile:all": "npm run compile:core && npm run compile:periphery",
     "deploy:testnet": "node ./scripts/deploy-dex-v2.js",
     "deploy:test-tokens": "node ./scripts/deploy-test-tokens.js",
+    "seed:liquidity": "node ./scripts/seed-liquidity-v2.js",
+    "swap:preflight": "node ./scripts/kasane-swap-preflight.js",
     "frontend:start": "cd frontend && npm run dev",
     "frontend:build": "cd frontend && npm run build",
     "frontend:test": "cd frontend && npm run test",

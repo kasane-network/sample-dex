@@ -1,5 +1,5 @@
-import { PoolSortFields } from 'appGraphql/data/pools/useTopPools'
-import { OrderDirection } from 'appGraphql/data/util'
+import { PoolSortFields } from 'dataLayer/data/pools/useTopPools'
+import { OrderDirection } from 'dataLayer/data/util'
 import { FeatureFlags, useFeatureFlag } from '@universe/gating'
 import { ExternalArrowLink } from 'components/Liquidity/ExternalArrowLink'
 import { useAccount } from 'hooks/useAccount'

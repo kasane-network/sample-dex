@@ -6,6 +6,7 @@ import i18n from 'uniswap/src/i18n'
 import { isBrowserRouterEnabled } from 'utils/env'
 
 const AddLiquidityV2WithTokenRedirects = lazy(() => import('pages/AddLiquidityV2/redirects'))
+const CreatePosition = lazy(() => import('pages/CreatePosition'))
 const ExploreRedirects = lazy(() => import('pages/Explore/redirects'))
 const PoolDetails = lazy(() => import('pages/PoolDetails'))
 const Portfolio = lazy(() => import('pages/Portfolio/Portfolio'))
@@ -168,6 +169,17 @@ export const routes: RouteDefinition[] = [
     getElement: () => (
       <Suspense fallback={null}>
         <PositionV2Page />
+      </Suspense>
+    ),
+    getTitle: getPositionPageTitle,
+    getDescription: getPositionPageDescription,
+  }),
+  createRouteDefinition({
+    path: '/positions/create',
+    nestedPaths: [':version'],
+    getElement: () => (
+      <Suspense fallback={null}>
+        <CreatePosition />
       </Suspense>
     ),
     getTitle: getPositionPageTitle,

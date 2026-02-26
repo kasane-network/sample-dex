@@ -1,4 +1,4 @@
-import { PrefetchBalancesWrapper } from 'appGraphql/data/apollo/AdaptiveTokenBalancesProvider'
+import { PrefetchBalancesWrapper } from 'dataLayer/data/apollo/AdaptiveTokenBalancesProvider'
 import type { Currency } from '@uniswap/sdk-core'
 import { FeatureFlags, useFeatureFlag } from '@universe/gating'
 import { useAccountDrawer } from 'components/AccountDrawer/MiniPortfolio/hooks'

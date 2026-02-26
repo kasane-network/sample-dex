@@ -1,4 +1,3 @@
-import { QueryResult } from '@apollo/client'
 import { Currency } from '@uniswap/sdk-core'
 import { GraphQLApi } from '@universe/api'
 import { TDPChartState } from 'components/Tokens/TokenDetails/ChartSection'
@@ -18,7 +17,11 @@ type BaseTDPContext = {
   /** Set to `NATIVE_CHAIN_ID` if currency is native, else equal to `currency.address` */
   address: string
 
-  tokenQuery: QueryResult<GraphQLApi.TokenWebQuery, GraphQLApi.Exact<{ chain: GraphQLApi.Chain; address?: string }>>
+  tokenQuery: {
+    data?: { token?: GraphQLApi.TokenWebQuery['token'] }
+    loading: boolean
+    error?: Error
+  }
   chartState: TDPChartState
 
   multiChainMap: MultiChainMap
