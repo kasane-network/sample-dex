@@ -24,7 +24,7 @@ function requiredEnv(name, env = process.env) {
 function loadArtifact(artifactPath) {
   const fullPath = path.join(ROOT_DIR, artifactPath);
   if (!fs.existsSync(fullPath)) {
-    throw new Error(`Artifact not found: ${artifactPath}. Run compile first.`);
+    throw new Error(`Artifact not found: ${artifactPath}. Ensure backend/contracts artifacts are present.`);
   }
   const artifact = JSON.parse(fs.readFileSync(fullPath, 'utf8'));
   if (!artifact.abi || !artifact.bytecode) {
@@ -134,9 +134,9 @@ async function runDeployDex(deps = {}, env = process.env) {
     log(`[gasLimit] ${env.GAS_LIMIT}`);
   }
 
-  const wethArtifact = loadArtifactFn('v2-periphery/build/WETH9.json');
-  const factoryArtifact = loadArtifactFn('v2-core/build/UniswapV2Factory.json');
-  const routerArtifact = loadArtifactFn('v2-periphery/build/UniswapV2Router02.json');
+  const wethArtifact = loadArtifactFn('backend/contracts/WETH9.json');
+  const factoryArtifact = loadArtifactFn('backend/contracts/UniswapV2Factory.json');
+  const routerArtifact = loadArtifactFn('backend/contracts/UniswapV2Router02.json');
   const txOverrides = buildTxOverrides(env, deps.parseUnits || utils.parseUnits);
 
   const weth = await deployFn('WETH9', wethArtifact, wallet, [], txOverrides, deps.sleepFn);

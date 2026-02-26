@@ -1,0 +1,7 @@
+canisters:
+  frontend:
+    type: recipe
+    recipe:
+      type: "@dfinity/asset-canister"
+      configuration:
+        dir: v2-interface/apps/web/build

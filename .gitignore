@@ -9,4 +9,14 @@ node_modules/
 **/.DS_Store
 *.log
 docs/deployments/*.env
-v2-interface/
+/.jj/
+/.venv-doc/
+
+# Solidity build artifacts/cache
+v2-core/artifacts/
+v2-core/cache/
+v2-periphery/artifacts/
+v2-periphery/cache/
+
+# Supabase CLI temp artifacts
+**/supabase/.temp/

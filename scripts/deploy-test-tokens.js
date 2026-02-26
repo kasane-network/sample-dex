@@ -24,7 +24,7 @@ function requiredEnv(name, env = process.env) {
 function loadArtifact(artifactPath) {
   const fullPath = path.join(ROOT_DIR, artifactPath);
   if (!fs.existsSync(fullPath)) {
-    throw new Error(`Artifact not found: ${artifactPath}. Run compile first.`);
+    throw new Error(`Artifact not found: ${artifactPath}. Ensure backend/contracts artifacts are present.`);
   }
   const artifact = JSON.parse(fs.readFileSync(fullPath, 'utf8'));
   if (!artifact.abi || !artifact.bytecode) {
@@ -144,7 +144,7 @@ async function runDeployTestTokens(deps = {}, env = process.env) {
     log(`[gasPrice] ${env.GAS_PRICE_GWEI} gwei`);
   }
 
-  const artifact = loadArtifactFn('v2-periphery/build/KasaneTestERC20.json');
+  const artifact = loadArtifactFn('backend/contracts/KasaneTestERC20.json');
   const txOverrides = buildTxOverrides(env, parseUnits);
   const testEth = await deployTokenFn(artifact, wallet, {
     name: 'Kasane Test Ether',

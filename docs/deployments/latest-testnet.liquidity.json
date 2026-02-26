@@ -1,0 +1,27 @@
+{
+  "chainId": 4801360,
+  "deployer": "0x1166b69700371fF4fe3f17Bb8905dBe5844fDc5F",
+  "router02": "0xE5455e558b8701a32b12f8881fF72a35D771B672",
+  "factory": "0x697C9E9eA0686515fEa69f526F85B48D8569EC86",
+  "pairKind": "WICP_TES",
+  "tokenA": {
+    "address": "0x4dfC4B47164aC7d42507Bf1F9cCA1bcddC0EEe79",
+    "symbol": "WICP",
+    "decimals": 18
+  },
+  "tokenB": {
+    "address": "0xD55577F68db301104F9Ee3B2F27f25a08942bff9",
+    "symbol": "testETH",
+    "decimals": 18
+  },
+  "pairBefore": "0x2CCC46FDDcE57515e41585Fc1347ad9f652bA470",
+  "pairAfter": "0x2CCC46FDDcE57515e41585Fc1347ad9f652bA470",
+  "recipient": "0x1166b69700371fF4fe3f17Bb8905dBe5844fDc5F",
+  "amountA": "1",
+  "amountB": "100",
+  "amountAMin": "0",
+  "amountBMin": "0",
+  "txHash": "0x8810be4fcc7876f978ab31c2e5f95aab964a3de4544cc5b6288cfe303a3fc0f2",
+  "blockNumber": 62,
+  "updatedAt": "2026-02-26T05:36:10.082Z"
+}

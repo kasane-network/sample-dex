@@ -1,8 +1,12 @@
 import { expect } from 'chai'
 import { utils } from 'ethers'
+import fs from 'fs'
+import os from 'os'
+import path from 'path'
 
 const deployDex = require('../../scripts/deploy-dex-v2.js')
 const deployTokens = require('../../scripts/deploy-test-tokens.js')
+const seedLiquidity = require('../../scripts/seed-liquidity-v2.js')
 
 async function expectError(promise: Promise<unknown>, expectedMessage: string) {
   let errorMessage = ''
@@ -94,6 +98,37 @@ describe('deploy scripts', () => {
         ),
         'TOKEN_RECIPIENT is not a valid address'
       )
+    })
+  })
+
+  describe('seed-liquidity-v2', () => {
+    it('validates GAS_LIMIT as positive integer', () => {
+      expect(() => seedLiquidity.buildTxOverrides({ GAS_LIMIT: '0' })).to.throw(
+        'GAS_LIMIT must be a positive integer'
+      )
+    })
+
+    it('resolves WICP_TESTUSDC pair from deployment files', () => {
+      const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'seed-liquidity-test-'))
+      const dexDeploymentPath = path.join(tempDir, 'latest-testnet.json')
+      const tokenDeploymentPath = path.join(tempDir, 'latest-testnet.tokens.json')
+      fs.writeFileSync(dexDeploymentPath, JSON.stringify({ weth: '0x0000000000000000000000000000000000000001' }))
+      fs.writeFileSync(
+        tokenDeploymentPath,
+        JSON.stringify({ testUSDC: { address: '0x0000000000000000000000000000000000000002' } })
+      )
+
+      const resolved = seedLiquidity.resolvePairTokenAddresses(
+        {
+          PAIR_KIND: 'WICP_TESTUSDC',
+          DEX_DEPLOYMENT: dexDeploymentPath,
+          TOKEN_DEPLOYMENT: tokenDeploymentPath
+        }
+      )
+
+      expect(resolved.pairKind).to.eq('WICP_TESTUSDC')
+      expect(resolved.tokenA).to.eq('0x0000000000000000000000000000000000000001')
+      expect(resolved.tokenB).to.eq('0x0000000000000000000000000000000000000002')
     })
   })
 })
