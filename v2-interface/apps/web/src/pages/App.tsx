@@ -3,8 +3,6 @@ import ErrorBoundary from 'components/ErrorBoundary'
 import { AppLayout } from 'pages/App/Layout'
 import { ResetPageScrollEffect } from 'pages/App/utils/ResetPageScroll'
 import { UserPropertyUpdater } from 'pages/App/utils/UserPropertyUpdater'
-import { useDynamicMetatags } from 'pages/metatags'
-import { findRouteByPath } from 'pages/RouteDefinitions'
 import { useEffect, useLayoutEffect } from 'react'
 import { Helmet } from 'react-helmet-async/lib/index'
 import { Navigate, useLocation } from 'react-router'
@@ -28,10 +26,6 @@ export default function App() {
   useEffect(() => {
     initializeScrollWatcher()
   }, [])
-
-  const metaTags = useDynamicMetatags()
-  const staticTitle = findRouteByPath(pathname)?.getTitle(pathname) ?? 'Kasane Interface'
-  const staticDescription = findRouteByPath(pathname)?.getDescription(pathname)
 
   // redirect address to landing pages until implemented
   const shouldRedirectToAppInstall = pathname.startsWith('/address/')
@@ -60,12 +54,6 @@ export default function App() {
           you can set it later in the page component itself, since react-helmet-async prefers the most recently rendered title.
         */}
         <Helmet>
-          <title>{staticTitle}</title>
-          {staticDescription && <meta name="description" content={staticDescription} />}
-          {staticDescription && <meta property="og:description" content={staticDescription} />}
-          {metaTags.map((tag, index) => (
-            <meta key={index} {...tag} />
-          ))}
           <style>{`
             html {
               ::-webkit-scrollbar-thumb {

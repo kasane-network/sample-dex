@@ -25,6 +25,7 @@ import { UniverseChainId } from 'uniswap/src/features/chains/types'
 import { toGraphQLChain } from 'uniswap/src/features/chains/utils'
 import { useLocalizationContext } from 'uniswap/src/features/language/LocalizationContext'
 import { NumberType } from 'utilities/src/format/types'
+import { getChainUrlParam } from 'utils/chainParams'
 
 const HeaderText = deprecatedStyled(RebassText)`
   font-weight: 485;
@@ -137,6 +138,7 @@ const PoolBalanceTokenNames = ({ token, chainId }: { token: TokenFullData; chain
   const isNative = unwrappedToken.address === NATIVE_CHAIN_ID
   const currency = isNative && chainId ? nativeOnChain(chainId) : token.currency
   const { defaultChainId } = useEnabledChains()
+  const chainUrlParam = getChainUrlParam(chainId ?? defaultChainId)
 
   return (
     <PoolBalanceTokenNamesContainer>
@@ -152,6 +154,7 @@ const PoolBalanceTokenNames = ({ token, chainId }: { token: TokenFullData; chain
           to={getTokenDetailsURL({
             address: unwrappedToken.address,
             chain: toGraphQLChain(chainId ?? defaultChainId),
+            chainUrlParam,
           })}
         >
           {unwrappedToken.symbol}

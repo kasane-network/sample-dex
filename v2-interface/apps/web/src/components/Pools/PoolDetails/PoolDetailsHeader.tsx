@@ -101,6 +101,7 @@ const PoolDetailsTitle = ({
 }) => {
   const { defaultChainId } = useEnabledChains()
   const graphQLChain = toGraphQLChain(chainId ?? defaultChainId)
+  const chainUrlParam = getChainUrlParam(chainId ?? defaultChainId)
   return (
     <Flex row gap="$spacing12" alignItems="center" width="max-content">
       <Flex row>
@@ -108,6 +109,7 @@ const PoolDetailsTitle = ({
           to={getTokenDetailsURL({
             address: token0?.address,
             chain: graphQLChain,
+            chainUrlParam,
           })}
         >
           <Text variant="heading1" fontSize={24} $md={{ variant: 'subheading1' }}>
@@ -118,6 +120,7 @@ const PoolDetailsTitle = ({
           to={getTokenDetailsURL({
             address: token1?.address,
             chain: graphQLChain,
+            chainUrlParam,
           })}
         >
           <Text variant="heading1" fontSize={24} $md={{ variant: 'subheading1' }}>

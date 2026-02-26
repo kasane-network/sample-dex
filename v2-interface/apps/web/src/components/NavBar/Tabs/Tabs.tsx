@@ -67,11 +67,13 @@ const Tab = ({
   label,
   isActive,
   path,
+  disabled,
   items,
 }: {
   label: string
   isActive?: boolean
   path: string
+  disabled?: boolean
   items?: TabsItem[]
 }) => {
   const { t } = useTranslation()
@@ -87,7 +89,11 @@ const Tab = ({
   useEffect(() => closeMenu(), [location, closeMenu])
 
   const isPortfolioTab = label === t('common.portfolio')
-  const labelContent = (
+  const labelContent = disabled ? (
+    <TabText variant="subheading1" isActive={isActive || isOpen} cursor="not-allowed" opacity={0.5} aria-disabled>
+      {label}
+    </TabText>
+  ) : (
     <NavLink to={path} style={{ textDecoration: 'none' }}>
       <TabText variant="subheading1" isActive={isActive || isOpen}>
         {label}
@@ -144,8 +150,8 @@ export function Tabs() {
   const tabsContent: TabsSection[] = useTabsContent()
   return (
     <>
-      {tabsContent.map(({ title, isActive, href, items }, index) => (
-        <Tab key={`${title}_${index}`} label={title} isActive={isActive} path={href} items={items} />
+      {tabsContent.map(({ title, isActive, href, disabled, items }, index) => (
+        <Tab key={`${title}_${index}`} label={title} isActive={isActive} path={href} disabled={disabled} items={items} />
       ))}
     </>
   )

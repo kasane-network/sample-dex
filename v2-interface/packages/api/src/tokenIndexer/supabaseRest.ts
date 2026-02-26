@@ -17,8 +17,12 @@ interface SupabaseRepositoryConfig {
   readonly fetchImpl?: typeof fetch
 }
 
-function tableUrl(baseUrl: string, tableName: string): string {
-  return `${baseUrl}/rest/v1/${tableName}?on_conflict=chain_id,address`
+function tableUrl(params: {
+  readonly baseUrl: string
+  readonly tableName: string
+  readonly onConflict: readonly string[]
+}): string {
+  return `${params.baseUrl}/rest/v1/${params.tableName}?on_conflict=${params.onConflict.join(',')}`
 }
 
 function toPostgrestPayload(records: readonly TokenRegistryRecord[]): ReadonlyArray<Record<string, unknown>> {
@@ -60,21 +64,26 @@ function toSearchPayload(records: readonly TokenSearchIndexRecord[]): ReadonlyAr
 function toTokenMarketEnrichmentPayload(
   records: readonly TokenMarketEnrichmentRecord[],
 ): ReadonlyArray<Record<string, unknown>> {
-  return records.map((record) => ({
-    chain_id: record.chainId,
-    address: record.address,
-    price_usd: record.priceUsd,
-    price_change_1h_pct: record.priceChange1hPct,
-    price_change_1d_pct: record.priceChange1dPct,
-    fdv_usd: record.fdvUsd,
-    volume_1h_usd: record.volume1hUsd,
-    volume_24h_usd: record.volume24hUsd,
-    volume_1w_usd: record.volume1wUsd,
-    volume_1m_usd: record.volume1mUsd,
-    volume_1y_usd: record.volume1yUsd,
-    sparkline_1d: record.sparkline1d,
-    updated_at: record.updatedAt,
-  }))
+  return records.map((record) => {
+    const payload: Record<string, unknown> = {
+      chain_id: record.chainId,
+      address: record.address,
+      updated_at: record.updatedAt,
+    }
+
+    if (record.priceUsd !== undefined) payload.price_usd = record.priceUsd
+    if (record.priceChange1hPct !== undefined) payload.price_change_1h_pct = record.priceChange1hPct
+    if (record.priceChange1dPct !== undefined) payload.price_change_1d_pct = record.priceChange1dPct
+    if (record.fdvUsd !== undefined) payload.fdv_usd = record.fdvUsd
+    if (record.volume1hUsd !== undefined) payload.volume_1h_usd = record.volume1hUsd
+    if (record.volume24hUsd !== undefined) payload.volume_24h_usd = record.volume24hUsd
+    if (record.volume1wUsd !== undefined) payload.volume_1w_usd = record.volume1wUsd
+    if (record.volume1mUsd !== undefined) payload.volume_1m_usd = record.volume1mUsd
+    if (record.volume1yUsd !== undefined) payload.volume_1y_usd = record.volume1yUsd
+    if (record.sparkline1d !== undefined) payload.sparkline_1d = record.sparkline1d
+
+    return payload
+  })
 }
 
 function toPoolMarketPayload(records: readonly PoolMarketSnapshotRecord[]): ReadonlyArray<Record<string, unknown>> {
@@ -107,24 +116,32 @@ async function postgrestUpsert(params: {
   readonly serviceRoleKey: string
   readonly schema: string
   readonly tableName: string
+  readonly onConflict: readonly string[]
   readonly payload: ReadonlyArray<Record<string, unknown>>
 }): Promise<void> {
   if (params.payload.length === 0) {
     return
   }
 
-  const response = await params.fetchImpl(tableUrl(params.baseUrl, params.tableName), {
-    method: 'POST',
-    headers: {
-      apikey: params.serviceRoleKey,
+  const response = await params.fetchImpl(
+    tableUrl({
+      baseUrl: params.baseUrl,
+      tableName: params.tableName,
+      onConflict: params.onConflict,
+    }),
+    {
+      method: 'POST',
+      headers: {
+        apikey: params.serviceRoleKey,
       authorization: `Bearer ${params.serviceRoleKey}`,
       'content-type': 'application/json',
       'content-profile': params.schema,
       'accept-profile': params.schema,
       prefer: 'resolution=merge-duplicates,return=minimal',
     },
-    body: JSON.stringify(params.payload),
-  })
+      body: JSON.stringify(params.payload),
+    },
+  )
 
   if (!response.ok) {
     const message = await response.text()
@@ -154,6 +171,7 @@ export class SupabaseTokenIndexerRepository
       serviceRoleKey: this.serviceRoleKey,
       schema: this.schema,
       tableName: 'token_registry',
+      onConflict: ['chain_id', 'address'],
       payload: toPostgrestPayload(records),
     })
   }
@@ -165,6 +183,7 @@ export class SupabaseTokenIndexerRepository
       serviceRoleKey: this.serviceRoleKey,
       schema: this.schema,
       tableName: 'token_market_snapshot',
+      onConflict: ['chain_id', 'address'],
       payload: toMarketPayload(records),
     })
   }
@@ -176,6 +195,7 @@ export class SupabaseTokenIndexerRepository
       serviceRoleKey: this.serviceRoleKey,
       schema: this.schema,
       tableName: 'token_search_index',
+      onConflict: ['chain_id', 'address'],
       payload: toSearchPayload(records),
     })
   }
@@ -187,6 +207,7 @@ export class SupabaseTokenIndexerRepository
       serviceRoleKey: this.serviceRoleKey,
       schema: this.schema,
       tableName: 'token_market_snapshot',
+      onConflict: ['chain_id', 'address'],
       payload: toTokenMarketEnrichmentPayload(records),
     })
   }
@@ -198,6 +219,7 @@ export class SupabaseTokenIndexerRepository
       serviceRoleKey: this.serviceRoleKey,
       schema: this.schema,
       tableName: 'pool_market_snapshot',
+      onConflict: ['chain_id', 'address'],
       payload: toPoolMarketPayload(records),
     })
   }
@@ -209,6 +231,7 @@ export class SupabaseTokenIndexerRepository
       serviceRoleKey: this.serviceRoleKey,
       schema: this.schema,
       tableName: 'v2_user_lp_positions',
+      onConflict: ['chain_id', 'wallet_address', 'pair_address'],
       payload: records.map((record) => ({
         chain_id: record.chainId,
         wallet_address: record.walletAddress,

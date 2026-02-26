@@ -1,11 +1,10 @@
-import { GraphQLApi } from '@universe/api'
 import * as WebBrowser from 'expo-web-browser'
 import { colorsLight } from 'ui/src/theme'
 import { NATIVE_TOKEN_PLACEHOLDER } from 'uniswap/src/constants/addresses'
 import { uniswapUrls } from 'uniswap/src/constants/urls'
 import { getChainInfo } from 'uniswap/src/features/chains/chainInfo'
 import { UniverseChainId } from 'uniswap/src/features/chains/types'
-import { toGraphQLChain, toUniswapWebAppLink } from 'uniswap/src/features/chains/utils'
+import { toUniswapWebAppLink } from 'uniswap/src/features/chains/utils'
 import { BACKEND_NATIVE_CHAIN_ADDRESS_STRING } from 'uniswap/src/features/search/utils'
 import { ServiceProviderInfo } from 'uniswap/src/features/transactions/types/transactionDetails'
 import { currencyIdToChain, currencyIdToGraphQLAddress, isNativeCurrencyAddress } from 'uniswap/src/utils/currencyId'
@@ -217,12 +216,11 @@ export function getTokenDetailsURL({
   if (!chain) {
     return '/not-found'
   }
-  const chainInfo = toGraphQLChain(chain)
 
   const adjustedAddress = isNativeCurrencyAddress(chain, address) ? NATIVE_TOKEN_PLACEHOLDER : address
   const adjustedInputAddress = isNativeCurrencyAddress(chain, inputAddress) ? NATIVE_TOKEN_PLACEHOLDER : inputAddress
 
-  const chainName = chainUrlParam || String(chainInfo).toLowerCase() || GraphQLApi.Chain.MonadTestnet.toLowerCase()
+  const chainName = chainUrlParam || getChainInfo(chain).urlParam
   const inputAddressSuffix = adjustedInputAddress ? `?inputCurrency=${adjustedInputAddress}` : ''
   return `/explore/tokens/${chainName}/${adjustedAddress}${inputAddressSuffix}`
 }

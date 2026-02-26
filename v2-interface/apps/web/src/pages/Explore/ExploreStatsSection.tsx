@@ -2,9 +2,10 @@ import { LoadingBubble } from 'components/Tokens/loading'
 import { DeltaArrow } from 'components/Tokens/TokenDetails/Delta'
 import { Fragment, memo, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { use24hProtocolVolume, useDailyTVLWithChange } from 'state/explore/protocolStats'
-import { AnimatePresence, Flex, isTouchable, Popover, Text, useMedia, useShadowPropsMedium } from 'ui/src'
-import { zIndexes } from 'ui/src/theme'
+import { useDailyTVLWithChange } from 'state/explore/protocolStats'
+import { useSupabaseTotalTvlQuery, useSupabaseTotalVolume24hQuery } from 'state/explore/useSupabaseExploreStatsQuery'
+import { AnimatePresence, Flex, Text, useMedia } from 'ui/src'
+import { UniverseChainId } from 'uniswap/src/features/chains/types'
 import { useLocalizationContext } from 'uniswap/src/features/language/LocalizationContext'
 import { NumberType } from 'utilities/src/format/types'
 
@@ -12,32 +13,34 @@ interface ExploreStatSectionData {
   label: string
   value: string
   change: number
-  protocolPopoverFormattedData?: {
-    label: string
-    value?: number
-  }[]
 }
 
-const ExploreStatsSection = ({ shouldHideStats = false }: { shouldHideStats?: boolean }) => {
+const ExploreStatsSection = ({
+  shouldHideStats = false,
+  chainId = UniverseChainId.Kasane,
+}: {
+  shouldHideStats?: boolean
+  chainId?: UniverseChainId
+}) => {
   const media = useMedia()
   const { t } = useTranslation()
   const { convertFiatAmountFormatted } = useLocalizationContext()
 
   const {
-    protocolVolumes,
-    totalVolume,
-    totalChangePercent: volume24hChangePercent,
-    isLoading: isVolumeLoading,
-  } = use24hProtocolVolume()
-  const {
     totalTVL,
-    protocolTVL,
     totalChangePercent: totalTVL24hrChangePercent,
-    protocolChangePercent,
     isLoading: isTVLLoading,
   } = useDailyTVLWithChange()
+  const { data: supabaseTotalVolume24h, isLoading: isSupabaseTotalVolume24hLoading } = useSupabaseTotalVolume24hQuery({
+    chainId,
+    enabled: true,
+  })
+  const { data: supabaseTotalTvl, isLoading: isSupabaseTotalTvlLoading } = useSupabaseTotalTvlQuery({
+    chainId,
+    enabled: true,
+  })
 
-  const isStatDataLoading = isVolumeLoading || isTVLLoading
+  const isStatDataLoading = isTVLLoading || isSupabaseTotalVolume24hLoading || isSupabaseTotalTvlLoading
 
   const exploreStatsSectionData = useMemo(() => {
     const formatPrice = (price: number) => convertFiatAmountFormatted(price, NumberType.FiatTokenPrice)
@@ -45,18 +48,14 @@ const ExploreStatsSection = ({ shouldHideStats = false }: { shouldHideStats?: bo
     const stats = [
       {
         label: t('stats.volume.1d.long'),
-        value: formatPrice(totalVolume),
-        change: volume24hChangePercent,
-        protocolPopoverFormattedData: [
-          { label: t('common.protocol.v4'), value: protocolVolumes.v4 },
-          { label: t('common.protocol.v3'), value: protocolVolumes.v3 },
-          { label: t('common.protocol.v2'), value: protocolVolumes.v2 },
-        ],
+        value: formatPrice(supabaseTotalVolume24h ?? 0),
+        change: 0,
       },
-      { label: t('common.totalUniswapTVL'), value: formatPrice(totalTVL), change: totalTVL24hrChangePercent },
-      { label: t('explore.v2TVL'), value: formatPrice(protocolTVL.v2), change: protocolChangePercent.v2 },
-      { label: t('explore.v3TVL'), value: formatPrice(protocolTVL.v3), change: protocolChangePercent.v3 },
-      { label: t('explore.v4TVL'), value: formatPrice(protocolTVL.v4), change: protocolChangePercent.v4 },
+      {
+        label: 'Total Kasane TVL',
+        value: formatPrice(supabaseTotalTvl ?? totalTVL),
+        change: totalTVL24hrChangePercent,
+      },
     ]
 
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
@@ -64,19 +63,10 @@ const ExploreStatsSection = ({ shouldHideStats = false }: { shouldHideStats?: bo
   }, [
     t,
     convertFiatAmountFormatted,
-    totalVolume,
-    volume24hChangePercent,
-    protocolVolumes.v4,
-    protocolVolumes.v3,
-    protocolVolumes.v2,
+    supabaseTotalVolume24h,
+    supabaseTotalTvl,
     totalTVL,
     totalTVL24hrChangePercent,
-    protocolTVL.v2,
-    protocolTVL.v3,
-    protocolTVL.v4,
-    protocolChangePercent.v2,
-    protocolChangePercent.v3,
-    protocolChangePercent.v4,
   ])
 
   const visibleStats = media.md ? exploreStatsSectionData.slice(0, 2) : exploreStatsSectionData
@@ -100,14 +90,10 @@ const ExploreStatsSection = ({ shouldHideStats = false }: { shouldHideStats?: bo
               borderColor="$surface3"
               pl={index === 0 ? 0 : '$spacing24'}
               flex={1}
-              cursor={data.protocolPopoverFormattedData ? 'pointer' : 'default'}
+              cursor="default"
               transition="opacity 0.3s ease, transform 0.3s ease"
             >
-              {isTouchable || !data.protocolPopoverFormattedData ? (
-                <StatDisplay data={data} isLoading={isStatDataLoading} />
-              ) : (
-                <StatDisplayWithPopover data={data} isLoading={isStatDataLoading} />
-              )}
+              <StatDisplay data={data} isLoading={isStatDataLoading} />
             </Flex>
           ))}
         </Flex>
@@ -157,41 +143,3 @@ const StatDisplay = memo(({ data, isLoading, isHoverable }: StatDisplayProps) =>
 })
 
 StatDisplay.displayName = 'StatDisplay'
-
-const StatDisplayWithPopover = memo(({ data, isLoading }: StatDisplayProps) => {
-  const shadowProps = useShadowPropsMedium()
-  const { convertFiatAmountFormatted } = useLocalizationContext()
-
-  return (
-    <Popover hoverable placement="bottom-start" offset={{ mainAxis: 10 }}>
-      <Popover.Trigger>
-        <StatDisplay data={data} isLoading={isLoading} isHoverable />
-      </Popover.Trigger>
-      <Popover.Content
-        zIndex={zIndexes.popover}
-        borderColor="$surface2"
-        borderRadius="$rounded16"
-        borderWidth="$spacing1"
-        enterStyle={{ y: -10, opacity: 0 }}
-        exitStyle={{ y: -10, opacity: 0 }}
-        animation="simple"
-        {...shadowProps}
-      >
-        <Flex gap="$spacing8" px="$spacing4" py="$spacing6" width={180}>
-          {data.protocolPopoverFormattedData?.map((item) => {
-            return (
-              <Flex key={item.label} row justifyContent="space-between">
-                <Text variant="body4" color="neutral2">
-                  {item.label}
-                </Text>
-                <Text variant="body4">{convertFiatAmountFormatted(item.value ?? 0, NumberType.FiatTokenPrice)}</Text>
-              </Flex>
-            )
-          })}
-        </Flex>
-      </Popover.Content>
-    </Popover>
-  )
-})
-
-StatDisplayWithPopover.displayName = 'StatDisplayWithPopover'

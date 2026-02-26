@@ -91,7 +91,7 @@
       "outputs": ["{projectRoot}/src/clients/graphql/__generated__"]
     },
     "token-indexer:run": {
-      "command": "node --no-warnings=ExperimentalWarning --loader ts-node/esm ./scripts/runTokenSearchIndexer.mts",
+      "command": "bun ./scripts/runTokenSearchIndexer.ts",
       "options": {
         "cwd": "{projectRoot}"
       },

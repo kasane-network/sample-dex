@@ -43,7 +43,7 @@ import { ElementName } from 'uniswap/src/features/telemetry/constants'
 import { TestID } from 'uniswap/src/test/fixtures/testIDs'
 import { buildCurrencyId } from 'uniswap/src/utils/currencyId'
 import { FiatNumberType, NumberType } from 'utilities/src/format/types'
-import { getChainIdFromChainUrlParam } from 'utils/chainParams'
+import { getChainUrlParam } from 'utils/chainParams'
 
 const TableWrapper = styled(Flex, {
   m: '0 auto',
@@ -110,7 +110,7 @@ export const HEADER_DESCRIPTIONS: Record<TokenSortMethod, ReactNode | undefined>
   [TokenSortMethod.DAY_CHANGE]: undefined,
   [TokenSortMethod.HOUR_CHANGE]: undefined,
   [TokenSortMethod.FULLY_DILUTED_VALUATION]: <Trans i18nKey="stats.fdv.description" />,
-  [TokenSortMethod.VOLUME]: <Trans i18nKey="stats.volume.description" />,
+  [TokenSortMethod.VOLUME]: undefined,
 }
 
 function TokenTableHeader({
@@ -175,7 +175,7 @@ function TokenTable({
         const delta1dAbs = delta1d !== undefined ? Math.abs(delta1d) : undefined
         const currCurrencyId = buildCurrencyId(fromGraphQLChain(token.chain) ?? DEFAULT_CHAIN_ID, token.address)
         const tokenSortIndex = tokenSortRank[currCurrencyId]
-        const chainId = getChainIdFromChainUrlParam(token.chain.toLowerCase())
+        const chainId = fromGraphQLChain(token.chain) ?? undefined
         const unwrappedToken = chainId ? unwrapToken(chainId, token) : token
 
         const parseAmount = (amount: number | undefined, type: FiatNumberType): string => {
@@ -213,6 +213,7 @@ function TokenTable({
           link: getTokenDetailsURL({
             address: unwrappedToken.address,
             chain: toGraphQLChain(chainId ?? defaultChainId),
+            chainUrlParam: getChainUrlParam(chainId ?? defaultChainId),
           }),
           analytics: {
             elementName: ElementName.TokensTableRow,

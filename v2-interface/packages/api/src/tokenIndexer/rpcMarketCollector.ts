@@ -58,12 +58,19 @@ function estimateSwapUsd(params: {
 }): number {
   const token0Volume = params.amount0In + params.amount0Out
   const token1Volume = params.amount1In + params.amount1Out
+  const token0Usd = toUsdAmount(token0Volume, params.spec.token0Decimals)
+  const token1Usd = toUsdAmount(token1Volume, params.spec.token1Decimals)
+
+  if (params.spec.token0IsStableUsd && params.spec.token1IsStableUsd) {
+    // When both sides are marked stable, pick conservative side to avoid spikes from bad metadata.
+    return Math.min(token0Usd, token1Usd)
+  }
 
   if (params.spec.token0IsStableUsd) {
-    return toUsdAmount(token0Volume, params.spec.token0Decimals)
+    return token0Usd
   }
   if (params.spec.token1IsStableUsd) {
-    return toUsdAmount(token1Volume, params.spec.token1Decimals)
+    return token1Usd
   }
 
   return 0
@@ -74,6 +81,7 @@ async function collectPoolVolumeUsd24h(params: {
   readonly pool: V2PoolSpec
   readonly fromBlock: bigint
   readonly toBlock: bigint
+  readonly maxPoolVolume24hUsd?: number
 }): Promise<number> {
   const logs = await params.client.getLogs({
     address: params.pool.poolAddress,
@@ -101,6 +109,10 @@ async function collectPoolVolumeUsd24h(params: {
       amount0Out,
       amount1Out,
     })
+  }
+
+  if (params.maxPoolVolume24hUsd !== undefined && Number.isFinite(params.maxPoolVolume24hUsd)) {
+    return Math.min(total, params.maxPoolVolume24hUsd)
   }
 
   return total
@@ -214,6 +226,7 @@ export async function collectMarketSnapshotFromRpc(
           pool,
           fromBlock,
           toBlock: latestBlock,
+          maxPoolVolume24hUsd: config.maxPoolVolume24hUsd,
         }),
       ])
 

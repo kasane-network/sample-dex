@@ -50,6 +50,12 @@ interface ExplorePoolRow {
   readonly updated_at: string
 }
 
+interface ExplorePoolTotalRow {
+  readonly chain_id: number
+  readonly total_tvl_usd?: number
+  readonly updated_at: string
+}
+
 interface UserV2PositionRow {
   readonly chain_id: number
   readonly wallet_address: string
@@ -115,6 +121,7 @@ export interface ExplorePoolReadModel {
 export interface SupabaseExploreReadClient {
   listTopTokens(params: { chainId: number; limit: number }): Promise<ExploreTokenReadModel[]>
   listTopPools(params: { chainId: number; limit: number; protocolVersion?: string }): Promise<ExplorePoolReadModel[]>
+  getTotalTvl(params: { chainId: number }): Promise<number>
   listUserV2Positions(params: { chainId: number; walletAddress: string; limit?: number }): Promise<UserV2PositionReadModel[]>
 }
 
@@ -246,7 +253,10 @@ export function createSupabaseExploreReadClient(config: SupabaseExploreReadClien
 
   return {
     async listTopTokens(params: { chainId: number; limit: number }): Promise<ExploreTokenReadModel[]> {
-      const url = `${baseUrl}/rest/v1/v_token_registry_public?chain_id=eq.${params.chainId}&order=verified.desc,priority.desc,symbol.asc&limit=${params.limit}&select=chain_id,address,symbol,name,decimals,logo_uri,verified,source_primary,updated_at`
+      const url =
+        `${baseUrl}/rest/v1/v_token_search_public?chain_id=eq.${params.chainId}` +
+        `&order=rank_score.desc,verified.desc,priority.desc,symbol.asc&limit=${params.limit}` +
+        '&select=chain_id,address,symbol,name,decimals,logo_uri,verified,source_primary,liquidity_usd,volume_24h_usd,price_usd,price_change_1h_pct,price_change_1d_pct,fdv_usd,volume_1h_usd,volume_1w_usd,volume_1m_usd,volume_1y_usd,sparkline_1d,updated_at'
       const rows = await fetchRows<ExploreTokenRow>({ fetchImpl, url, headers })
       return rows.map(toExploreTokenReadModel)
     },
@@ -259,6 +269,13 @@ export function createSupabaseExploreReadClient(config: SupabaseExploreReadClien
       const url = `${baseUrl}/rest/v1/v_pool_market_snapshot_public?chain_id=eq.${params.chainId}${protocolFilter}&order=tvl_usd.desc&limit=${params.limit}&select=chain_id,address,protocol_version,fee_tier_bps,token0_address,token1_address,token0_symbol,token1_symbol,token0_name,token1_name,token0_decimals,token1_decimals,token0_logo_uri,token1_logo_uri,tvl_usd,volume_24h_usd,volume_30d_usd,boosted_apr,updated_at`
       const rows = await fetchRows<ExplorePoolRow>({ fetchImpl, url, headers })
       return rows.map(toExplorePoolReadModel)
+    },
+
+    async getTotalTvl(params: { chainId: number }): Promise<number> {
+      const url = `${baseUrl}/rest/v1/v_pool_market_totals_public?chain_id=eq.${params.chainId}&select=chain_id,total_tvl_usd,updated_at&limit=1`
+      const rows = await fetchRows<ExplorePoolTotalRow>({ fetchImpl, url, headers })
+      const row = rows[0]
+      return row?.total_tvl_usd ?? 0
     },
 
     async listUserV2Positions(params: {

@@ -39,6 +39,7 @@ import { useShouldShowAztecWarning } from 'uniswap/src/hooks/useShouldShowAztecW
 import { areAddressesEqual } from 'uniswap/src/utils/addresses'
 import { areCurrenciesEqual, currencyId } from 'uniswap/src/utils/currencyId'
 import { useEvent } from 'utilities/src/react/hooks'
+import { getChainUrlParam } from 'utils/chainParams'
 import { getInitialLogoUrl } from 'utils/getInitialLogoURL'
 
 const DividerLine = deprecatedStyled(Hr)`
@@ -51,14 +52,15 @@ const DividerLine = deprecatedStyled(Hr)`
 `
 
 function TDPBreadcrumb() {
-  const { address, currency, currencyChain } = useTDPContext()
+  const { address, currency, currencyChainId } = useTDPContext()
+  const chainUrlParam = getChainUrlParam(currencyChainId)
 
   return (
     <BreadcrumbNavContainer aria-label="breadcrumb-nav">
-      <BreadcrumbNavLink to={`/explore/${currencyChain.toLowerCase()}`}>
+      <BreadcrumbNavLink to={`/explore/${chainUrlParam}`}>
         <Trans i18nKey="common.explore" /> <ChevronRight size={14} />
       </BreadcrumbNavLink>
-      <BreadcrumbNavLink to={`/explore/tokens/${currencyChain.toLowerCase()}`}>
+      <BreadcrumbNavLink to={`/explore/tokens/${chainUrlParam}`}>
         <Trans i18nKey="common.tokens" /> <ChevronRight size={14} />
       </BreadcrumbNavLink>
       <CurrentPageBreadcrumb address={address} currency={currency} />
@@ -199,6 +201,9 @@ function TDPSwapComponent() {
         // The function falls back to "NATIVE" if the address is null
         address: newDefaultToken.isNative ? null : newDefaultToken.address,
         chain: toGraphQLChain(isUniverseChainId(newDefaultToken.chainId) ? newDefaultToken.chainId : currencyChainId),
+        chainUrlParam: getChainUrlParam(
+          isUniverseChainId(newDefaultToken.chainId) ? newDefaultToken.chainId : currencyChainId,
+        ),
         inputAddress: inputCurrencyURLAddress,
         outputAddress: outputCurrencyURLAddress,
       })

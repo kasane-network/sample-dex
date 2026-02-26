@@ -14,7 +14,6 @@ import { useV2Pair } from 'hooks/useV2Pairs'
 import NotFound from 'pages/NotFound'
 import { useMemo } from 'react'
 import { ChevronRight } from 'react-feather'
-import { Helmet } from 'react-helmet-async/lib/index'
 import { Trans, useTranslation } from 'react-i18next'
 import { Navigate, useLocation, useNavigate, useParams } from 'react-router'
 import { useAppSelector } from 'state/hooks'
@@ -160,14 +159,6 @@ function V2PositionPage() {
 
   return (
     <>
-      <Helmet>
-        <title>
-          {t(`liquidityPool.positions.page.title`, {
-            quoteSymbol: currency1Amount?.currency.symbol,
-            baseSymbol: currency0Amount?.currency.symbol,
-          })}
-        </title>
-      </Helmet>
       <BodyWrapper>
         <Flex gap="$gap20" width="100%">
           <Flex row width="100%" justifyContent="flex-start" alignItems="center">

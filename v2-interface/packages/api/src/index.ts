@@ -229,14 +229,6 @@ export { provideUniswapIdentifierService } from '@universe/api/src/provideUniswa
 
 // Token Indexer (Supabase + RPC)
 export { readTokenIndexerEnv } from '@universe/api/src/tokenIndexer/config'
-export {
-  createExploreStatsPageFetcher,
-  DEFAULT_EXPLORE_API_BASE_URL,
-  DEFAULT_EXPLORE_MAX_PAGES,
-  DEFAULT_EXPLORE_PAGE_SIZE,
-  mapChainIdToExploreChain,
-  runExploreSnapshotUpdaterCycle,
-} from '@universe/api/src/tokenIndexer/exploreSnapshotUpdater'
 export { fetchTokenListSources } from '@universe/api/src/tokenIndexer/fetchTokenLists'
 export { buildSearchText, normalizeTokenRegistry } from '@universe/api/src/tokenIndexer/normalize'
 export { runTokenIndexerCycle } from '@universe/api/src/tokenIndexer/pipeline'

@@ -16,7 +16,7 @@
     "tradingapi:generate:openapi": "nx tradingapi:generate:openapi api",
     "tradingapi:generate": "nx tradingapi:generate api",
     "token-indexer:run": "nx token-indexer:run api",
-    "token-indexer:v2-user-positions:run": "bunx tsx ./scripts/runKasaneV2UserPositionsIndexer.mts"
+    "token-indexer:v2-user-positions:run": "bun ./scripts/runKasaneV2UserPositionsIndexer.ts"
   },
   "nx": {
     "includedScripts": []

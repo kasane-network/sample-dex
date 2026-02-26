@@ -5,7 +5,6 @@ import { GraphQLApi } from '@universe/api'
 import { FeatureFlags, useFeatureFlag } from '@universe/gating'
 import Column from 'components/deprecated/Column'
 import Row from 'components/deprecated/Row'
-import { DEFAULT_CHAIN_ID } from 'constants/chains'
 import { LpIncentivesPoolDetailsRewardsDistribution } from 'components/LpIncentives/LpIncentivesPoolDetailsRewardsDistribution'
 import ChartSection from 'components/Pools/PoolDetails/ChartSection'
 import { PoolDetailsApr } from 'components/Pools/PoolDetails/PoolDetailsApr'
@@ -17,11 +16,8 @@ import { PoolDetailsTableTab } from 'components/Pools/PoolDetails/PoolDetailsTab
 import { useColor } from 'hooks/useColor'
 import { deprecatedStyled } from 'lib/styled-components'
 import { ExploreTab } from 'pages/Explore/constants'
-import { useDynamicMetatags } from 'pages/metatags'
-import { getPoolDetailPageTitle } from 'pages/PoolDetails/utils'
 import { useEffect, useMemo, useReducer } from 'react'
-import { Helmet } from 'react-helmet-async/lib/index'
-import { Trans, useTranslation } from 'react-i18next'
+import { Trans } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router'
 import { Text } from 'rebass'
 import { ThemeProvider } from 'theme'
@@ -115,7 +111,6 @@ function getUnwrappedPoolToken({
 }
 
 export default function PoolDetailsPage() {
-  const { t } = useTranslation()
   const { poolAddress } = useParams<{ poolAddress: string }>()
   const urlChain = useChainIdFromUrlParam()
   const chainInfo = urlChain ? getChainInfo(urlChain) : undefined
@@ -158,19 +153,6 @@ export default function PoolDetailsPage() {
   const isInvalidPool = !poolAddress || !chainInfo
   const poolNotFound = (!loading && !poolData) || isInvalidPool
 
-  const metatagProperties = useMemo(() => {
-    const token0Symbol = poolData?.token0.symbol
-    const token1Symbol = poolData?.token1.symbol
-    const poolName = `${token0Symbol}/${token1Symbol}`
-    const chainName = chainInfo?.label ?? getChainInfo(DEFAULT_CHAIN_ID).label
-    return {
-      title: poolName,
-      url: window.location.href,
-      description: `Swap ${poolName} on ${chainName}. Trade tokens and provide liquidity. Real-time prices, charts, transaction data, and more.`,
-    }
-  }, [chainInfo?.label, poolData?.token0.symbol, poolData?.token1.symbol])
-  const metatags = useDynamicMetatags(metatagProperties)
-
   const showRewardsDistribution = useMemo(() => {
     return Boolean(
       isLPIncentivesEnabled &&
@@ -195,12 +177,6 @@ export default function PoolDetailsPage() {
       token0={color0 !== colors.accent1.val ? color0 : undefined}
       token1={color1 !== colors.accent1.val ? color1 : undefined}
     >
-      <Helmet>
-        <title>{getPoolDetailPageTitle(t, poolData)}</title>
-        {metatags.map((tag, index) => (
-          <meta key={index} {...tag} />
-        ))}
-      </Helmet>
       <Trace
         logImpression={!loading}
         page={InterfacePageName.PoolDetailsPage}

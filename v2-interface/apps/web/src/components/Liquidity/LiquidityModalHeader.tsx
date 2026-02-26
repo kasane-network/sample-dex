@@ -10,10 +10,12 @@ export function LiquidityModalHeader({
   title,
   closeModal,
   goBack,
+  showSettings = true,
 }: {
   title: string
   closeModal: () => void
   goBack?: () => void
+  showSettings?: boolean
 }) {
   const { t } = useTranslation()
 
@@ -34,12 +36,14 @@ export function LiquidityModalHeader({
       <Text variant="body2" flexGrow={1} textAlign="center" pr={24}>
         {title}
       </Text>
-      {!goBack ? (
+      {!goBack && showSettings ? (
         <LPSettings
           adjustTopAlignment={false}
           settings={[Slippage, Deadline]}
           defaultTitle={t('pool.positions.transaction.settings')}
         />
+      ) : !goBack ? (
+        <Flex width={32} />
       ) : (
         <Flex position="absolute" top="0" right="0" p="$spacing4">
           {CloseIconComponent}

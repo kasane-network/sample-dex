@@ -17,3 +17,6 @@ v2-core/artifacts/
 v2-core/cache/
 v2-periphery/artifacts/
 v2-periphery/cache/
+
+# Supabase CLI temp artifacts
+**/supabase/.temp/

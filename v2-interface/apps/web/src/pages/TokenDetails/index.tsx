@@ -5,14 +5,9 @@ import { DEFAULT_CHAIN_ID } from 'constants/chains'
 import { NATIVE_CHAIN_ID } from 'constants/tokens'
 import { useSrcColor } from 'hooks/useColor'
 import { ExploreTab } from 'pages/Explore/constants'
-import { useDynamicMetatags } from 'pages/metatags'
 import { LoadedTDPContext, PendingTDPContext, TDPProvider } from 'pages/TokenDetails/TDPContext'
-import { getTokenPageDescription, getTokenPageTitle } from 'pages/TokenDetails/utils'
 import { useEffect, useMemo } from 'react'
-import { Helmet } from 'react-helmet-async/lib/index'
-import { useTranslation } from 'react-i18next'
 import { useLocation, useNavigate, useParams } from 'react-router'
-import { formatTokenMetatagTitleName } from 'shared-cloud/metatags'
 import { useSporeColors } from 'ui/src'
 import { nativeOnChain } from 'uniswap/src/constants/tokens'
 import { getChainInfo } from 'uniswap/src/features/chains/chainInfo'
@@ -77,26 +72,9 @@ function useCreateTDPContext(): PendingTDPContext | LoadedTDPContext {
 }
 
 export default function TokenDetailsPage() {
-  const { t } = useTranslation()
   const contextValue = useCreateTDPContext()
-  const { address, currency, currencyChain, currencyChainId, tokenQuery } = contextValue
+  const { currency, tokenQuery } = contextValue
   const navigate = useNavigate()
-
-  const tokenQueryData = tokenQuery.data?.token
-  const metatagProperties = useMemo(() => {
-    return {
-      title: formatTokenMetatagTitleName(tokenQueryData?.symbol ?? currency?.symbol, tokenQueryData?.name ?? currency?.name),
-      image:
-        window.location.origin +
-        '/api/image/tokens/' +
-        currencyChain.toLowerCase() +
-        '/' +
-        (currency?.isNative ? getNativeTokenDBAddress(currencyChain) : address),
-      url: window.location.href,
-      description: getTokenPageDescription(currency, currencyChainId),
-    }
-  }, [address, currency, currencyChain, currencyChainId, tokenQueryData?.name, tokenQueryData?.symbol])
-  const metatags = useDynamicMetatags(metatagProperties)
 
   useEffect(() => {
     if (!tokenQuery.loading && !currency) {
@@ -106,12 +84,6 @@ export default function TokenDetailsPage() {
 
   return (
     <>
-      <Helmet>
-        <title>{getTokenPageTitle({ t, currency, chainId: currencyChainId })}</title>
-        {metatags.map((tag, index) => (
-          <meta key={index} {...tag} />
-        ))}
-      </Helmet>
       {(() => {
         if (tokenQuery.loading || !currency) {
           return <TokenDetailsPageSkeleton />

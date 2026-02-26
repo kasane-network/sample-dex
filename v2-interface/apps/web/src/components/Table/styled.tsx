@@ -17,6 +17,7 @@ import { breakpoints, zIndexes } from 'ui/src/theme'
 import { useEnabledChains } from 'uniswap/src/features/chains/hooks/useEnabledChains'
 import { fromGraphQLChain } from 'uniswap/src/features/chains/utils'
 import { useCurrentLocale } from 'uniswap/src/features/language/hooks'
+import { getChainUrlParam } from 'utils/chainParams'
 
 export const SHOW_RETURN_TO_TOP_OFFSET = 500
 export const LOAD_MORE_BOTTOM_OFFSET = 50
@@ -350,6 +351,7 @@ export const TokenLinkCell = ({ token, hideLogo }: { token: GraphQLApi.Token; hi
       to={getTokenDetailsURL({
         address: unwrappedToken.address,
         chain: token.chain,
+        chainUrlParam: getChainUrlParam(chainId),
       })}
     >
       <Flex row gap="$gap8" maxWidth="100px" alignItems="center">

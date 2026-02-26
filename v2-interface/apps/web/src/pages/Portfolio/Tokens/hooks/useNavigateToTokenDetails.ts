@@ -3,6 +3,7 @@ import { TokenData } from 'pages/Portfolio/Tokens/hooks/useTransformTokenTableDa
 import { useNavigate } from 'react-router'
 import { toGraphQLChain } from 'uniswap/src/features/chains/utils'
 import { useEvent } from 'utilities/src/react/hooks'
+import { getChainUrlParam } from 'utils/chainParams'
 
 export function useNavigateToTokenDetails(): (tokenData: TokenData) => void {
   const navigate = useNavigate()
@@ -16,6 +17,7 @@ export function useNavigateToTokenDetails(): (tokenData: TokenData) => void {
     const url = getTokenDetailsURL({
       address: currency.isNative ? null : currency.address,
       chain: toGraphQLChain(currency.chainId),
+      chainUrlParam: getChainUrlParam(currency.chainId),
     })
     navigate(url)
   })

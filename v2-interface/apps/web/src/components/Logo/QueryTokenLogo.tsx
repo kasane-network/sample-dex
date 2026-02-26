@@ -5,6 +5,7 @@ import { NATIVE_CHAIN_ID } from 'constants/tokens'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 import { useMemo } from 'react'
 import { TokenStat } from 'state/explore/types'
+import { fromGraphQLChain } from 'uniswap/src/features/chains/utils'
 import { getChainIdFromChainUrlParam } from 'utils/chainParams'
 
 export default function QueryTokenLogo(
@@ -12,7 +13,10 @@ export default function QueryTokenLogo(
     token?: TokenStat
   },
 ) {
-  const chainId = getChainIdFromChainUrlParam(props.token?.chain.toLowerCase()) ?? DEFAULT_CHAIN_ID
+  const chainId =
+    (props.token?.chain ? fromGraphQLChain(props.token.chain) : undefined) ??
+    getChainIdFromChainUrlParam(props.token?.chain?.toLowerCase()) ??
+    DEFAULT_CHAIN_ID
   const isNative = props.token?.address === NATIVE_CHAIN_ID
 
   const nativeCurrency = useNativeCurrency(chainId)

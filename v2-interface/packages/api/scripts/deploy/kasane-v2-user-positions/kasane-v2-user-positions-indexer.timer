@@ -1,0 +1,11 @@
+[Unit]
+Description=Run Kasane V2 User Positions Indexer every minute
+
+[Timer]
+OnBootSec=30s
+OnUnitActiveSec=60s
+Unit=kasane-v2-user-positions-indexer.service
+Persistent=true
+
+[Install]
+WantedBy=timers.target

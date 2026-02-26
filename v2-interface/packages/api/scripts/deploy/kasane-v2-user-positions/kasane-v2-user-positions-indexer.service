@@ -1,0 +1,14 @@
+[Unit]
+Description=Kasane Indexer (token/pool + optional user LP)
+After=network.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/kasane-dex/v2-interface/packages/api
+EnvironmentFile=/etc/kasane-indexer.env
+ExecStart=/usr/bin/env bun run token-indexer:run
+User=ubuntu
+Group=ubuntu
+
+[Install]
+WantedBy=multi-user.target

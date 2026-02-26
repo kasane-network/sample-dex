@@ -179,7 +179,7 @@ const Explore = ({ initialTab }: { initialTab?: ExploreTab }) => {
     <Trace logImpression page={InterfacePageName.ExplorePage} properties={{ chainName: chainInfo?.backendChain.chain }}>
       <ExploreContextProvider chainId={UniverseChainId.Kasane}>
         <Flex width="100%" minWidth={320} pt="$spacing24" pb="$spacing48" px="$spacing40" $md={{ p: '$spacing16' }}>
-          <ExploreStatsSection shouldHideStats={false} />
+          <ExploreStatsSection shouldHideStats={false} chainId={UniverseChainId.Kasane} />
           <Flex
             ref={tabNavRef}
             row

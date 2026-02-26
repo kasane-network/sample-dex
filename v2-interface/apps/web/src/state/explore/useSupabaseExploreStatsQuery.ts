@@ -46,6 +46,17 @@ function isValidHttpUrl(value: string | undefined): boolean {
   }
 }
 
+function toFiniteNumber(value: unknown): number | undefined {
+  if (typeof value === 'number') {
+    return Number.isFinite(value) ? value : undefined
+  }
+  if (typeof value === 'string') {
+    const parsed = Number(value)
+    return Number.isFinite(parsed) ? parsed : undefined
+  }
+  return undefined
+}
+
 function toPriceHistory(values: readonly number[]): PriceHistory | undefined {
   if (values.length < 2) {
     return undefined
@@ -179,6 +190,102 @@ export function useSupabaseExploreStatsQuery({
       ])
 
       return buildExploreStatsData(tokens, pools, chainId)
+    },
+  })
+}
+
+export function useSupabaseTotalTvlQuery({
+  chainId,
+  enabled = true,
+}: {
+  chainId: UniverseChainId
+  enabled?: boolean
+}): UseQueryResult<number, Error> {
+  const envSupabaseUrl = normalizeEnvValue(process.env.REACT_APP_SUPABASE_URL)
+  const envSupabaseAnonKey = normalizeEnvValue(process.env.REACT_APP_SUPABASE_ANON_KEY)
+  const supabaseUrl = isValidHttpUrl(envSupabaseUrl) ? envSupabaseUrl ?? DEFAULT_SUPABASE_URL : DEFAULT_SUPABASE_URL
+  const supabaseAnonKey = envSupabaseAnonKey || DEFAULT_SUPABASE_ANON_KEY
+
+  return useQuery<number, Error>({
+    queryKey: ['explore-total-tvl-supabase', chainId],
+    enabled,
+    queryFn: async () => {
+      const response = await fetch(
+        `${supabaseUrl}/rest/v1/v_pool_market_totals_public?chain_id=eq.${chainId}&select=total_tvl_usd&limit=1`,
+        {
+          headers: {
+            apikey: supabaseAnonKey,
+            authorization: `Bearer ${supabaseAnonKey}`,
+            'content-profile': 'public',
+            'accept-profile': 'public',
+          },
+        },
+      )
+
+      if (!response.ok) {
+        throw new Error(`Supabase total TVL read failed: ${response.status}`)
+      }
+
+      const data: unknown = await response.json()
+      if (!Array.isArray(data) || data.length === 0) {
+        return 0
+      }
+
+      const first = data[0]
+      if (typeof first !== 'object' || first === null || !('total_tvl_usd' in first)) {
+        return 0
+      }
+
+      const totalTvl = toFiniteNumber(first.total_tvl_usd)
+      return totalTvl ?? 0
+    },
+  })
+}
+
+export function useSupabaseTotalVolume24hQuery({
+  chainId,
+  enabled = true,
+}: {
+  chainId: UniverseChainId
+  enabled?: boolean
+}): UseQueryResult<number, Error> {
+  const envSupabaseUrl = normalizeEnvValue(process.env.REACT_APP_SUPABASE_URL)
+  const envSupabaseAnonKey = normalizeEnvValue(process.env.REACT_APP_SUPABASE_ANON_KEY)
+  const supabaseUrl = isValidHttpUrl(envSupabaseUrl) ? envSupabaseUrl ?? DEFAULT_SUPABASE_URL : DEFAULT_SUPABASE_URL
+  const supabaseAnonKey = envSupabaseAnonKey || DEFAULT_SUPABASE_ANON_KEY
+
+  return useQuery<number, Error>({
+    queryKey: ['explore-total-volume-24h-supabase', chainId],
+    enabled,
+    queryFn: async () => {
+      const response = await fetch(
+        `${supabaseUrl}/rest/v1/v_pool_market_totals_public?chain_id=eq.${chainId}&select=total_volume_24h_usd&limit=1`,
+        {
+          headers: {
+            apikey: supabaseAnonKey,
+            authorization: `Bearer ${supabaseAnonKey}`,
+            'content-profile': 'public',
+            'accept-profile': 'public',
+          },
+        },
+      )
+
+      if (!response.ok) {
+        throw new Error(`Supabase total 24h volume read failed: ${response.status}`)
+      }
+
+      const data: unknown = await response.json()
+      if (!Array.isArray(data) || data.length === 0) {
+        return 0
+      }
+
+      const first = data[0]
+      if (typeof first !== 'object' || first === null || !('total_volume_24h_usd' in first)) {
+        return 0
+      }
+
+      const totalVolume = toFiniteNumber(first.total_volume_24h_usd)
+      return totalVolume ?? 0
     },
   })
 }

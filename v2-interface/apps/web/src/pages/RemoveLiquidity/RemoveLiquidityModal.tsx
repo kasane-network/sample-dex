@@ -42,6 +42,7 @@ function RemoveLiquidityModalInner() {
           <LiquidityModalHeader
             title={t('pool.removeLiquidity')}
             closeModal={closeModal}
+            showSettings={false}
             goBack={step === DecreaseLiquidityStep.Review ? () => setStep(DecreaseLiquidityStep.Input) : undefined}
           />
           <HeightAnimator useInitialHeight>{modalContent}</HeightAnimator>

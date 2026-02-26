@@ -10,6 +10,7 @@ import { TokenStat } from 'state/explore/types'
 import { Flex, useSporeColors } from 'ui/src'
 import { normalizeTokenAddressForCache } from 'uniswap/src/data/cache'
 import { getChainInfo } from 'uniswap/src/features/chains/chainInfo'
+import { fromGraphQLChain } from 'uniswap/src/features/chains/utils'
 import { Platform } from 'uniswap/src/features/platforms/types/Platform'
 import { areAddressesEqual } from 'uniswap/src/utils/addresses'
 import { getChainIdFromChainUrlParam } from 'utils/chainParams'
@@ -25,7 +26,7 @@ interface SparklineChartProps {
 function _SparklineChart({ width, height, tokenData, pricePercentChange, sparklineMap }: SparklineChartProps) {
   const colors = useSporeColors()
   // for sparkline
-  const chainId = getChainIdFromChainUrlParam(tokenData.chain.toLowerCase())
+  const chainId = fromGraphQLChain(tokenData.chain) ?? getChainIdFromChainUrlParam(tokenData.chain.toLowerCase())
   const chainInfo = chainId && getChainInfo(chainId)
   const isNative = areAddressesEqual({
     addressInput1: { address: tokenData.address, platform: chainInfo?.platform ?? Platform.EVM },

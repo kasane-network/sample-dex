@@ -54,7 +54,8 @@ create policy pool_market_snapshot_read
   to anon, authenticated
   using (true);
 
-create or replace view public.v_token_market_snapshot_public as
+drop view if exists public.v_token_market_snapshot_public;
+create view public.v_token_market_snapshot_public as
 select
   m.chain_id,
   m.address,
@@ -76,7 +77,8 @@ join public.token_registry r
  and r.address = m.address
 where r.is_spam = false;
 
-create or replace view public.v_token_search_public as
+drop view if exists public.v_token_search_public;
+create view public.v_token_search_public as
 select
   s.chain_id,
   s.address,

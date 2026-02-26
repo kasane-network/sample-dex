@@ -22,6 +22,7 @@ import { useCurrencyInfo } from 'uniswap/src/features/tokens/useCurrencyInfo'
 import { buildCurrencyId } from 'uniswap/src/utils/currencyId'
 import { NumberType } from 'utilities/src/format/types'
 import { useEvent } from 'utilities/src/react/hooks'
+import { getChainUrlParam } from 'utils/chainParams'
 
 interface BalanceProps {
   currency?: Currency
@@ -141,6 +142,7 @@ const OtherChainsBalanceSummary = ({
                 getTokenDetailsURL({
                   address: currency.isToken ? currency.address : undefined,
                   chain: toGraphQLChain(chainId),
+                  chainUrlParam: getChainUrlParam(chainId),
                 }),
               )
             }

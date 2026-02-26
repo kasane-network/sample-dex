@@ -62,8 +62,8 @@ export function createDefaultStore() {
           : {
               warnAfter: 128,
               // meta.arg and meta.baseQueryMeta are defaults from RTK.
-              ignoredActionPaths: ['meta.arg', 'meta.baseQueryMeta', 'payload.trade'],
-              ignoredPaths: [routingApi.reducerPath],
+              ignoredActionPaths: ['meta.arg', 'meta.baseQueryMeta', 'payload.trade', 'payload.initialState'],
+              ignoredPaths: [routingApi.reducerPath, 'application.openModal.initialState'],
               ignoredActions: [
                 // ignore the redux-persist actions
                 'persist/PERSIST',

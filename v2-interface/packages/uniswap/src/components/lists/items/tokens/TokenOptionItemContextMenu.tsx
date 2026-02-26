@@ -17,6 +17,7 @@ import { ContextMenuTriggerMode } from 'uniswap/src/components/menus/types'
 import { UNISWAP_WEB_URL } from 'uniswap/src/constants/urls'
 import { useUniswapContext } from 'uniswap/src/contexts/UniswapContext'
 import { useActiveAddress } from 'uniswap/src/features/accounts/store/hooks'
+import { getChainInfo } from 'uniswap/src/features/chains/chainInfo'
 import { useEnabledChains } from 'uniswap/src/features/chains/hooks/useEnabledChains'
 import { UniverseChainId } from 'uniswap/src/features/chains/types'
 import { useSelectHasTokenFavorited } from 'uniswap/src/features/favorites/useSelectHasTokenFavorited'
@@ -134,11 +135,13 @@ function _TokenOptionItemContextMenu({
 
   const onShare = useCallback(async () => {
     if (isWebPlatform) {
+      const chainId = currencyIdToChain(id) ?? undefined
       const url =
         UNISWAP_WEB_URL +
         getTokenDetailsURL({
           address: currencyIdToAddress(id),
-          chain: currencyIdToChain(id) ?? undefined,
+          chain: chainId,
+          chainUrlParam: chainId ? getChainInfo(chainId).urlParam : undefined,
         })
       await setClipboard(url)
       setCopiedUrl(true)

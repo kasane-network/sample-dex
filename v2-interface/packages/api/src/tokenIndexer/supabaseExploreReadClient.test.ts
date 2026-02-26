@@ -45,7 +45,7 @@ describe('createSupabaseExploreReadClient', () => {
     expect(rows).toHaveLength(1)
     expect(rows[0].symbol).toBe('KAS')
     expect(rows[0].priceUsd).toBe(1.25)
-    expect(String(fetchImpl.mock.calls[0][0])).toContain('/rest/v1/v_token_registry_public')
+    expect(String(fetchImpl.mock.calls[0][0])).toContain('/rest/v1/v_token_search_public')
   })
 
   it('builds pool query and maps rows', async () => {
@@ -133,5 +133,33 @@ describe('createSupabaseExploreReadClient', () => {
     expect(rows[0].poolShareRatio).toBe(0.0123)
     expect(String(fetchImpl.mock.calls[0][0])).toContain('/rest/v1/v_v2_user_lp_positions_public')
     expect(String(fetchImpl.mock.calls[0][0])).toContain('wallet_address=eq.0xwallet')
+  })
+
+  it('builds total tvl query and maps response', async () => {
+    const fetchImpl = vi.fn(
+      async () =>
+        new Response(
+          JSON.stringify([
+            {
+              chain_id: 4801360,
+              total_tvl_usd: 1234567.89,
+              updated_at: '2026-02-26T12:00:00.000Z',
+            },
+          ]),
+          { status: 200 },
+        ),
+    )
+
+    const client = createSupabaseExploreReadClient({
+      supabaseUrl: 'https://example.supabase.co',
+      anonKey: 'anon',
+      fetchImpl,
+    })
+
+    const totalTvl = await client.getTotalTvl({ chainId: 4801360 })
+
+    expect(totalTvl).toBe(1234567.89)
+    expect(String(fetchImpl.mock.calls[0][0])).toContain('/rest/v1/v_pool_market_totals_public')
+    expect(String(fetchImpl.mock.calls[0][0])).toContain('chain_id=eq.4801360')
   })
 })

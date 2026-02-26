@@ -51,16 +51,16 @@ export interface TokenSearchIndexRecord {
 export interface TokenMarketEnrichmentRecord {
   readonly chainId: number
   readonly address: string
-  readonly priceUsd: number
-  readonly priceChange1hPct: number
-  readonly priceChange1dPct: number
-  readonly fdvUsd: number
-  readonly volume1hUsd: number
-  readonly volume24hUsd: number
-  readonly volume1wUsd: number
-  readonly volume1mUsd: number
-  readonly volume1yUsd: number
-  readonly sparkline1d: readonly number[]
+  readonly priceUsd?: number
+  readonly priceChange1hPct?: number
+  readonly priceChange1dPct?: number
+  readonly fdvUsd?: number
+  readonly volume1hUsd?: number
+  readonly volume24hUsd?: number
+  readonly volume1wUsd?: number
+  readonly volume1mUsd?: number
+  readonly volume1yUsd?: number
+  readonly sparkline1d?: readonly number[]
   readonly updatedAt: string
 }
 
@@ -132,6 +132,7 @@ export interface RpcMarketCollectorConfig {
   readonly chainId: number
   readonly rpcUrl: string
   readonly pools: readonly V2PoolSpec[]
+  readonly maxPoolVolume24hUsd?: number
 }
 
 export interface MarketCollectionResult {

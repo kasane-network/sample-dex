@@ -131,7 +131,12 @@ export function getTokenDetailsURL({
   inputAddress?: string | null
   outputAddress?: string | null
 }) {
-  const chainName = chainUrlParam || chain?.toLowerCase() || DEFAULT_GQL_CHAIN.toLowerCase()
+  const chainIdFromBackend = chain ? fromGraphQLChain(chain) : null
+  const chainName =
+    chainUrlParam ||
+    (chainIdFromBackend ? getChainUrlParam(chainIdFromBackend) : undefined) ||
+    chain?.toLowerCase() ||
+    DEFAULT_GQL_CHAIN.toLowerCase()
   const tokenAddress = address ?? NATIVE_CHAIN_ID
   const inputAddressSuffix = inputAddress ? `?inputCurrency=${inputAddress}` : ''
   const outputAddressSuffix = outputAddress ? `&outputCurrency=${outputAddress}` : ''

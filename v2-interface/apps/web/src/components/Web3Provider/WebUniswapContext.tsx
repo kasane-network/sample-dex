@@ -35,6 +35,7 @@ import { currencyIdToAddress, currencyIdToChain } from 'uniswap/src/utils/curren
 import { getPoolDetailsURL, getTokenDetailsURL } from 'uniswap/src/utils/linking'
 import { useEvent, usePrevious } from 'utilities/src/react/hooks'
 import { noop } from 'utilities/src/react/noop'
+import { getChainUrlParam } from 'utils/chainParams'
 import { showSwitchNetworkNotification } from 'utils/showSwitchNetworkNotification'
 
 // Adapts useEthersProvider to fit uniswap context hook shape
@@ -115,9 +116,11 @@ function WebUniswapProviderInner({ children }: PropsWithChildren) {
 
   const navigateToTokenDetails = useCallback(
     async (currencyId: string) => {
+      const chainId = currencyIdToChain(currencyId)
       const url = getTokenDetailsURL({
         address: currencyIdToAddress(currencyId),
-        chain: currencyIdToChain(currencyId) ?? undefined,
+        chain: chainId ?? undefined,
+        chainUrlParam: chainId ? getChainUrlParam(chainId) : undefined,
       })
       navigate(url)
       closeSearchModal()

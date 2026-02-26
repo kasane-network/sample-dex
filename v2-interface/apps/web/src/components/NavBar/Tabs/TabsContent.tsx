@@ -9,6 +9,7 @@ export type TabsSection = {
   title: string
   href: string
   isActive?: boolean
+  disabled?: boolean
   items?: TabsItem[]
   closeMenu?: () => void
   icon?: JSX.Element
@@ -61,6 +62,7 @@ export const useTabsContent = (): TabsSection[] => {
       title: t('common.portfolio'),
       href: '/portfolio/tokens',
       isActive: pathname.startsWith('/portfolio'),
+      disabled: true,
     },
   ]
 }
