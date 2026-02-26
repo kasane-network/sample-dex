@@ -411,7 +411,7 @@ export function Chart<TParamType extends ChartDataParams<TDataType>, TDataType e
       animation="fast"
       height={height}
       className={className}
-      onTouchMove={touchMoveHandler as any} // any is used to avoid needing to import GestureResponderEvent from react-native
+      onTouchMove={touchMoveHandler as any}
     >
       {/* Chart container */}
       <Flex ref={setChartDivElement} height={height} width="100%" position="relative">

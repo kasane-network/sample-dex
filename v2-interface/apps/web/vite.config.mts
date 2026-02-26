@@ -7,7 +7,7 @@ import fs from 'fs'
 import path from 'path'
 import process from 'process'
 import { fileURLToPath } from 'url'
-import { defineConfig, loadEnv, transformWithEsbuild, type ViteDevServer } from 'vite'
+import { defineConfig, loadEnv, type ViteDevServer } from 'vite'
 import bundlesize from 'vite-plugin-bundlesize'
 import commonjs from 'vite-plugin-commonjs'
 import { nodePolyfills } from 'vite-plugin-node-polyfills'
@@ -109,12 +109,9 @@ export default defineConfig(({ mode }) => {
 
   // External package aliases only
   const overrides = {
-    // External package aliases
-    'react-native': 'react-native-web',
     'uniswap/src': path.resolve(__dirname, '../../packages/uniswap/src'),
     'utilities/src': path.resolve(__dirname, '../../packages/utilities/src'),
     'ui/src': path.resolve(__dirname, '../../packages/ui/src'),
-    'expo-clipboard': path.resolve(__dirname, 'src/lib/expo-clipboard.jsx'),
     jsbi: path.resolve(__dirname, '../../node_modules/jsbi/dist/jsbi.mjs'), // force consistent ESM build
   }
 
@@ -129,7 +126,6 @@ export default defineConfig(({ mode }) => {
     define: {
       __DEV__: !isProduction,
       'process.env.NODE_ENV': JSON.stringify(mode),
-      'process.env.EXPO_OS': JSON.stringify('web'),
       'process.env.REACT_APP_GIT_COMMIT_HASH': JSON.stringify(commitHash),
       'process.env.REACT_APP_STAGING': JSON.stringify(mode === 'staging'),
       'process.env.REACT_APP_WEB_BUILD_TYPE': JSON.stringify('vite'),
@@ -163,21 +159,6 @@ export default defineConfig(({ mode }) => {
     },
 
     plugins: [
-      {
-        name: 'transform-react-native-jsx',
-        async transform(code: string, id: string) {
-          // Transform JSX in react-native libraries that ship JSX in .js files
-          const needsJsxTransform = [
-            'node_modules/react-native-reanimated',
-          ].some(path => id.includes(path))
-
-          if (!needsJsxTransform || !id.endsWith('.js')) {
-            return null
-          }
-
-          return transformWithEsbuild(code, id, { loader: 'jsx' })
-        },
-      },
       portWarningPlugin(isProduction),
       reactPlugin(),
       isProduction || isStaging
@@ -312,10 +293,6 @@ export default defineConfig(({ mode }) => {
       entries: ['index.html'],
       include: [
         'graphql',
-        'expo-linear-gradient',
-        'expo-modules-core',
-        'react-native-web',
-        'react-native-gesture-handler',
         'tamagui',
         '@tamagui/web',
         'ui',
@@ -332,7 +309,7 @@ export default defineConfig(({ mode }) => {
         '@visx/responsive',
       ],
       // Libraries that shouldn't be pre-bundled
-      exclude: ['expo-clipboard', '@connectrpc/connect'],
+      exclude: ['@connectrpc/connect'],
       esbuildOptions: {
         resolveExtensions: ['.web.js', '.web.ts', '.web.tsx', '.js', '.ts', '.tsx'],
         loader: {
@@ -365,7 +342,7 @@ export default defineConfig(({ mode }) => {
       sourcemap: VITE_DISABLE_SOURCEMAP ? false : (isProduction && !isVercelDeploy ? 'hidden' : true),
       minify: isProduction && !isVercelDeploy ? 'esbuild' : undefined,
       rollupOptions: {
-        external: [/\.stories\.[tj]sx?$/, /\.mdx$/, /expo-clipboard\/build\/ClipboardPasteButton\.js/],
+        external: [/\.stories\.[tj]sx?$/, /\.mdx$/],
         output: {
           // Ensure consistent file naming for better caching
           entryFileNames: 'assets/[name]-[hash].js',
