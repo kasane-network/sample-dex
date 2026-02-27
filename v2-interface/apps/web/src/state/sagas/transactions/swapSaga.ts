@@ -1,4 +1,4 @@
-import { useTotalBalancesUsdForAnalytics } from 'dataLayer/data/apollo/useTotalBalancesUsdForAnalytics'
+import { useTotalBalancesUsdForAnalytics } from 'features/portfolio/noopBalanceProviders'
 import { TradingApi } from '@universe/api'
 import { Experiments } from '@universe/gating'
 import { popupRegistry } from 'components/Popups/registry'

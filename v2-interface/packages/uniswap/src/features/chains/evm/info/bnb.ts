@@ -1,5 +1,5 @@
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
-import { GraphQLApi } from '@universe/api'
+import { BackendApi } from '@universe/api'
 import { BNB_LOGO } from 'ui/src/assets'
 import { DEFAULT_NATIVE_ADDRESS_LEGACY, getQuicknodeEndpointUrl } from 'uniswap/src/features/chains/evm/rpc'
 import { buildChainTokens } from 'uniswap/src/features/chains/evm/tokens'
@@ -30,7 +30,7 @@ export const BNB_CHAIN_INFO = {
   platform: Platform.EVM,
   assetRepoNetworkName: 'smartchain',
   backendChain: {
-    chain: GraphQLApi.Chain.Bnb as GqlChainId,
+    chain: BackendApi.Chain.Bnb as GqlChainId,
     backendSupported: true,
     nativeTokenBackendAddress: undefined,
   },

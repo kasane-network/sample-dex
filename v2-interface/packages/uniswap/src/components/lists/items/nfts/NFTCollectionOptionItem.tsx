@@ -3,7 +3,7 @@ import { Verified } from 'ui/src/components/icons/Verified'
 import { borderRadii, iconSizes } from 'ui/src/theme'
 import { OptionItem, OptionItemProps } from 'uniswap/src/components/lists/items/OptionItem'
 import { NFTCollectionOption } from 'uniswap/src/components/lists/items/types'
-import { TestID } from 'uniswap/src/test/fixtures/testIDs'
+import { TestID } from 'uniswap/src/constants/testIDs'
 import { uriToHttpUrls } from 'utilities/src/format/urls'
 
 type NFTCollectionOptionItemProps = {

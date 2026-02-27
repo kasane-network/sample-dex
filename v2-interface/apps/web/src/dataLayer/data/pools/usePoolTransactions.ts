@@ -1,4 +1,4 @@
-import { GraphQLApi } from '@universe/api'
+import { BackendApi } from '@universe/api'
 import { ApolloError } from '@apollo/client'
 import i18n from 'uniswap/src/i18n'
 
@@ -49,8 +49,8 @@ export function usePoolTransactions(_params: {
   address: string
   chainId?: number
   filter?: PoolTableTransactionType[]
-  token0?: GraphQLApi.Token
-  protocolVersion?: GraphQLApi.ProtocolVersion
+  token0?: BackendApi.Token
+  protocolVersion?: BackendApi.ProtocolVersion
   first?: number
 }): PoolTransactionsResult {
   return {

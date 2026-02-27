@@ -15,7 +15,7 @@ import { NFTItem } from 'uniswap/src/features/collectibles/types'
 import { buildNftsArray, filterNft, getNFTAssetKey } from 'uniswap/src/features/collectibles/utils'
 import { WalletEventName } from 'uniswap/src/features/telemetry/constants'
 import { sendAnalyticsEvent } from 'uniswap/src/features/telemetry/send'
-import { TestID } from 'uniswap/src/test/fixtures/testIDs'
+import { TestID } from 'uniswap/src/constants/testIDs'
 
 const AssetsContainer = styled(View, {
   width: '100%',

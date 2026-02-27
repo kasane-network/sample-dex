@@ -1,4 +1,4 @@
-import { GraphQLApi } from '@universe/api'
+import { BackendApi } from '@universe/api'
 import i18n from 'uniswap/src/i18n'
 
 export enum TransactionType {
@@ -21,14 +21,14 @@ export const getTransactionTypeTranslation = (type: TransactionType): string => 
 }
 
 export const BETypeToTransactionType: { [key: string]: TransactionType } = {
-  [GraphQLApi.PoolTransactionType.Swap]: TransactionType.SWAP,
-  [GraphQLApi.PoolTransactionType.Remove]: TransactionType.REMOVE,
-  [GraphQLApi.PoolTransactionType.Add]: TransactionType.ADD,
+  [BackendApi.PoolTransactionType.Swap]: TransactionType.SWAP,
+  [BackendApi.PoolTransactionType.Remove]: TransactionType.REMOVE,
+  [BackendApi.PoolTransactionType.Add]: TransactionType.ADD,
 }
 
-export function useAllTransactions(_chain: GraphQLApi.Chain, _filter: TransactionType[] = [TransactionType.SWAP]) {
+export function useAllTransactions(_chain: BackendApi.Chain, _filter: TransactionType[] = [TransactionType.SWAP]) {
   return {
-    transactions: [] as GraphQLApi.PoolTxFragment[],
+    transactions: [] as BackendApi.PoolTxFragment[],
     loading: false,
     errorV2: undefined,
     errorV3: undefined,

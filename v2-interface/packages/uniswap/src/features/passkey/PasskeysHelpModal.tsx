@@ -7,7 +7,7 @@ import { Modal } from 'uniswap/src/components/modals/Modal'
 import { uniswapUrls } from 'uniswap/src/constants/urls'
 import { ElementName, ModalName } from 'uniswap/src/features/telemetry/constants'
 import Trace from 'uniswap/src/features/telemetry/Trace'
-import { TestID } from 'uniswap/src/test/fixtures/testIDs'
+import { TestID } from 'uniswap/src/constants/testIDs'
 import { openUri } from 'uniswap/src/utils/linking'
 import { isWebPlatform } from 'utilities/src/platform'
 

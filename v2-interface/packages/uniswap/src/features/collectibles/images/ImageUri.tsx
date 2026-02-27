@@ -1,6 +1,11 @@
-import type { FastImageProps, ImageStyle, ResizeMode } from 'react-native-fast-image'
+import type { ImageStyle } from 'react-native'
 import { FlexProps } from 'ui/src'
 import { PlatformSplitStubError } from 'utilities/src/errors'
+
+type ResizeMode = 'contain' | 'cover' | 'stretch' | 'center'
+type FastImageProps = {
+  shouldRasterizeIOS?: boolean
+}
 
 export type ImageUriProps = {
   maxHeight?: number
@@ -16,7 +21,7 @@ export type ImageUriProps = {
    * which allows us to avoid setting state in this component
    */
   imageDimensions?: { width: number; height: number } | undefined
-} & Pick<FastImageProps, 'shouldRasterizeIOS'>
+} & Partial<Pick<FastImageProps, 'shouldRasterizeIOS'>>
 
 /**
  * @deprecated Please use `UniversalImage` for all added cases

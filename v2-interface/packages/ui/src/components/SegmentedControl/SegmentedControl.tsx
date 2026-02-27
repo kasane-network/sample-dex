@@ -307,6 +307,7 @@ export function SegmentedControl<T extends string = string>({
             // not a functional component. As a result we can't render it with typical JSX and need
             // to clone it here.
             return cloneElement(wrapper, {
+              key: value,
               children: optionButton,
             })
           }

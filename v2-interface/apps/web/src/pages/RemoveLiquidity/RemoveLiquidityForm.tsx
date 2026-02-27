@@ -14,6 +14,7 @@ import { useMemo } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { Button, Flex, Switch, Text } from 'ui/src'
 import { nativeOnChain } from 'uniswap/src/constants/tokens'
+import { isExtensionApp, isWebAppDesktop } from 'utilities/src/platform'
 import useResizeObserver from 'use-resize-observer'
 
 const isValidPercentageInput = (value: string): boolean => {
@@ -24,6 +25,7 @@ const isValidPercentageInput = (value: string): boolean => {
 export function RemoveLiquidityForm() {
   const hiddenObserver = useResizeObserver<HTMLElement>()
   const { t } = useTranslation()
+  const shouldRevealPresetsOnHover = isWebAppDesktop || isExtensionApp
 
   const { percent, positionInfo, setPercent, setStep, percentInvalid, unwrapNativeCurrency, setUnwrapNativeCurrency } =
     useRemoveLiquidityModalContext()
@@ -78,6 +80,7 @@ export function RemoveLiquidityForm() {
       {/* Percent input panel */}
       <Flex gap="$gap4">
         <Flex
+          group
           backgroundColor="$surface2"
           borderTopLeftRadius="$rounded12"
           borderTopRightRadius="$rounded12"
@@ -107,7 +110,20 @@ export function RemoveLiquidityForm() {
               <NumericalInputMimic ref={hiddenObserver.ref}>{percent}</NumericalInputMimic>
             </NumericalInputWrapper>
           </Flex>
-          <Flex row gap="$gap8" width="100%" justifyContent="center">
+          <Flex
+            row
+            gap="$gap8"
+            width="100%"
+            justifyContent="center"
+            {...(shouldRevealPresetsOnHover
+              ? {
+                  opacity: 0,
+                  transform: [{ translateY: -4 }],
+                  '$platform-web': { transition: 'opacity 120ms ease, transform 120ms ease' },
+                  '$group-hover': { opacity: 1, transform: [{ translateY: 0 }] },
+                }
+              : {})}
+          >
             {[25, 50, 75, 100].map((option) => (
               <PredefinedAmount
                 key={option}

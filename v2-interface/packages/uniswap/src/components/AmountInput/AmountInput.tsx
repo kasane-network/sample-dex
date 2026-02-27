@@ -1,5 +1,4 @@
 import { forwardRef, useCallback, useEffect, useMemo, useState } from 'react'
-import { getNumberFormatSettings } from 'react-native-localize'
 import { Input, Text } from 'ui/src'
 import { numericInputEnforcer } from 'uniswap/src/components/AmountInput/utils/numericInputEnforcer'
 import { parseValue } from 'uniswap/src/components/AmountInput/utils/parseValue'
@@ -7,6 +6,7 @@ import { replaceSeparators } from 'uniswap/src/components/AmountInput/utils/repl
 import { TextInput, TextInputProps } from 'uniswap/src/components/input/TextInput'
 import { useAppFiatCurrencyInfo } from 'uniswap/src/features/fiatCurrency/hooks'
 import { FiatCurrencyInfo } from 'uniswap/src/features/fiatOnRamp/types'
+import { getNumberFormatSettings } from 'uniswap/src/utils/localization'
 import { useOnMobileAppState } from 'utilities/src/device/appState'
 import { dismissNativeKeyboard } from 'utilities/src/device/keyboard/dismissNativeKeyboard'
 import { noop } from 'utilities/src/react/noop'

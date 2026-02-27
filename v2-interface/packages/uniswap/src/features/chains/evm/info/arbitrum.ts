@@ -1,4 +1,4 @@
-import { GraphQLApi } from '@universe/api'
+import { BackendApi } from '@universe/api'
 import { ARBITRUM_LOGO, ETH_LOGO } from 'ui/src/assets'
 import { config } from 'uniswap/src/config'
 import {
@@ -35,7 +35,7 @@ export const ARBITRUM_CHAIN_INFO = {
   platform: Platform.EVM,
   assetRepoNetworkName: 'arbitrum',
   backendChain: {
-    chain: GraphQLApi.Chain.Arbitrum as GqlChainId,
+    chain: BackendApi.Chain.Arbitrum as GqlChainId,
     backendSupported: true,
     nativeTokenBackendAddress: undefined,
   },

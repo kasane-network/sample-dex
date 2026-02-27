@@ -3,12 +3,19 @@ import { Platform, type PlatformAddress, type WalletAccount } from '@uniswap/cli
 import { ProtocolVersion } from '@uniswap/client-data-api/dist/data/v1/poolTypes_pb'
 import { type ProtectionInfo as ProtectionInfoProtobuf } from '@uniswap/client-explore/dist/uniswap/explore/v1/service_pb'
 import {
-  ProtectionAttackType,
-  type ProtectionInfo,
-  ProtectionResult,
-  SafetyLevel,
-} from '@universe/api/src/clients/graphql/__generated__/schema-types'
+  ProtectionAttackType as ProtectionAttackTypeValues,
+  ProtectionResult as ProtectionResultValues,
+  SafetyLevel as SafetyLevelValues,
+} from '@universe/api/src/clients/graphql/generated'
 import { logger } from 'utilities/src/logger/logger'
+
+type SafetyLevel = SafetyLevelValues
+type ProtectionResult = ProtectionResultValues
+type ProtectionAttackType = ProtectionAttackTypeValues
+type ProtectionInfo = {
+  attackTypes: ProtectionAttackType[]
+  result: ProtectionResult
+}
 
 /**
  * Helper functions to parse string enum fields from REST API responses.
@@ -24,16 +31,56 @@ export function parseSafetyLevel(safetyLevel?: string): SafetyLevel | undefined 
   if (!safetyLevel) {
     return undefined
   }
-  const validSafetyLevels: SafetyLevel[] = Object.values(SafetyLevel)
-  if (validSafetyLevels.includes(safetyLevel as SafetyLevel)) {
-    return safetyLevel as SafetyLevel
-  } else {
-    logger.warn(
-      'api/clients/connectRpc/utils.ts',
-      'parseSafetyLevel',
-      `Invalid safetyLevel from REST TokenRankings query: ${safetyLevel}`,
-    )
-    return undefined
+  switch (safetyLevel) {
+    case SafetyLevelValues.Blocked:
+      return SafetyLevelValues.Blocked
+    case SafetyLevelValues.Verified:
+      return SafetyLevelValues.Verified
+    case SafetyLevelValues.MediumWarning:
+      return SafetyLevelValues.MediumWarning
+    case SafetyLevelValues.StrongWarning:
+      return SafetyLevelValues.StrongWarning
+    default:
+      logger.warn(
+        'api/clients/connectRpc/utils.ts',
+        'parseSafetyLevel',
+        `Invalid safetyLevel from REST TokenRankings query: ${safetyLevel}`,
+      )
+      return undefined
+  }
+}
+
+function parseProtectionResult(result: string): ProtectionResult | undefined {
+  const upper = result.toUpperCase()
+  switch (upper) {
+    case ProtectionResultValues.Benign:
+      return ProtectionResultValues.Benign
+    case ProtectionResultValues.Malicious:
+      return ProtectionResultValues.Malicious
+    case ProtectionResultValues.Spam:
+      return ProtectionResultValues.Spam
+    case ProtectionResultValues.Unknown:
+      return ProtectionResultValues.Unknown
+    default:
+      return undefined
+  }
+}
+
+function parseProtectionAttackType(attackType: string): ProtectionAttackType | undefined {
+  const upper = attackType.toUpperCase()
+  switch (upper) {
+    case ProtectionAttackTypeValues.AirdropPattern:
+      return ProtectionAttackTypeValues.AirdropPattern
+    case ProtectionAttackTypeValues.Honeypot:
+      return ProtectionAttackTypeValues.Honeypot
+    case ProtectionAttackTypeValues.HighFees:
+      return ProtectionAttackTypeValues.HighFees
+    case ProtectionAttackTypeValues.Impersonator:
+      return ProtectionAttackTypeValues.Impersonator
+    case ProtectionAttackTypeValues.Unknown:
+      return ProtectionAttackTypeValues.Unknown
+    default:
+      return undefined
   }
 }
 
@@ -49,10 +96,8 @@ export function parseProtectionInfo(protectionInfo?: ProtectionInfoProtobuf): Pr
   //   ...
   // }
   // So result and attackTypes are a capitalized string instead of an uppercase enum value
-  const validProtectionResults: string[] = Object.values(ProtectionResult)
-  if (validProtectionResults.includes(protectionInfo.result.toUpperCase())) {
-    protectionResult = protectionInfo.result.toUpperCase() as ProtectionResult
-  } else {
+  protectionResult = parseProtectionResult(protectionInfo.result)
+  if (!protectionResult) {
     logger.warn(
       'api/clients/connectRpc/utils.ts',
       'parseProtectionInfo',
@@ -61,10 +106,9 @@ export function parseProtectionInfo(protectionInfo?: ProtectionInfoProtobuf): Pr
     return undefined
   }
 
-  const validAttackTypes: string[] = Object.values(ProtectionAttackType)
   const attackTypes = protectionInfo.attackTypes
-    .filter((at) => validAttackTypes.includes(at.toUpperCase()))
-    .map((at) => at.toUpperCase() as ProtectionAttackType)
+    .map((attackType) => parseProtectionAttackType(attackType))
+    .filter((attackType): attackType is ProtectionAttackType => attackType !== undefined)
   if (attackTypes.length !== protectionInfo.attackTypes.length) {
     logger.warn(
       'api/clients/connectRpc/utils.ts',

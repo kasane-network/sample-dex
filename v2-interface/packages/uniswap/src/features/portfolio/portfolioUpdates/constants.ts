@@ -1,3 +1,3 @@
-import { GQLQueries } from '@universe/api'
+import { NFTS_TAB_QUERY_NAME, PORTFOLIO_BALANCES_QUERY_NAME } from 'uniswap/src/features/portfolio/queryNames'
 
-export const GQL_QUERIES_TO_REFETCH_ON_TXN_UPDATE = [GQLQueries.PortfolioBalances, GQLQueries.NftsTab]
+export const GQL_QUERIES_TO_REFETCH_ON_TXN_UPDATE = [PORTFOLIO_BALANCES_QUERY_NAME, NFTS_TAB_QUERY_NAME]

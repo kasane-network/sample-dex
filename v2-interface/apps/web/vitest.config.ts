@@ -86,8 +86,6 @@ export default defineConfig({
       setupRive: path.resolve(__dirname, 'src/setupRive'),
 
       'd3-array': path.resolve(__dirname, '../../node_modules/d3-array/dist/d3-array.min.js'),
-      'react-native': 'react-native-web',
-      'react-native-gesture-handler': require.resolve('react-native-gesture-handler'),
     },
   },
 })

@@ -1,6 +1,5 @@
 canisters:
-  frontend:
-    type: recipe
+  - name: frontend
     recipe:
       type: "@dfinity/asset-canister"
       configuration:

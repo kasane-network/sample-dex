@@ -10,7 +10,6 @@ import { useCallback, useEffect } from 'react'
 import { useAppDispatch } from 'state/hooks'
 import { acceptListUpdate } from 'state/lists/actions'
 import { useAllLists } from 'state/lists/hooks'
-import { logger } from 'utilities/src/logger/logger'
 
 // TODO(WEB-3839): delete this when lists are removed from redux
 export default function Updater(): null {
@@ -28,9 +27,7 @@ export default function Updater(): null {
       return
     }
     DEFAULT_INACTIVE_LIST_URLS.forEach((url) => {
-      fetchList(url, false).catch((error) =>
-        logger.debug('lists/updater', 'Updater', 'interval list fetching error', error),
-      )
+      fetchList(url, false).catch(() => {})
     })
   }, [fetchList, isWindowVisible])
 
@@ -46,17 +43,13 @@ export default function Updater(): null {
     Object.keys(lists).forEach((listUrl) => {
       const list = lists[listUrl]
       if (!list.current && !list.loadingRequestId && !list.error) {
-        fetchList(listUrl).catch((error) =>
-          logger.debug('lists/updater', 'Updater', 'list added fetching error', error),
-        )
+        fetchList(listUrl).catch(() => {})
       }
     })
     DEFAULT_INACTIVE_LIST_URLS.forEach((listUrl) => {
       const list = lists[listUrl]
       if (!list.current && !list.loadingRequestId && !list.error) {
-        fetchList(listUrl, /* isUnsupportedList= */ true).catch((error) =>
-          logger.debug('lists/updater', 'Updater', 'list added fetching error', error),
-        )
+        fetchList(listUrl, /* isUnsupportedList= */ true).catch(() => {})
       }
     })
   }, [fetchList, lists, rehydrated])

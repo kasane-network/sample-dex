@@ -1,4 +1,4 @@
-import { GraphQLApi, SpamCode, TradingApi } from '@universe/api'
+import { BackendApi, SpamCode, TradingApi } from '@universe/api'
 import parseApproveTransaction from 'uniswap/src/features/activity/parse/parseApproveTransaction'
 import parseBridgingTransaction from 'uniswap/src/features/activity/parse/parseBridgingTransaction'
 import parseNFTMintTransaction from 'uniswap/src/features/activity/parse/parseMintTransaction'
@@ -37,26 +37,26 @@ export default function extractTransactionDetails(
 
   let typeInfo: TransactionTypeInfo | undefined
   switch (transaction.details.type) {
-    case GraphQLApi.TransactionType.Approve:
+    case BackendApi.TransactionType.Approve:
       typeInfo = parseApproveTransaction(transaction)
       break
-    case GraphQLApi.TransactionType.Send:
+    case BackendApi.TransactionType.Send:
       typeInfo = parseSendTransaction(transaction)
       break
-    case GraphQLApi.TransactionType.Receive:
+    case BackendApi.TransactionType.Receive:
       typeInfo = parseReceiveTransaction(transaction)
       break
-    case GraphQLApi.TransactionType.Bridging:
+    case BackendApi.TransactionType.Bridging:
       typeInfo = parseBridgingTransaction(transaction)
       break
-    case GraphQLApi.TransactionType.Swap:
-    case GraphQLApi.TransactionType.SwapOrder:
+    case BackendApi.TransactionType.Swap:
+    case BackendApi.TransactionType.SwapOrder:
       typeInfo = parseTradeTransaction(transaction)
       break
-    case GraphQLApi.TransactionType.Mint:
+    case BackendApi.TransactionType.Mint:
       typeInfo = parseNFTMintTransaction(transaction)
       break
-    case GraphQLApi.TransactionType.OnRamp:
+    case BackendApi.TransactionType.OnRamp:
       typeInfo = parseOnRampTransaction(transaction)
       break
   }
@@ -106,7 +106,7 @@ export default function extractTransactionDetails(
 
   return {
     routing:
-      transaction.details.type === GraphQLApi.TransactionType.SwapOrder
+      transaction.details.type === BackendApi.TransactionType.SwapOrder
         ? TradingApi.Routing.DUTCH_V2
         : TradingApi.Routing.CLASSIC,
     id: transaction.details.hash,

@@ -1,4 +1,4 @@
-import { GraphQLApi } from '@universe/api'
+import { BackendApi } from '@universe/api'
 import { PriceChartData } from 'components/Charts/PriceChart'
 import { StackedLineData } from 'components/Charts/StackedLineChart'
 import { ChartType, PriceChartType } from 'components/Charts/utils'
@@ -6,7 +6,7 @@ import { SingleHistogramData } from 'components/Charts/VolumeChart/renderer'
 import { ChartQueryResult, DataQuality } from 'components/Tokens/TokenDetails/ChartSection/util'
 import { useMemo } from 'react'
 
-type TDPChartQueryVariables = { chain: GraphQLApi.Chain; address?: string; duration: GraphQLApi.HistoryDuration }
+type TDPChartQueryVariables = { chain: BackendApi.Chain; address?: string; duration: BackendApi.HistoryDuration }
 
 export function useTDPPriceChartData({
   variables,

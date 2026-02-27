@@ -1,4 +1,4 @@
-import { GraphQLApi } from '@universe/api'
+import { BackendApi } from '@universe/api'
 import i18n from 'uniswap/src/i18n'
 
 export enum TokenTransactionType {
@@ -23,7 +23,7 @@ export function useTokenTransactions(_params: {
   filter?: TokenTransactionType[]
 }) {
   return {
-    transactions: [] as GraphQLApi.PoolTransaction[],
+    transactions: [] as BackendApi.PoolTransaction[],
     loading: false,
     loadMore: (_args: { onComplete?: () => void }) => _args.onComplete?.(),
     errorV2: undefined,

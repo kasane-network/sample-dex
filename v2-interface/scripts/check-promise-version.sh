@@ -21,19 +21,14 @@ fi
 # Get current directory, where script is located
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
-# Find react-native package.json
-react_native_package_json="${SCRIPT_DIR}/../node_modules/react-native/package.json"
 
 if [ ! -f "$react_native_package_json" ]; then
-    echo "Error: react-native package not found. Make sure it's installed."
     exit 1
 fi
 
-# Get react-native's promise version
 react_native_promise_version=$(get_version "$react_native_package_json" "promise")
 
 if [ -z "$react_native_promise_version" ]; then
-    echo "Error: 'promise' is not listed in react-native's dependencies."
     exit 1
 fi
 

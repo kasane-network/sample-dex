@@ -1,5 +1,5 @@
 import { getProtocolColor } from 'dataLayer/data/util'
-import { GraphQLApi } from '@universe/api'
+import { BackendApi } from '@universe/api'
 import { ChartHeader } from 'components/Charts/ChartHeader'
 import { Chart, ChartModel, ChartModelParams } from 'components/Charts/ChartModel'
 import { StackedAreaSeriesOptions } from 'components/Charts/StackedLineChart/stacked-area-series/options'
@@ -81,7 +81,7 @@ class TVLChartModel extends ChartModel<StackedLineData> {
 
 interface LineChartProps {
   height: number
-  sources?: GraphQLApi.PriceSource[]
+  sources?: BackendApi.PriceSource[]
   data: StackedLineData[]
   stale: boolean
   overrideColor?: string

@@ -1,7 +1,5 @@
 import { Web3Provider as EthersWeb3Provider, ExternalProvider } from '@ethersproject/providers'
-import { FeatureFlags, useFeatureFlag } from '@universe/gating'
 import { recentConnectorIdAtom } from 'components/Web3Provider/constants'
-import { RPC_PROVIDERS } from 'constants/providers'
 import { useActiveAddresses, useActiveWallet, useConnectionStatus } from 'features/accounts/store/hooks'
 import { useAccount } from 'hooks/useAccount'
 import { useEthersWeb3Provider } from 'hooks/useEthersProvider'
@@ -12,7 +10,6 @@ import { useLocation } from 'react-router'
 import { CONNECTION_PROVIDER_NAMES } from 'uniswap/src/constants/web3'
 import { CONVERSION_EVENTS } from 'uniswap/src/data/rest/conversionTracking/constants'
 import { useConversionTracking } from 'uniswap/src/data/rest/conversionTracking/useConversionTracking'
-import { useIsSupportedChainId } from 'uniswap/src/features/chains/hooks/useSupportedChainId'
 import { UniverseChainId } from 'uniswap/src/features/chains/types'
 import { Platform } from 'uniswap/src/features/platforms/types/Platform'
 import { InterfaceEventName } from 'uniswap/src/features/telemetry/constants'
@@ -21,7 +18,6 @@ import { WalletConnectedProperties, WalletConnectionResult } from 'uniswap/src/f
 import { InterfaceUserPropertyName, setUserProperty } from 'uniswap/src/features/telemetry/user'
 import { logger } from 'utilities/src/logger/logger'
 import { useEvent } from 'utilities/src/react/hooks'
-import { useTrace } from 'utilities/src/telemetry/trace/TraceContext'
 import { getCurrentPageFromLocation } from 'utils/urlRoutes'
 import { getWalletMeta, WalletType } from 'utils/walletMeta'
 // biome-ignore lint/style/noRestrictedImports: direct wagmi hooks needed so we can access user's chainId even if unsupported chain
@@ -33,7 +29,6 @@ export function WebAccountsStoreUpdater() {
   const evmConnector = account.connector
   const provider = useEthersWeb3Provider()
 
-  const analyticsContext = useTrace()
   const { pathname } = useLocation()
   const currentPage = getCurrentPageFromLocation(pathname)
 
@@ -45,24 +40,6 @@ export function WebAccountsStoreUpdater() {
       updateRecentConnectorId(evmConnector.id)
     }
   }, [evmConnector, updateRecentConnectorId])
-
-  /* Trace RPC calls (for debugging). */
-  const shouldTrace = useFeatureFlag(FeatureFlags.TraceJsonRpc)
-  const isSupportedChain = useIsSupportedChainId(account.chainId)
-  const networkProvider = isSupportedChain && account.chainId ? RPC_PROVIDERS[account.chainId] : undefined
-  // biome-ignore lint/correctness/useExhaustiveDependencies: +analyticsContext
-  useEffect(() => {
-    if (shouldTrace) {
-      provider?.on('debug', trace)
-      if (provider !== networkProvider) {
-        networkProvider?.on('debug', trace)
-      }
-    }
-    return () => {
-      provider?.off('debug', trace)
-      networkProvider?.off('debug', trace)
-    }
-  }, [analyticsContext, networkProvider, provider, shouldTrace])
 
   const activeAddresses = useActiveAddresses()
   const evmWallet = useActiveWallet(Platform.EVM)
@@ -273,12 +250,4 @@ export function WebAccountsStoreUpdater() {
   ])
 
   return null
-}
-
-function trace(event: any) {
-  if (!event?.request) {
-    return
-  }
-  const { method, id, params } = event.request
-  logger.debug('WebAccountsStoreUpdater', 'provider', 'trace', { method, id, params })
 }

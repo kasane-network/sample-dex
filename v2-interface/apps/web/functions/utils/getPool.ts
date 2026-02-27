@@ -1,4 +1,4 @@
-import { GraphQLApi } from '@universe/api'
+import { BackendApi } from '@universe/api'
 import client from 'functions/client'
 import { Data } from 'functions/utils/cache'
 
@@ -15,24 +15,24 @@ export default async function getPool({
   const image = origin + '/api/image/pools/' + networkName + '/' + poolAddress
   const uppercaseNetworkName = networkName.toUpperCase()
   const [v4Result, v3Result, v2Result] = await Promise.allSettled([
-    client.query<GraphQLApi.V4PoolQuery>({
-      query: GraphQLApi.V4PoolDocument,
+    client.query<BackendApi.V4PoolQuery>({
+      query: BackendApi.V4PoolDocument,
       variables: {
         chain: uppercaseNetworkName,
         poolId: poolAddress,
       },
       errorPolicy: 'all',
     }),
-    client.query<GraphQLApi.V3PoolQuery>({
-      query: GraphQLApi.V3PoolDocument,
+    client.query<BackendApi.V3PoolQuery>({
+      query: BackendApi.V3PoolDocument,
       variables: {
         chain: uppercaseNetworkName,
         address: poolAddress,
       },
       errorPolicy: 'all',
     }),
-    client.query<GraphQLApi.V2PairQuery>({
-      query: GraphQLApi.V2PairDocument,
+    client.query<BackendApi.V2PairQuery>({
+      query: BackendApi.V2PairDocument,
       variables: {
         chain: uppercaseNetworkName,
         address: poolAddress,

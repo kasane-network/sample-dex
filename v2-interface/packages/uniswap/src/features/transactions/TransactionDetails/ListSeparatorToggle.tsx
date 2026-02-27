@@ -1,7 +1,7 @@
 import { Flex, Separator, Text, TouchableArea } from 'ui/src'
 import { AnglesMaximize } from 'ui/src/components/icons/AnglesMaximize'
 import { AnglesMinimize } from 'ui/src/components/icons/AnglesMinimize'
-import { TestID } from 'uniswap/src/test/fixtures/testIDs'
+import { TestID } from 'uniswap/src/constants/testIDs'
 
 export function ListSeparatorToggle({
   onPress,

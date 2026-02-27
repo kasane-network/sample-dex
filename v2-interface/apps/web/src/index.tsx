@@ -1,11 +1,7 @@
 // Ordering is intentional and must be preserved: sideEffects followed by functionality.
 import 'sideEffects'
 
-import { AssetActivityProvider } from 'dataLayer/data/apollo/AssetActivityProvider'
-import { apolloClient } from 'dataLayer/data/apollo/client'
-import { TokenBalancesProvider } from 'dataLayer/data/apollo/TokenBalancesProvider'
 import { getDeviceId } from '@amplitude/analytics-browser'
-import { ApolloProvider } from '@apollo/client'
 import { datadogRum } from '@datadog/browser-rum'
 import type { StatsigUser } from '@universe/gating'
 import { QueryClientPersistProvider } from 'components/PersistQueryClient'
@@ -27,11 +23,11 @@ import { StrictMode, useEffect, useMemo } from 'react'
 import { createRoot } from 'react-dom/client'
 import { Helmet, HelmetProvider } from 'react-helmet-async/lib/index'
 import { I18nextProvider } from 'react-i18next'
-import { configureReanimatedLogger } from 'react-native-reanimated'
 import { Provider } from 'react-redux'
 import { BrowserRouter, HashRouter, useLocation } from 'react-router'
 import store from 'state'
 import { ThemedGlobalStyle, ThemeProvider } from 'theme'
+import { SystemThemeUpdater, ThemeColorMetaUpdater } from 'theme/components/ThemeToggle'
 import { TamaguiProvider } from 'theme/tamaguiProvider'
 import { PortalProvider } from 'ui/src'
 import { ReactRouterUrlProvider } from 'uniswap/src/contexts/UrlContext'
@@ -53,19 +49,9 @@ if (window.ethereum) {
   window.ethereum.autoRefreshOnNetworkChange = false
 }
 
-if (__DEV__ && !isTestEnv()) {
-  configureReanimatedLogger({
-    strict: false,
-  })
-}
-
 initializePortfolioQueryOverrides({ store })
 
 const loadListsUpdater = () => import('state/lists/updater')
-const loadSystemThemeUpdater = () =>
-  import('theme/components/ThemeToggle').then((m) => ({ default: m.SystemThemeUpdater }))
-const loadThemeColorMetaUpdater = () =>
-  import('theme/components/ThemeToggle').then((m) => ({ default: m.ThemeColorMetaUpdater }))
 const loadApplicationUpdater = () => import('state/application/updater')
 const loadActivityStateUpdater = () =>
   import('state/activity/updater').then((m) => ({ default: m.ActivityStateUpdater }))
@@ -80,8 +66,6 @@ function Updaters() {
   const location = useLocation()
 
   const ListsUpdater = useDeferredComponent(loadListsUpdater)
-  const SystemThemeUpdater = useDeferredComponent(loadSystemThemeUpdater)
-  const ThemeColorMetaUpdater = useDeferredComponent(loadThemeColorMetaUpdater)
   const ApplicationUpdater = useDeferredComponent(loadApplicationUpdater)
   const ActivityStateUpdater = useDeferredComponent(loadActivityStateUpdater)
   const LogsUpdater = useDeferredComponent(loadLogsUpdater)
@@ -94,8 +78,8 @@ function Updaters() {
         <link rel="canonical" href={getCanonicalUrl(location.pathname)} />
       </Helmet>
       {ListsUpdater && <ListsUpdater />}
-      {SystemThemeUpdater && <SystemThemeUpdater />}
-      {ThemeColorMetaUpdater && <ThemeColorMetaUpdater />}
+      <SystemThemeUpdater />
+      <ThemeColorMetaUpdater />
       {ApplicationUpdater && <ApplicationUpdater />}
       {ActivityStateUpdater && <ActivityStateUpdater />}
       {LogsUpdater && <LogsUpdater />}
@@ -109,16 +93,6 @@ function Updaters() {
 
 // Production Web3Provider – always reconnects on mount and runs capability effects.
 const Web3Provider = createWeb3Provider({ wagmiConfig })
-
-function GraphqlProviders({ children }: { children: React.ReactNode }) {
-  return (
-    <ApolloProvider client={apolloClient}>
-      <AssetActivityProvider>
-        <TokenBalancesProvider>{children}</TokenBalancesProvider>
-      </AssetActivityProvider>
-    </ApolloProvider>
-  )
-}
 function StatsigProvider({ children }: PropsWithChildren) {
   const account = useAccount()
 
@@ -174,9 +148,8 @@ const RootApp = (): JSX.Element => {
                           <WalletCapabilitiesEffects />
                           <ExternalWalletProvider>
                             <ConnectWalletMutationProvider>
-                              <WebAccountsStoreProvider>
-                                <WebUniswapProvider>
-                                  <GraphqlProviders>
+                                <WebAccountsStoreProvider>
+                                  <WebUniswapProvider>
                                     <LocalizationContextProvider>
                                       <BlockNumberProvider>
                                         <Updaters />
@@ -191,7 +164,6 @@ const RootApp = (): JSX.Element => {
                                         </ThemeProvider>
                                       </BlockNumberProvider>
                                     </LocalizationContextProvider>
-                                  </GraphqlProviders>
                                 </WebUniswapProvider>
                               </WebAccountsStoreProvider>
                             </ConnectWalletMutationProvider>

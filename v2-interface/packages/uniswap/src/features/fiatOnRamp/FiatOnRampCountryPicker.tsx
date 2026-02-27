@@ -4,7 +4,7 @@ import { iconSizes } from 'ui/src/theme'
 import { getCountryFlagSvgUrl } from 'uniswap/src/features/fiatOnRamp/utils'
 import { ElementName } from 'uniswap/src/features/telemetry/constants'
 import Trace from 'uniswap/src/features/telemetry/Trace'
-import { TestID } from 'uniswap/src/test/fixtures/testIDs'
+import { TestID } from 'uniswap/src/constants/testIDs'
 import { isWebPlatform } from 'utilities/src/platform'
 
 const ICON_SIZE = iconSizes.icon16

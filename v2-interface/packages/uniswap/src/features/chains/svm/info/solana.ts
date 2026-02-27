@@ -1,4 +1,4 @@
-import { GraphQLApi } from '@universe/api'
+import { BackendApi } from '@universe/api'
 import { SOLANA_LOGO } from 'ui/src/assets'
 import { getQuicknodeEndpointUrl } from 'uniswap/src/features/chains/evm/rpc'
 import { buildChainTokens } from 'uniswap/src/features/chains/evm/tokens'
@@ -69,7 +69,7 @@ export const SOLANA_CHAIN_INFO = {
     },
   },
   backendChain: {
-    chain: GraphQLApi.Chain.Solana,
+    chain: BackendApi.Chain.Solana,
     backendSupported: true,
     nativeTokenBackendAddress: undefined,
   },

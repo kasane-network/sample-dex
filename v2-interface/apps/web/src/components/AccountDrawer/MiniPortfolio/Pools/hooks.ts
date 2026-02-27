@@ -5,6 +5,7 @@ import NFTPositionManagerJSON from '@uniswap/v3-periphery/artifacts/contracts/No
 import { useWeb3React } from '@web3-react/core'
 import { PositionInfo } from 'components/AccountDrawer/MiniPortfolio/Pools/cache'
 import { RPC_PROVIDERS } from 'constants/providers'
+import { AddressZero } from '@ethersproject/constants'
 import { BaseContract } from 'ethers/lib/ethers'
 import { useAccount } from 'hooks/useAccount'
 import { useMemo } from 'react'
@@ -13,6 +14,7 @@ import { useEnabledChains } from 'uniswap/src/features/chains/hooks/useEnabledCh
 import { useIsSupportedChainIdCallback } from 'uniswap/src/features/chains/hooks/useSupportedChainId'
 import { UniverseChainId } from 'uniswap/src/features/chains/types'
 import { isEVMChain } from 'uniswap/src/features/platforms/utils/chains'
+import { isEVMAddressWithChecksum } from 'utilities/src/addresses/evm/evm'
 import { getContract } from 'utilities/src/contracts/getContract'
 import { CurrencyKey, currencyKey, currencyKeyFromGraphQL } from 'utils/currencyKey'
 
@@ -41,6 +43,7 @@ function useContractMultichain<T extends BaseContract>({
 
     return relevantChains.reduce((acc: ContractMap<T>, chainId) => {
       const isSupported = isSupportedChain(chainId) && isEVMChain(chainId)
+      const address = addressMap[chainId]
 
       const provider =
         walletProvider && account.chainId === chainId
@@ -48,8 +51,9 @@ function useContractMultichain<T extends BaseContract>({
           : isSupported
             ? RPC_PROVIDERS[chainId]
             : undefined
-      if (provider) {
-        acc[chainId] = getContract({ address: addressMap[chainId] ?? '', ABI, provider }) as T
+      const hasValidAddress = Boolean(address && address !== AddressZero && isEVMAddressWithChecksum(address))
+      if (provider && hasValidAddress) {
+        acc[chainId] = getContract({ address: address ?? AddressZero, ABI, provider }) as T
       }
       return acc
     }, {})

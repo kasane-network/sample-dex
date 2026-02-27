@@ -1,0 +1,31 @@
+import { createAnimations } from '@tamagui/animations-css'
+
+// Web uses CSS transitions instead of Reanimated to avoid runtime updateProps issues.
+export const cssAnimations = createAnimations({
+  '100ms': 'ease 100ms',
+  '125ms': 'ease-in-out 125ms',
+  '125msDelayed': 'ease-in-out 125ms 250ms',
+  '125msDelayedLong': 'ease-in-out 125ms 2000ms',
+  '200ms': 'ease 200ms',
+  '300ms': 'ease 300ms',
+  '80ms-ease-in-out': 'ease-in-out 80ms',
+  '200msDelayed1ms': 'ease 200ms 1ms',
+  '200msDelayed40ms': 'ease 200ms 40ms',
+  '200msDelayed80ms': 'ease 200ms 80ms',
+  '200msDelayed120ms': 'ease 200ms 120ms',
+  '200msDelayed160ms': 'ease 200ms 160ms',
+  '200msDelayed200ms': 'ease 200ms 200ms',
+  '200msDelayed240ms': 'ease 200ms 240ms',
+  stiff: 'cubic-bezier(0.2, 0.8, 0.2, 1) 180ms',
+  bouncy: 'cubic-bezier(0.175, 0.885, 0.32, 1.275) 220ms',
+  semiBouncy: 'cubic-bezier(0.22, 1, 0.36, 1) 220ms',
+  lazy: 'cubic-bezier(0.25, 0.1, 0.25, 1) 260ms',
+  quick: 'cubic-bezier(0.22, 1, 0.36, 1) 180ms',
+  quicker: 'cubic-bezier(0.22, 1, 0.36, 1) 140ms',
+  quickishDelayed: 'cubic-bezier(0.22, 1, 0.36, 1) 180ms 70ms',
+  fast: 'cubic-bezier(0.25, 1, 0.5, 1) 120ms',
+  fastHeavy: 'cubic-bezier(0.25, 1, 0.5, 1) 140ms',
+  fastExit: 'cubic-bezier(0.4, 0, 1, 1) 100ms',
+  fastExitHeavy: 'cubic-bezier(0.4, 0, 1, 1) 120ms',
+  simple: 'linear 80ms',
+})

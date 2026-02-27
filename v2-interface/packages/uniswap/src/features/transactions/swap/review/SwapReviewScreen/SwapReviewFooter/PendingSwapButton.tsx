@@ -9,7 +9,7 @@ import type { Warning } from 'uniswap/src/components/modals/WarningModal/types'
 import { getPlanProgressEstimates, PlanProgressEstimates } from 'uniswap/src/features/transactions/swap/plan/utils'
 import { DelayedSubmissionText } from 'uniswap/src/features/transactions/swap/review/SwapReviewScreen/SwapReviewFooter/DelayedSubmissionText'
 import { useSwapReviewStore } from 'uniswap/src/features/transactions/swap/review/stores/swapReviewStore/useSwapReviewStore'
-import { TestID } from 'uniswap/src/test/fixtures/testIDs'
+import { TestID } from 'uniswap/src/constants/testIDs'
 import { ONE_SECOND_MS } from 'utilities/src/time/time'
 
 interface PendingSwapButtonProps {

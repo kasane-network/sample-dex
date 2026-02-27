@@ -1,4 +1,4 @@
-import { GraphQLApi } from '@universe/api'
+import { BackendApi } from '@universe/api'
 import { ColorTokens, GeneratedIcon } from 'ui/src'
 import { AlertTriangleFilled } from 'ui/src/components/icons/AlertTriangleFilled'
 import { Blocked } from 'ui/src/components/icons/Blocked'
@@ -6,15 +6,15 @@ import { InfoCircleFilled } from 'ui/src/components/icons/InfoCircleFilled'
 import { OctagonExclamation } from 'ui/src/components/icons/OctagonExclamation'
 import { WarningSeverity } from 'uniswap/src/components/modals/WarningModal/types'
 
-export function safetyLevelToWarningSeverity(safetyLevel: Maybe<GraphQLApi.SafetyLevel>): WarningSeverity {
+export function safetyLevelToWarningSeverity(safetyLevel: Maybe<BackendApi.SafetyLevel>): WarningSeverity {
   switch (safetyLevel) {
-    case GraphQLApi.SafetyLevel.Blocked:
+    case BackendApi.SafetyLevel.Blocked:
       return WarningSeverity.Blocked
-    case GraphQLApi.SafetyLevel.Verified:
+    case BackendApi.SafetyLevel.Verified:
       return WarningSeverity.None
-    case GraphQLApi.SafetyLevel.StrongWarning:
+    case BackendApi.SafetyLevel.StrongWarning:
       return WarningSeverity.High
-    case GraphQLApi.SafetyLevel.MediumWarning:
+    case BackendApi.SafetyLevel.MediumWarning:
     default:
       return WarningSeverity.Medium
   }

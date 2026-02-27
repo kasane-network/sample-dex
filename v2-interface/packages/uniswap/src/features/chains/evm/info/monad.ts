@@ -1,5 +1,5 @@
 import { Token } from '@uniswap/sdk-core'
-import { GraphQLApi } from '@universe/api'
+import { BackendApi } from '@universe/api'
 import { SwapConfigKey } from '@universe/gating'
 import { MONAD_LOGO_FILLED } from 'ui/src/assets'
 import {
@@ -32,7 +32,7 @@ export const MONAD_CHAIN_INFO = {
   testnet: false,
   assetRepoNetworkName: 'monad',
   backendChain: {
-    chain: GraphQLApi.Chain.Monad as GqlChainId,
+    chain: BackendApi.Chain.Monad as GqlChainId,
     backendSupported: true,
     nativeTokenBackendAddress: undefined,
   },

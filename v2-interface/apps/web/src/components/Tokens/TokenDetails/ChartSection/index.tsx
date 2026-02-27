@@ -1,5 +1,5 @@
 import { TimePeriod, toHistoryDuration } from 'dataLayer/data/util'
-import { GraphQLApi } from '@universe/api'
+import { BackendApi } from '@universe/api'
 import { refitChartContentAtom } from 'components/Charts/ChartModel'
 import { ChartSkeleton } from 'components/Charts/LoadingState'
 import { PriceChart, PriceChartData } from 'components/Charts/PriceChart'
@@ -26,8 +26,6 @@ import { useTDPContext } from 'pages/TokenDetails/TDPContext'
 import { useMemo, useState } from 'react'
 import { Trans } from 'react-i18next'
 import { Flex, SegmentedControl, SegmentedControlOption, styled, useMedia } from 'ui/src'
-import { useTokenPriceChange } from 'uniswap/src/features/dataApi/tokenDetails/useTokenDetailsData'
-import { currencyId } from 'uniswap/src/utils/currencyId'
 
 export const TDP_CHART_HEIGHT_PX = 356
 
@@ -74,7 +72,7 @@ const InvalidChartMessage = () => <Trans i18nKey="chart.error.tokens" />
 /** Exported to `TDPContext` to fire queries on pageload. `TDPChartState` should be accessed through `useTDPContext` rather than this hook. */
 export function useCreateTDPChartState(
   tokenDBAddress: string | undefined,
-  currencyChainName: GraphQLApi.Chain,
+  currencyChainName: BackendApi.Chain,
 ): TDPChartState {
   const [timePeriod, setTimePeriod] = useState<TimePeriod>(TimePeriod.DAY)
 
@@ -115,12 +113,7 @@ export function useCreateTDPChartState(
 
 export default function ChartSection() {
   const { activeQuery, timePeriod, priceChartType } = useTDPContext().chartState
-  const { tokenColor, currency } = useTDPContext()
-
-  // Get the 24hr price change from API to ensure consistency with mobile
-  // Both platforms now show the same 24hr change regardless of selected chart period
-  const currencyIdValue = useMemo(() => currencyId(currency), [currency])
-  const priceChange24h = useTokenPriceChange(currencyIdValue)
+  const { tokenColor } = useTDPContext()
 
   // Calculate percentage change from chart data for the selected duration
   const calculatedPriceChange = useMemo(() => {
@@ -135,8 +128,8 @@ export default function ChartSection() {
     return ((closePrice - openPrice) / openPrice) * 100
   }, [activeQuery])
 
-  // Use API's 24hr change for 1d, calculated change for other durations
-  const pricePercentChange = timePeriod === TimePeriod.DAY ? priceChange24h : calculatedPriceChange
+  // TokenDetails' old GraphQL/Apollo path is retired; rely on chart-derived change for all durations.
+  const pricePercentChange = calculatedPriceChange
 
   // eslint-disable-next-line consistent-return
   const getSection = () => {

@@ -1,4 +1,3 @@
-import { ReactComponent as UniswapLogo } from 'assets/svg/uniswap_app_logo.svg'
 import { useAtom } from 'jotai'
 import { useAtomValue } from 'jotai/utils'
 import { X } from 'react-feather'
@@ -50,7 +49,7 @@ export function MobileAppPromoBanner() {
             setHideMobileAppPromoBanner(true)
           }}
         />
-        <UniswapLogo width="32px" height="32px" />
+        <Flex width={32} height={32} borderRadius="$rounded12" backgroundColor="$surface1" />
         <Flex shrink>
           <Text variant="body3">{t('mobileAppPromo.banner.title')}</Text>
           <Text variant="body4" color="$neutral2">

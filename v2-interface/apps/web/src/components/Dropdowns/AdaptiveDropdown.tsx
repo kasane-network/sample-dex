@@ -27,7 +27,6 @@ const DropdownContent = styled(Text, {
   p: '$spacing8',
   fontSize: 16,
   zIndex: zIndexes.dropdown,
-  animation: 'fastHeavy',
   '$platform-web': { overflow: 'auto' },
   variants: {
     positionRight: {
@@ -44,14 +43,10 @@ const DropdownContent = styled(Text, {
       true: {
         top: 'unset',
         bottom: 'calc(100% + 10px)',
-        enterStyle: { opacity: 0, y: 20 },
-        exitStyle: { opacity: 0, y: 20 },
       },
       false: {
         bottom: 'unset',
         top: 'calc(100% + 10px)',
-        enterStyle: { opacity: 0, y: -20 },
-        exitStyle: { opacity: 0, y: -20 },
       },
     },
   },
@@ -130,7 +125,6 @@ export function AdaptiveDropdown({
           <Flex ref={dropdownNode}>
             {/* hidden node cannot be position absolute or else height will register as 0 */}
             <DropdownContent
-              animation="fastHeavy"
               {...dropdownStyle}
               {...shadowProps}
               style={scrollbarStyles}
@@ -158,7 +152,6 @@ export function AdaptiveDropdown({
             {isOpen && !isSheet && (
               <DropdownContent
                 data-testid={dropdownTestId}
-                animation="fastHeavy"
                 {...dropdownStyle}
                 {...shadowProps}
                 style={scrollbarStyles}

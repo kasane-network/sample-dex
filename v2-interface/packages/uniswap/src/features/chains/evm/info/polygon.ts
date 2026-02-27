@@ -1,4 +1,4 @@
-import { GraphQLApi } from '@universe/api'
+import { BackendApi } from '@universe/api'
 import { SwapConfigKey } from '@universe/gating'
 import { POLYGON_LOGO } from 'ui/src/assets'
 import { config } from 'uniswap/src/config'
@@ -31,7 +31,7 @@ export const POLYGON_CHAIN_INFO = {
   assetRepoNetworkName: 'polygon',
   blockPerMainnetEpochForChainId: 5,
   backendChain: {
-    chain: GraphQLApi.Chain.Polygon as GqlChainId,
+    chain: BackendApi.Chain.Polygon as GqlChainId,
     backendSupported: true,
     nativeTokenBackendAddress: '0x0000000000000000000000000000000000001010',
   },

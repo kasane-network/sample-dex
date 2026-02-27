@@ -1,5 +1,5 @@
 /* eslint-disable max-lines */
-import { PrefetchBalancesWrapper } from 'dataLayer/data/apollo/AdaptiveTokenBalancesProvider'
+import { PrefetchBalancesWrapper } from 'features/portfolio/noopBalanceProviders'
 import { ProtocolVersion } from '@uniswap/client-data-api/dist/data/v1/poolTypes_pb'
 import type { Currency, Percent } from '@uniswap/sdk-core'
 import {

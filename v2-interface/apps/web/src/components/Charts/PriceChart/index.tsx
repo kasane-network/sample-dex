@@ -1,4 +1,4 @@
-import { GraphQLApi } from '@universe/api'
+import { BackendApi } from '@universe/api'
 import { ChartHeader } from 'components/Charts/ChartHeader'
 import { Chart, ChartHoverData, ChartModel, ChartModelParams } from 'components/Charts/ChartModel'
 import {
@@ -33,7 +33,7 @@ export type PriceChartData = CandlestickData<UTCTimestamp> & AreaData<UTCTimesta
 
 interface PriceChartModelParams extends ChartModelParams<PriceChartData> {
   type: PriceChartType
-  timePeriod?: GraphQLApi.HistoryDuration
+  timePeriod?: BackendApi.HistoryDuration
   hideYAxis?: boolean
   yAxisFormatter?: (price: number) => string
 }
@@ -46,7 +46,7 @@ export class PriceChartModel extends ChartModel<PriceChartData> {
   private originalData: PriceChartData[]
   private lowPriceRangeScaleFactor = 1
   private type: PriceChartType
-  private timePeriod?: GraphQLApi.HistoryDuration
+  private timePeriod?: BackendApi.HistoryDuration
   private minPriceLine: IPriceLine | undefined
   private maxPriceLine: IPriceLine | undefined
   private priceLineOptions: Partial<PriceLineOptions> | undefined
@@ -377,7 +377,7 @@ interface PriceChartProps {
   height: number
   data: PriceChartData[]
   stale: boolean
-  timePeriod?: GraphQLApi.HistoryDuration
+  timePeriod?: BackendApi.HistoryDuration
   pricePercentChange?: number
   overrideColor?: string
   headerTotalValueOverride?: number
@@ -394,26 +394,40 @@ const CandlestickTooltipRow = styled(Flex, {
 function CandlestickTooltip({ data }: { data: PriceChartData }) {
   const { convertFiatAmountFormatted } = useLocalizationContext()
   return (
-    <>
-      <Text variant="body3" color="$neutral1">
-        <CandlestickTooltipRow>
+    <Flex>
+      <CandlestickTooltipRow>
+        <Text variant="body3" color="$neutral1">
           <Trans i18nKey="chart.price.label.open" />
-          <Flex>{convertFiatAmountFormatted(data.open, NumberType.FiatTokenPrice)}</Flex>
-        </CandlestickTooltipRow>
-        <CandlestickTooltipRow>
+        </Text>
+        <Text variant="body3" color="$neutral1">
+          {convertFiatAmountFormatted(data.open, NumberType.FiatTokenPrice)}
+        </Text>
+      </CandlestickTooltipRow>
+      <CandlestickTooltipRow>
+        <Text variant="body3" color="$neutral1">
           <Trans i18nKey="chart.price.label.high" />
-          <Flex>{convertFiatAmountFormatted(data.high, NumberType.FiatTokenPrice)}</Flex>
-        </CandlestickTooltipRow>
-        <CandlestickTooltipRow>
+        </Text>
+        <Text variant="body3" color="$neutral1">
+          {convertFiatAmountFormatted(data.high, NumberType.FiatTokenPrice)}
+        </Text>
+      </CandlestickTooltipRow>
+      <CandlestickTooltipRow>
+        <Text variant="body3" color="$neutral1">
           <Trans i18nKey="chart.price.label.low" />
-          <Flex>{convertFiatAmountFormatted(data.low, NumberType.FiatTokenPrice)}</Flex>
-        </CandlestickTooltipRow>
-        <CandlestickTooltipRow>
+        </Text>
+        <Text variant="body3" color="$neutral1">
+          {convertFiatAmountFormatted(data.low, NumberType.FiatTokenPrice)}
+        </Text>
+      </CandlestickTooltipRow>
+      <CandlestickTooltipRow>
+        <Text variant="body3" color="$neutral1">
           <Trans i18nKey="chart.price.label.close" />
-          <Flex>{convertFiatAmountFormatted(data.close, NumberType.FiatTokenPrice)}</Flex>
-        </CandlestickTooltipRow>
-      </Text>
-    </>
+        </Text>
+        <Text variant="body3" color="$neutral1">
+          {convertFiatAmountFormatted(data.close, NumberType.FiatTokenPrice)}
+        </Text>
+      </CandlestickTooltipRow>
+    </Flex>
   )
 }
 

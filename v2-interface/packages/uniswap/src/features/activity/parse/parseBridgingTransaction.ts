@@ -1,6 +1,6 @@
 import type { OnChainTransaction } from '@uniswap/client-data-api/dist/data/v1/types_pb'
 import { Direction } from '@uniswap/client-data-api/dist/data/v1/types_pb'
-import { GraphQLApi } from '@universe/api'
+import { BackendApi } from '@universe/api'
 import { extractDappInfo } from 'uniswap/src/features/activity/utils/extractDappInfo'
 import { deriveCurrencyAmountFromAssetResponse } from 'uniswap/src/features/activity/utils/remote'
 import { fromGraphQLChain } from 'uniswap/src/features/chains/utils'
@@ -26,8 +26,8 @@ export default function parseBridgingTransaction(
     return undefined
   }
 
-  const outTokenTransfer = findTokenTransfer(transaction.details.assetChanges, GraphQLApi.TransactionDirection.Out)
-  const inTokenTransfer = findTokenTransfer(transaction.details.assetChanges, GraphQLApi.TransactionDirection.In)
+  const outTokenTransfer = findTokenTransfer(transaction.details.assetChanges, BackendApi.TransactionDirection.Out)
+  const inTokenTransfer = findTokenTransfer(transaction.details.assetChanges, BackendApi.TransactionDirection.In)
 
   const outChainId = fromGraphQLChain(outTokenTransfer?.asset.chain)
   const inChainId = fromGraphQLChain(inTokenTransfer?.asset.chain)
@@ -37,14 +37,14 @@ export default function parseBridgingTransaction(
   }
 
   const outCurrencyId =
-    outTokenTransfer.tokenStandard === GraphQLApi.TokenStandard.Native
+    outTokenTransfer.tokenStandard === BackendApi.TokenStandard.Native
       ? buildNativeCurrencyId(outChainId)
       : outTokenTransfer.asset.address
         ? buildCurrencyId(outChainId, outTokenTransfer.asset.address)
         : undefined
 
   const inCurrencyId =
-    inTokenTransfer.tokenStandard === GraphQLApi.TokenStandard.Native
+    inTokenTransfer.tokenStandard === BackendApi.TokenStandard.Native
       ? buildNativeCurrencyId(inChainId)
       : inTokenTransfer.asset.address
         ? buildCurrencyId(inChainId, inTokenTransfer.asset.address)
@@ -82,10 +82,10 @@ export default function parseBridgingTransaction(
 
 function findTokenTransfer(
   assetChanges: AssetChanges,
-  direction: GraphQLApi.TransactionDirection,
-): GraphQLApi.TokenTransfer | undefined {
+  direction: BackendApi.TransactionDirection,
+): BackendApi.TokenTransfer | undefined {
   return assetChanges.find(
-    (t): t is Extract<GraphQLApi.TokenTransfer, { __typename: 'TokenTransfer' }> =>
+    (t): t is Extract<BackendApi.TokenTransfer, { __typename: 'TokenTransfer' }> =>
       t?.__typename === 'TokenTransfer' && t.direction === direction,
   )
 }

@@ -1,4 +1,4 @@
-import { GraphQLApi } from '@universe/api'
+import { BackendApi } from '@universe/api'
 import Column from 'components/deprecated/Column'
 import Row from 'components/deprecated/Row'
 import { PositionInfo } from 'components/Liquidity/types'
@@ -31,9 +31,9 @@ export function PoolDetailsTableTab({
   protocolVersion,
 }: {
   poolAddress: string
-  token0?: GraphQLApi.Token
-  token1?: GraphQLApi.Token
-  protocolVersion?: GraphQLApi.ProtocolVersion
+  token0?: BackendApi.Token
+  token1?: BackendApi.Token
+  protocolVersion?: BackendApi.ProtocolVersion
 }) {
   const [activeTable, setActiveTable] = useState<PoolDetailsTableTabs>(PoolDetailsTableTabs.TRANSACTIONS)
   const account = useAccount()

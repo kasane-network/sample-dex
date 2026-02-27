@@ -2,12 +2,16 @@ import { deprecatedStyled } from 'lib/styled-components'
 import { Box } from 'rebass/styled-components'
 import { Gap } from 'theme'
 
+const NON_DOM_ROW_PROPS = new Set(['width', 'align', 'justify', 'padding', 'border', 'borderRadius', 'gap'])
+
 // TODO(WEB-1983):
 // Setting `width: 100%` by default prevents composability in complex flex layouts.
 // Same applies to `RowFixed` and its negative margins. This component needs to be
 // further investigated and improved to make UI work easier.
 /** @deprecated Please use `Flex` from `ui/src` going forward */
-const Row = deprecatedStyled(Box)<{
+const Row = deprecatedStyled(Box).withConfig({
+  shouldForwardProp: (prop) => !NON_DOM_ROW_PROPS.has(String(prop)),
+})<{
   width?: string
   align?: string
   justify?: string

@@ -39,8 +39,8 @@ export {
 export type { AuthData, SignedRequestParams, SignMessageFunc } from '@universe/api/src/clients/base/auth'
 export { createSignedRequestBody, createSignedRequestParams } from '@universe/api/src/clients/base/auth'
 
-// GraphQL API
-export * as GraphQLApi from '@universe/api/src/clients/graphql/generated'
+// Backend API (formerly GraphQL API)
+export * as BackendApi from '@universe/api/src/clients/graphql/generated'
 export {
   useTokenBasicInfoPartsFragment,
   useTokenBasicProjectPartsFragment,
@@ -48,7 +48,6 @@ export {
   useTokenProjectMarketsPartsFragment,
   useTokenProjectUrlsPartsFragment,
 } from '@universe/api/src/clients/graphql/fragments'
-export { GQLQueries } from '@universe/api/src/clients/graphql/queries'
 export type { GqlResult } from '@universe/api/src/clients/graphql/types'
 export { isError, isNonPollingRequestInFlight, isWarmLoadingStatus } from '@universe/api/src/clients/graphql/utils'
 

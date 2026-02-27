@@ -1,4 +1,4 @@
-import { GraphQLApi } from '@universe/api'
+import { BackendApi } from '@universe/api'
 import { amount, timestampedAmount } from 'uniswap/src/test/fixtures/gql/amounts'
 import { faker } from 'uniswap/src/test/shared'
 import { createArray, createFixture, randomEnumValue } from 'uniswap/src/test/utils'
@@ -11,14 +11,14 @@ export const weekMs = 7 * ONE_DAY_MS
 export const monthMs = 30 * ONE_DAY_MS
 export const yearMs = 365 * ONE_DAY_MS
 
-export const historyDurationsMs: Record<GraphQLApi.HistoryDuration, number> = {
-  [GraphQLApi.HistoryDuration.FiveMinute]: ONE_MINUTE_MS * 5,
-  [GraphQLApi.HistoryDuration.Hour]: ONE_HOUR_MS,
-  [GraphQLApi.HistoryDuration.Day]: ONE_DAY_MS,
-  [GraphQLApi.HistoryDuration.Week]: weekMs,
-  [GraphQLApi.HistoryDuration.Month]: monthMs,
-  [GraphQLApi.HistoryDuration.Year]: yearMs,
-  [GraphQLApi.HistoryDuration.Max]: 5 * yearMs,
+export const historyDurationsMs: Record<BackendApi.HistoryDuration, number> = {
+  [BackendApi.HistoryDuration.FiveMinute]: ONE_MINUTE_MS * 5,
+  [BackendApi.HistoryDuration.Hour]: ONE_HOUR_MS,
+  [BackendApi.HistoryDuration.Day]: ONE_DAY_MS,
+  [BackendApi.HistoryDuration.Week]: weekMs,
+  [BackendApi.HistoryDuration.Month]: monthMs,
+  [BackendApi.HistoryDuration.Year]: yearMs,
+  [BackendApi.HistoryDuration.Max]: 5 * yearMs,
 }
 
 /**
@@ -26,12 +26,12 @@ export const historyDurationsMs: Record<GraphQLApi.HistoryDuration, number> = {
  */
 
 type PriceHistoryOptions = {
-  duration: GraphQLApi.HistoryDuration
+  duration: BackendApi.HistoryDuration
   size: number
 }
 
-export const priceHistory = createFixture<GraphQLApi.TimestampedAmount[], PriceHistoryOptions>(() => ({
-  duration: randomEnumValue(GraphQLApi.HistoryDuration),
+export const priceHistory = createFixture<BackendApi.TimestampedAmount[], PriceHistoryOptions>(() => ({
+  duration: randomEnumValue(BackendApi.HistoryDuration),
   size: faker.datatype.number({ min: 10, max: 20 }),
 }))(({ size, duration }) => {
   const durationMs = historyDurationsMs[duration]
@@ -43,19 +43,19 @@ export const priceHistory = createFixture<GraphQLApi.TimestampedAmount[], PriceH
       // Timestamp in seconds
       timestamp: Math.floor((startDate + (endDate - startDate) * (i / size)) / 1000),
     }),
-  ) as GraphQLApi.TimestampedAmount[] // Simplify type
+  ) as BackendApi.TimestampedAmount[] // Simplify type
 })
 
 /**
  * Helper functions
  */
 
-export const getLatestPrice = (history: Maybe<GraphQLApi.TimestampedAmount>[]): GraphQLApi.Amount => {
-  const filteredHistory = history.filter((item) => item !== null) as GraphQLApi.TimestampedAmount[]
+export const getLatestPrice = (history: Maybe<BackendApi.TimestampedAmount>[]): BackendApi.Amount => {
+  const filteredHistory = history.filter((item) => item !== null) as BackendApi.TimestampedAmount[]
   return amount({ value: filteredHistory[filteredHistory.length - 1]?.value ?? 0 })
 }
 
-export const get24hPriceChange = (history: Maybe<GraphQLApi.TimestampedAmount>[]): GraphQLApi.Amount => {
+export const get24hPriceChange = (history: Maybe<BackendApi.TimestampedAmount>[]): BackendApi.Amount => {
   const price = history[history.length - 1]?.value ?? 0
   const prevPrice = history[history.length - 2]?.value ?? 0
   const priceTimestamp = history[history.length - 1]?.timestamp ?? 0

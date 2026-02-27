@@ -328,6 +328,7 @@ async function main(): Promise<void> {
       : [...DEFAULT_NATIVE_PRICE_TOKEN_ADDRESSES.map((address) => getAddress(address).toLowerCase())]
   const tokenDecimalsByAddress = new Map<string, number>()
   const nativeMarket = await fetchBinanceNativeMarketStats({ symbol: env.nativePriceSymbol })
+  const nativePriceUsd = nativeMarket?.priceUsd
 
   const tokenResult = await runTokenIndexerCycle({
     chainId: env.chainId,
@@ -391,8 +392,14 @@ async function main(): Promise<void> {
 
   await repository.upsertPoolMarketSnapshot(
     poolSnapshots.map((pool) => {
-      const token0PriceUsd = tokenPriceByAddress.get(pool.token0Address)
-      const token1PriceUsd = tokenPriceByAddress.get(pool.token1Address)
+      const token0PriceFromGraph = tokenPriceByAddress.get(pool.token0Address)
+      const token1PriceFromGraph = tokenPriceByAddress.get(pool.token1Address)
+      const token0PriceUsd =
+        token0PriceFromGraph ??
+        (nativePriceUsd !== undefined && nativePriceTokenAddresses.includes(pool.token0Address) ? nativePriceUsd : undefined)
+      const token1PriceUsd =
+        token1PriceFromGraph ??
+        (nativePriceUsd !== undefined && nativePriceTokenAddresses.includes(pool.token1Address) ? nativePriceUsd : undefined)
       const tvlUsd = estimatePoolTvlUsd({
         reserve0: pool.reserve0,
         reserve1: pool.reserve1,
@@ -450,15 +457,15 @@ async function main(): Promise<void> {
 
   const wrappedNativeAddress = nativePriceTokenAddresses[0]
   const fallbackNativePrice = wrappedNativeAddress ? tokenPriceByAddress.get(wrappedNativeAddress.toLowerCase()) : undefined
-  const nativePriceUsd = nativeMarket?.priceUsd ?? fallbackNativePrice
+  const resolvedNativePriceUsd = nativePriceUsd ?? fallbackNativePrice
   const nativePriceChange1dPct = nativeMarket?.priceChange1dPct
 
-  if (nativePriceUsd !== undefined) {
+  if (resolvedNativePriceUsd !== undefined) {
     await repository.upsertTokenMarketEnrichment(
       nativePriceTokenAddresses.map((address) => ({
         chainId: env.chainId,
         address,
-        priceUsd: nativePriceUsd,
+        priceUsd: resolvedNativePriceUsd,
         priceChange1dPct: nativePriceChange1dPct,
         updatedAt,
       })),

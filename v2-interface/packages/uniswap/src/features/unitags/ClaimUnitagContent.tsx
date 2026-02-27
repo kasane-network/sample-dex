@@ -17,7 +17,7 @@ import { getUnitagFormatError, useCanClaimUnitagName } from 'uniswap/src/feature
 import { UnitagInfoModal } from 'uniswap/src/features/unitags/UnitagInfoModal'
 import { UnitagName } from 'uniswap/src/features/unitags/UnitagName'
 import { getYourNameString } from 'uniswap/src/features/unitags/utils'
-import { TestID } from 'uniswap/src/test/fixtures/testIDs'
+import { TestID } from 'uniswap/src/constants/testIDs'
 import {
   OnboardingScreens,
   SharedUnitagScreenParams,

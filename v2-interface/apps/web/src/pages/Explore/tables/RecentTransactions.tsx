@@ -8,7 +8,7 @@ import {
 } from 'dataLayer/data/useAllTransactions'
 import { ApolloError } from '@apollo/client'
 import { createColumnHelper } from '@tanstack/react-table'
-import { GraphQLApi } from '@universe/api'
+import { BackendApi } from '@universe/api'
 import { DEFAULT_CHAIN_ID } from 'constants/chains'
 import { PortfolioLogo } from 'components/AccountDrawer/MiniPortfolio/PortfolioLogo'
 import { Table } from 'components/Table'
@@ -41,7 +41,7 @@ const TableRow = styled(Flex, {
   alignItems: 'center',
 })
 
-type RecentTransactionType = GraphQLApi.PoolTransaction & { usdValueFormatted: string }
+type RecentTransactionType = BackendApi.PoolTransaction & { usdValueFormatted: string }
 
 const RecentTransactions = memo(function RecentTransactions() {
   const activeLocalCurrency = useAppFiatCurrency()
@@ -148,7 +148,7 @@ const RecentTransactions = memo(function RecentTransactions() {
               </TableText>
               <TokenLinkCell token={transaction.getValue?.().token0} hideLogo={media.lg} />
               <Text color="$neutral2">
-                {transaction.getValue?.().type === GraphQLApi.PoolTransactionType.Swap
+                {transaction.getValue?.().type === BackendApi.PoolTransactionType.Swap
                   ? t('common.for').toLowerCase()
                   : t('common.and').toLowerCase()}
               </Text>

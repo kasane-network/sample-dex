@@ -1,5 +1,5 @@
 import { ListTransactionsResponse } from '@uniswap/client-data-api/dist/data/v1/api_pb'
-import { GraphQLApi } from '@universe/api'
+import { BackendApi } from '@universe/api'
 import { extractOnRampTransactionDetails } from 'uniswap/src/features/activity/extract/extractFiatOnRampTransactionDetails'
 import extractRestOnChainTransactionDetails from 'uniswap/src/features/activity/extract/extractOnChainTransactionDetails'
 import extractRestFiatOnRampDetails from 'uniswap/src/features/activity/extract/extractRestFiatOnRampDetails'
@@ -33,7 +33,7 @@ export function parseDataResponseToTransactionDetails({
   nftVisibility,
   tokenVisibilityOverrides,
 }: {
-  data: GraphQLApi.TransactionListQuery
+  data: BackendApi.TransactionListQuery
   hideSpamTokens: boolean
   nftVisibility?: NFTKeyToVisibility
   tokenVisibilityOverrides?: CurrencyIdToVisibility

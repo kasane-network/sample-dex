@@ -17,7 +17,7 @@ import { ElementName, SectionName } from 'uniswap/src/features/telemetry/constan
 import Trace from 'uniswap/src/features/telemetry/Trace'
 import type { SwapFormStore } from 'uniswap/src/features/transactions/swap/stores/swapFormStore/createSwapFormStore'
 import { SwapFormStoreContext } from 'uniswap/src/features/transactions/swap/stores/swapFormStore/SwapFormStoreContext'
-import { TestID } from 'uniswap/src/test/fixtures/testIDs'
+import { TestID } from 'uniswap/src/constants/testIDs'
 import { isMobileApp, isWebPlatform } from 'utilities/src/platform'
 import { useEvent } from 'utilities/src/react/hooks'
 import { useBooleanState } from 'utilities/src/react/useBooleanState'

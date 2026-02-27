@@ -8,7 +8,7 @@ import {
   SMALL_TOAST_RADIUS,
   TOAST_BORDER_WIDTH,
 } from 'uniswap/src/features/notifications/constants'
-import { TestID } from 'uniswap/src/test/fixtures/testIDs'
+import { TestID } from 'uniswap/src/constants/testIDs'
 
 export interface NotificationContentProps {
   title: string

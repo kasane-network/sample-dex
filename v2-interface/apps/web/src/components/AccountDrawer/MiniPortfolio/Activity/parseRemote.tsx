@@ -1,14 +1,14 @@
 /* eslint-disable max-params */
 import { supportedChainIdFromGQLChain } from 'dataLayer/data/util'
 import type { Currency } from '@uniswap/sdk-core'
-import { GraphQLApi } from '@universe/api'
+import { BackendApi } from '@universe/api'
 import { Flex, styled, Text } from 'ui/src'
 import { Arrow } from 'ui/src/components/arrow/Arrow'
 import { iconSizes } from 'ui/src/theme'
 import { NetworkLogo } from 'uniswap/src/components/CurrencyLogo/NetworkLogo'
 import i18n from 'uniswap/src/i18n'
 
-function getChainIdFromGqlTokenOrCurrency(token?: GraphQLApi.TokenAssetPartsFragment | Currency): number | null {
+function getChainIdFromGqlTokenOrCurrency(token?: BackendApi.TokenAssetPartsFragment | Currency): number | null {
   if (!token) {
     return null
   }
@@ -31,9 +31,9 @@ export function getBridgeDescriptor({
   tokenOut,
   outputAmount,
 }: {
-  tokenIn?: GraphQLApi.TokenAssetPartsFragment | Currency
+  tokenIn?: BackendApi.TokenAssetPartsFragment | Currency
   outputAmount: string
-  tokenOut?: GraphQLApi.TokenAssetPartsFragment | Currency
+  tokenOut?: BackendApi.TokenAssetPartsFragment | Currency
   inputAmount: string
 }) {
   const inputChain = getChainIdFromGqlTokenOrCurrency(tokenIn)

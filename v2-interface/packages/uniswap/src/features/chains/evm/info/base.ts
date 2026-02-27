@@ -1,4 +1,4 @@
-import { GraphQLApi } from '@universe/api'
+import { BackendApi } from '@universe/api'
 import { BASE_LOGO, ETH_LOGO } from 'ui/src/assets'
 import { config } from 'uniswap/src/config'
 import {
@@ -36,7 +36,7 @@ export const BASE_CHAIN_INFO = {
   id: UniverseChainId.Base,
   platform: Platform.EVM,
   backendChain: {
-    chain: GraphQLApi.Chain.Base as GqlChainId,
+    chain: BackendApi.Chain.Base as GqlChainId,
     backendSupported: true,
     nativeTokenBackendAddress: undefined,
   },

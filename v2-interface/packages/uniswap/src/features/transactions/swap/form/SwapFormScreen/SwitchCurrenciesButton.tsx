@@ -4,7 +4,7 @@ import { ElementName, SwapEventName } from 'uniswap/src/features/telemetry/const
 import Trace from 'uniswap/src/features/telemetry/Trace'
 import { SwapArrowButton } from 'uniswap/src/features/transactions/swap/components/SwapArrowButton'
 import { useSwapFormScreenStore } from 'uniswap/src/features/transactions/swap/form/stores/swapFormScreenStore/useSwapFormScreenStore'
-import { TestID } from 'uniswap/src/test/fixtures/testIDs'
+import { TestID } from 'uniswap/src/constants/testIDs'
 
 const SWAP_DIRECTION_BUTTON_SIZE = {
   size: {

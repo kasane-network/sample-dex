@@ -15,6 +15,31 @@ const NUM_DECIMALS_FIAT_ROUNDING = 2
 // Used for display text on fiat amount
 const NUM_DECIMALS_DISPLAY_FIAT = 2
 
+function truncateExactAmountToTokenDecimals({
+  value,
+  decimals,
+}: {
+  value?: string
+  decimals: number
+}): string | undefined {
+  if (!value) {
+    return value
+  }
+
+  const normalizedValue = value.replace(',', '.')
+  const [wholePart, fractionalPart = ''] = normalizedValue.split('.')
+
+  if (!fractionalPart) {
+    return normalizedValue
+  }
+
+  if (decimals === 0) {
+    return wholePart || '0'
+  }
+
+  return `${wholePart || '0'}.${fractionalPart.slice(0, decimals)}`
+}
+
 /**
  * Updater to always populate fiatAmount, or tokenAmount in swap context. If fiat mode is enabled,
  * we reference the current fiat input amount, and update the token amount. If not enabled, we update the fiat amount based on token
@@ -53,13 +78,22 @@ export function useSyncFiatAndTokenAmountUpdater({ skip = false }: { skip?: bool
         currency: getPrimaryStablecoin(chainId),
       })
       const tokenAmount = stablecoinAmount ? usdPriceOfCurrency.invert().quote(stablecoinAmount) : undefined
-      updateSwapForm({ exactAmountToken: tokenAmount?.toExact() })
+      updateSwapForm({
+        exactAmountToken: truncateExactAmountToTokenDecimals({
+          value: tokenAmount?.toExact(),
+          decimals: exactCurrency.currency.decimals,
+        }),
+      })
     }
 
     // When we have new token amount after user hit "max" or changes exact currency field
     if (!isFiatMode || (!exactAmountFiat && exactAmountToken)) {
-      const tokenAmount = getCurrencyAmount({
+      const normalizedExactAmountToken = truncateExactAmountToTokenDecimals({
         value: exactAmountToken,
+        decimals: exactCurrency.currency.decimals,
+      })
+      const tokenAmount = getCurrencyAmount({
+        value: normalizedExactAmountToken,
         valueType: ValueType.Exact,
         currency: exactCurrency.currency,
       })

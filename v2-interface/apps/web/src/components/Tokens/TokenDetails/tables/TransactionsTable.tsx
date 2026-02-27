@@ -9,7 +9,7 @@ import { unwrapToken } from 'dataLayer/data/util'
 import { ApolloError } from '@apollo/client'
 import { createColumnHelper } from '@tanstack/react-table'
 import { Token } from '@uniswap/sdk-core'
-import { GraphQLApi } from '@universe/api'
+import { BackendApi } from '@universe/api'
 import { Table } from 'components/Table'
 import { Cell } from 'components/Table/Cell'
 import { Filter } from 'components/Table/Filter'
@@ -54,7 +54,7 @@ interface SwapLeg {
   address?: string
   symbol?: string
   amount: number
-  token: GraphQLApi.Token
+  token: BackendApi.Token
 }
 
 export function TransactionsTable({ chainId, referenceToken }: { chainId: UniverseChainId; referenceToken: Token }) {

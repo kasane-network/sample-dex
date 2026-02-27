@@ -8,7 +8,6 @@ import { fromGraphQLChain } from 'uniswap/src/features/chains/utils'
 import { ModalName } from 'uniswap/src/features/telemetry/constants'
 import { useCurrencyInfo } from 'uniswap/src/features/tokens/useCurrencyInfo'
 import { buildCurrencyId } from 'uniswap/src/utils/currencyId'
-import { logger } from 'utilities/src/logger/logger'
 import { useEvent } from 'utilities/src/react/hooks'
 import { getChainInfo } from 'uniswap/src/features/chains/chainInfo'
 
@@ -33,8 +32,6 @@ export function BridgedAssetSection(): JSX.Element | null {
             const chainUrlParam = chainId ? getChainInfo(chainId).interfaceName : tokenQueryData.chain.toLowerCase()
             navigate(`/swap/?chain=${chainUrlParam}&outputCurrency=${tokenQueryData.address}`)
             closeModal()
-          } else {
-            logger.debug('BridgedAssetSection', 'handlePress', 'No token query data for bridged asset')
           }
         },
       })

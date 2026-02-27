@@ -74,7 +74,6 @@ export function WebBottomSheet({
   )
 
   const sheetOverrideStyles: FlexProps = {
-    ...(rest as FlexProps),
     width: '100%',
     maxWidth: '100%',
     minWidth: '100%',
@@ -99,13 +98,15 @@ export function WebBottomSheet({
         dismissOnOverlayPress
         dismissOnSnapToBottom
         modal
-        animation="200ms"
+        animation={undefined}
         disableDrag={isTouchDevice && !isHandlePressed}
         open={isOpen}
         snapPointsMode="fit"
         onOpenChange={handleClose}
       >
         <Sheet.Frame
+          unstyled={false}
+          backgroundColor="$surface1"
           borderBottomWidth="$none"
           borderColor="$surface3"
           borderTopLeftRadius="$rounded16"
@@ -134,10 +135,8 @@ export function WebBottomSheet({
           </Flex>
         </Sheet.Frame>
         <Sheet.Overlay
-          animation="lazy"
+          animation={undefined}
           backgroundColor="$scrim"
-          enterStyle={{ opacity: 0 }}
-          exitStyle={{ opacity: 0 }}
         />
       </Sheet>
     </RemoveScroll>
@@ -145,11 +144,8 @@ export function WebBottomSheet({
 }
 
 const Overlay = styled(Dialog.Overlay, {
-  animation: '300ms',
   backgroundColor: '$scrim',
   opacity: 0.5,
-  enterStyle: { opacity: 0 },
-  exitStyle: { opacity: 0 },
 })
 
 Overlay.displayName = 'Overlay'
@@ -242,13 +238,12 @@ export function AdaptiveWebModal({
             key="content"
             elevate
             bordered={borderWidth !== 0}
-            animateOnly={['transform', 'opacity']}
-            animation={isOpen ? 'fast' : 'fastExit'}
+            animateOnly={[]}
+            animation={null}
+            backgroundColor="$surface1"
             borderColor="$surface3"
             borderWidth={borderWidth}
             borderRadius="$rounded16"
-            enterStyle={{ x: 0, y: isTopAligned ? -12 : 12, opacity: 0 }}
-            exitStyle={{ x: 0, y: isTopAligned ? -12 : 10, opacity: 0 }}
             gap={gap ?? '$spacing4'}
             m="$spacing16"
             maxHeight="calc(100vh - 32px)"
@@ -328,11 +323,9 @@ export function WebModalWithBottomAttachment({
         <Dialog.Content
           key="content"
           unstyled
-          animateOnly={['transform', 'opacity']}
-          animation={isOpen ? 'fastHeavy' : 'fastExitHeavy'}
+          animateOnly={[]}
+          animation={null}
           backgroundColor="$transparent"
-          enterStyle={{ x: 0, y: isTopAligned ? -20 : 20, opacity: 0 }}
-          exitStyle={{ x: 0, y: isTopAligned ? -20 : 10, opacity: 0 }}
           maxHeight="calc(100vh - 32px)"
           maxWidth={420}
           overflow="hidden"

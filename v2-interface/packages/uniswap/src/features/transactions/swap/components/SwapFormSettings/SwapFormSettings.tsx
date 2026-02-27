@@ -15,7 +15,7 @@ import type { TransactionSettingConfig } from 'uniswap/src/features/transactions
 import SlippageWarningModal from 'uniswap/src/features/transactions/swap/components/SwapFormSettings/SlippageWarningModal'
 import { useSwapFormStoreDerivedSwapInfo } from 'uniswap/src/features/transactions/swap/stores/swapFormStore/useSwapFormStore'
 import { BridgeTrade } from 'uniswap/src/features/transactions/swap/types/trade'
-import { TestID } from 'uniswap/src/test/fixtures/testIDs'
+import { TestID } from 'uniswap/src/constants/testIDs'
 
 interface SwapFormSettingsProps {
   settings: TransactionSettingConfig[]

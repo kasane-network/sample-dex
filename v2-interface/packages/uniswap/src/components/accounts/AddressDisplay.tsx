@@ -12,7 +12,7 @@ import { pushNotification } from 'uniswap/src/features/notifications/slice/slice
 import { AppNotificationType, CopyNotificationType } from 'uniswap/src/features/notifications/slice/types'
 import { ElementName } from 'uniswap/src/features/telemetry/constants'
 import { sendAnalyticsEvent } from 'uniswap/src/features/telemetry/send'
-import { TestID } from 'uniswap/src/test/fixtures/testIDs'
+import { TestID } from 'uniswap/src/constants/testIDs'
 import { sanitizeAddressText } from 'uniswap/src/utils/addresses'
 import { setClipboard } from 'uniswap/src/utils/clipboard'
 import { shortenAddress } from 'utilities/src/addresses'

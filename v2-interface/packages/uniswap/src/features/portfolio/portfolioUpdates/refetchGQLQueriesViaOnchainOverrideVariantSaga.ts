@@ -1,7 +1,7 @@
 import { ApolloClient, NormalizedCacheObject, Reference } from '@apollo/client'
 import { AsStoreObject, isArray, isReference } from '@apollo/client/utilities'
 import { QueryClient } from '@tanstack/react-query'
-import { GraphQLApi } from '@universe/api'
+import { BackendApi } from '@universe/api'
 import { call, delay, put } from 'typed-redux-saga'
 import { getNativeAddress } from 'uniswap/src/constants/addresses'
 import { normalizeCurrencyIdForMapLookup } from 'uniswap/src/data/cache'
@@ -87,8 +87,8 @@ function* modifyLocalCache({
 
   const { gqlChains } = yield* call(getEnabledChainIdsSaga)
 
-  const cachedPortfolio = apolloClient.readQuery<GraphQLApi.PortfolioBalancesQuery>({
-    query: GraphQLApi.PortfolioBalancesDocument,
+  const cachedPortfolio = apolloClient.readQuery<BackendApi.PortfolioBalancesQuery>({
+    query: BackendApi.PortfolioBalancesDocument,
     variables: {
       ownerAddress,
       chains: gqlChains,
@@ -184,7 +184,7 @@ function* modifyLocalCache({
               quantity: () => {
                 return onchainQuantity
               },
-              denominatedValue: (cachedDenominatedValue: Reference | AsStoreObject<GraphQLApi.Amount> | null) => {
+              denominatedValue: (cachedDenominatedValue: Reference | AsStoreObject<BackendApi.Amount> | null) => {
                 if (!cachedDenominatedValue) {
                   logger.debug(
                     'refetchGQLQueriesViaOnchainOverrideVariantSaga.ts',
@@ -206,7 +206,7 @@ function* modifyLocalCache({
                 if (isReference(cachedDenominatedValue)) {
                   // This should never happen unless there's a regression in our apollo cache config.
                   logger.error(
-                    new Error('Unexpected `cachedDenominatedValue` as Reference instead of GraphQLApi.Amount'),
+                    new Error('Unexpected `cachedDenominatedValue` as Reference instead of BackendApi.Amount'),
                     {
                       tags: {
                         file: 'refetchGQLQueriesViaOnchainOverrideVariantSaga.ts',

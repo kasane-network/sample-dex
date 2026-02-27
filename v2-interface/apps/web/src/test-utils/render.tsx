@@ -1,5 +1,3 @@
-import { AssetActivityProvider } from 'dataLayer/data/apollo/AssetActivityProvider'
-import { TokenBalancesProvider } from 'dataLayer/data/apollo/TokenBalancesProvider'
 import { MockedProvider } from '@apollo/client/testing'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { queries } from '@testing-library/dom'
@@ -47,20 +45,16 @@ function MockedMismatchProvider({ children }: PropsWithChildren) {
 function CommonTestProviders({ children }: PropsWithChildren) {
   return (
     <MockedProvider showWarnings={false}>
-      <AssetActivityProvider>
-        <TokenBalancesProvider>
-          <ReactRouterUrlProvider>
-            <MockedBlockNumberProvider>
-              <ThemeProvider>
-                <TamaguiProvider>
-                  <WebAccountsStoreUpdater />
-                  <MockedMismatchProvider>{children}</MockedMismatchProvider>
-                </TamaguiProvider>
-              </ThemeProvider>
-            </MockedBlockNumberProvider>
-          </ReactRouterUrlProvider>
-        </TokenBalancesProvider>
-      </AssetActivityProvider>
+      <ReactRouterUrlProvider>
+        <MockedBlockNumberProvider>
+          <ThemeProvider>
+            <TamaguiProvider>
+              <WebAccountsStoreUpdater />
+              <MockedMismatchProvider>{children}</MockedMismatchProvider>
+            </TamaguiProvider>
+          </ThemeProvider>
+        </MockedBlockNumberProvider>
+      </ReactRouterUrlProvider>
     </MockedProvider>
   )
 }

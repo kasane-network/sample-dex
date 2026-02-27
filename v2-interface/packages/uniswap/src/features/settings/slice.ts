@@ -25,7 +25,7 @@ export const initialUserSettingsState: UserSettingsState = {
   hideSmallBalances: true,
   hideSpamTokens: true,
   hideReportedActivity: true,
-  isTestnetModeEnabled: true,
+  isTestnetModeEnabled: false,
   hapticsEnabled: true,
   deviceAccessTimeout: DEFAULT_DEVICE_ACCESS_TIMEOUT,
 }

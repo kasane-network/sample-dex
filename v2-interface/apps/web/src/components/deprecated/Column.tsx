@@ -1,8 +1,13 @@
 import { deprecatedStyled } from 'lib/styled-components'
 import { Gap } from 'theme'
 
+const NON_DOM_COLUMN_PROPS = new Set(['gap', 'flex'])
+const NON_DOM_AUTO_COLUMN_PROPS = new Set(['gap', 'justify', 'grow'])
+
 /** @deprecated Please use `Flex` from `ui/src` going forward */
-const Column = deprecatedStyled.div<{
+const Column = deprecatedStyled.div.withConfig({
+  shouldForwardProp: (prop) => !NON_DOM_COLUMN_PROPS.has(String(prop)),
+})<{
   gap?: Gap | string
   flex?: string
 }>`
@@ -19,7 +24,9 @@ export const ColumnCenter = deprecatedStyled(Column)`
   align-items: center;
 `
 
-export const AutoColumn = deprecatedStyled.div<{
+export const AutoColumn = deprecatedStyled.div.withConfig({
+  shouldForwardProp: (prop) => !NON_DOM_AUTO_COLUMN_PROPS.has(String(prop)),
+})<{
   gap?: Gap | string
   justify?: 'stretch' | 'center' | 'start' | 'end' | 'flex-start' | 'flex-end' | 'space-between'
   grow?: true

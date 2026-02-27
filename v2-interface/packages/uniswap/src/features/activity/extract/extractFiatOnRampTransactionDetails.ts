@@ -1,4 +1,4 @@
-import { GraphQLApi, TradingApi } from '@universe/api'
+import { BackendApi, TradingApi } from '@universe/api'
 import parseGraphQLOnRampTransaction from 'uniswap/src/features/activity/parse/parseOnRampTransaction'
 import { remoteTxStatusToLocalTxStatus } from 'uniswap/src/features/activity/utils/remote'
 import { UniverseChainId } from 'uniswap/src/features/chains/types'
@@ -130,7 +130,7 @@ export function extractOnRampTransactionDetails(transaction: TransactionListQuer
     // TODO: WALL-4919: Remove hardcoded Mainnet
     chainId: fromGraphQLChain(transaction.chain) ?? UniverseChainId.Kasane,
     addedTime: transaction.timestamp * 1000, // convert to ms,
-    status: remoteTxStatusToLocalTxStatus(GraphQLApi.TransactionType.OnRamp, transaction.details.status),
+    status: remoteTxStatusToLocalTxStatus(BackendApi.TransactionType.OnRamp, transaction.details.status),
     from: transaction.details.receiverAddress, // This transaction is not on-chain, so use the receiver address as the from address
     typeInfo,
     options: { request: {} },

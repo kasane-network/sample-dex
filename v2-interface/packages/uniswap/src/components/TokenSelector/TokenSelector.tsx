@@ -1,6 +1,5 @@
 import type { BottomSheetView } from '@gorhom/bottom-sheet'
 import { Currency } from '@uniswap/sdk-core'
-import { hasStringAsync } from 'expo-clipboard'
 import { ComponentProps, memo, useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Flex, ModalCloseIcon, Text, useMedia, useScrollbarStyles, useSporeColors } from 'ui/src'
@@ -122,8 +121,8 @@ export function TokenSelectorContent({
   // Check if user clipboard has any text to show paste button
   useEffect(() => {
     async function checkClipboard(): Promise<void> {
-      const result = await hasStringAsync()
-      setHasClipboardString(result)
+      const result = await getClipboard()
+      setHasClipboardString(Boolean(result && String(result).length > 0))
     }
 
     // Browser doesn't have permissions to access clipboard by default

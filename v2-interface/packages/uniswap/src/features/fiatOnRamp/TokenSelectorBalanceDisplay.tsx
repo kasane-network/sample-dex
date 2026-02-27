@@ -5,7 +5,7 @@ import { iconSizes, spacing } from 'ui/src/theme'
 import { CurrencyLogo } from 'uniswap/src/components/CurrencyLogo/CurrencyLogo'
 import { CurrencyInfo, PortfolioBalance } from 'uniswap/src/features/dataApi/types'
 import { useFormatExactCurrencyAmount } from 'uniswap/src/features/fiatOnRamp/hooks'
-import { TestID, TestIDType } from 'uniswap/src/test/fixtures/testIDs'
+import { TestID, TestIDType } from 'uniswap/src/constants/testIDs'
 import { getSymbolDisplayText } from 'uniswap/src/utils/currency'
 
 interface TokenSelectorBalanceDisplayProps {

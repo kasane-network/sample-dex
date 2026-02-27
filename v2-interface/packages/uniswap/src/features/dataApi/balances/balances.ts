@@ -1,6 +1,6 @@
 import { NetworkStatus } from '@apollo/client'
 import { QueryHookOptions } from '@apollo/client/react/types/types'
-import { GqlResult, GraphQLApi, SpamCode } from '@universe/api'
+import { GqlResult, BackendApi, SpamCode } from '@universe/api'
 import isEqual from 'lodash/isEqual'
 import { useMemo } from 'react'
 import { PollingInterval } from 'uniswap/src/constants/misc'
@@ -45,8 +45,8 @@ export function usePortfolioBalances({
   svmAddress?: Address
   chainIds?: UniverseChainId[]
 } & QueryHookOptions<
-  GraphQLApi.PortfolioBalancesQuery,
-  GraphQLApi.PortfolioBalancesQueryVariables
+  BackendApi.PortfolioBalancesQuery,
+  BackendApi.PortfolioBalancesQueryVariables
 >): PortfolioDataResult {
   return usePortfolioData({
     evmAddress: evmAddress || '',
@@ -84,13 +84,13 @@ export function buildPortfolioBalance(args: PortfolioBalance): PortfolioBalance 
 }
 
 interface TokenOverrides {
-  tokenIncludeOverrides: GraphQLApi.ContractInput[]
-  tokenExcludeOverrides: GraphQLApi.ContractInput[]
+  tokenIncludeOverrides: BackendApi.ContractInput[]
+  tokenExcludeOverrides: BackendApi.ContractInput[]
 }
 
 export function usePortfolioValueModifiers(
   addresses?: Address | Address[],
-): GraphQLApi.PortfolioValueModifier[] | undefined {
+): BackendApi.PortfolioValueModifier[] | undefined {
   // Memoize array creation if passed a string to avoid recomputing at every render
   const addressArray = useMemo(
     () => (!addresses ? [] : Array.isArray(addresses) ? addresses : [addresses]),
@@ -101,7 +101,7 @@ export function usePortfolioValueModifiers(
   const hideSpamTokens = useHideSpamTokensSetting()
   const hideSmallBalances = useHideSmallBalancesSetting()
 
-  const modifiers = useMemo<GraphQLApi.PortfolioValueModifier[]>(() => {
+  const modifiers = useMemo<BackendApi.PortfolioValueModifier[]>(() => {
     const { tokenIncludeOverrides, tokenExcludeOverrides } = Object.entries(currencyIdToTokenVisibility).reduce(
       (acc: TokenOverrides, [key, tokenVisibility]) => {
         const contractInput = currencyIdToContractInput(key)

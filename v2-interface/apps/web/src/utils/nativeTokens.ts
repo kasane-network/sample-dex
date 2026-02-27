@@ -1,8 +1,8 @@
 import { supportedChainIdFromGQLChain } from 'dataLayer/data/util'
-import { GraphQLApi } from '@universe/api'
+import { BackendApi } from '@universe/api'
 import { getChainInfo } from 'uniswap/src/features/chains/chainInfo'
 
-export function getNativeTokenDBAddress(chain: GraphQLApi.Chain): string | undefined {
+export function getNativeTokenDBAddress(chain: BackendApi.Chain): string | undefined {
   const pageChainId = supportedChainIdFromGQLChain(chain)
   if (pageChainId === undefined) {
     return undefined

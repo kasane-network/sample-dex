@@ -1,5 +1,5 @@
 import { getTokenDetailsURL, unwrapToken } from 'dataLayer/data/util'
-import { GraphQLApi } from '@universe/api'
+import { BackendApi } from '@universe/api'
 import { PortfolioLogo } from 'components/AccountDrawer/MiniPortfolio/PortfolioLogo'
 import { Cell } from 'components/Table/Cell'
 import { useTableSize } from 'components/Table/TableSizeProvider'
@@ -336,7 +336,7 @@ export const TimestampCell = ({ timestamp, link }: { timestamp: number; link: st
  * @param token
  * @returns JSX.Element showing the Token's Logo, Chain logo if non-mainnet, and Token Symbol
  */
-export const TokenLinkCell = ({ token, hideLogo }: { token: GraphQLApi.Token; hideLogo?: boolean }) => {
+export const TokenLinkCell = ({ token, hideLogo }: { token: BackendApi.Token; hideLogo?: boolean }) => {
   const { t } = useTranslation()
   const { defaultChainId } = useEnabledChains()
   const chainId = fromGraphQLChain(token.chain) ?? defaultChainId

@@ -1,8 +1,7 @@
-import MobileAppLogo from 'assets/svg/uniswap_app_logo.svg'
 import { useConnectWallet } from 'features/wallet/connection/hooks/useConnectWallet'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Button, Flex, Image, QRCodeDisplay, Separator, Text, useSporeColors } from 'ui/src'
+import { Button, Flex, QRCodeDisplay, Separator, Text, useSporeColors } from 'ui/src'
 import { CloseIconWithHover } from 'ui/src/components/icons/CloseIconWithHover'
 import { Modal } from 'uniswap/src/components/modals/Modal'
 import { ElementName, InterfaceEventName, ModalName } from 'uniswap/src/features/telemetry/constants'
@@ -65,11 +64,7 @@ export default function UniwalletModal() {
               containerBackgroundColor={colors.surface1.val}
               encodedValue={uri}
               size={370}
-            >
-              <Flex borderRadius="$rounded32" borderWidth="$spacing8" borderColor="$surface2">
-                <Image src={MobileAppLogo} width={81} height={81} />
-              </Flex>
-            </QRCodeDisplay>
+            />
           )}
         </Flex>
         <Separator />

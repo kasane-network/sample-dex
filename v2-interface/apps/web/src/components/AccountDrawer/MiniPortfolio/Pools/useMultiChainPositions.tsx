@@ -21,7 +21,6 @@ import { NonfungiblePositionManager, UniswapInterfaceMulticall } from 'uniswap/s
 import { UniswapV3PoolInterface } from 'uniswap/src/abis/types/v3/UniswapV3Pool'
 import { useEnabledChains } from 'uniswap/src/features/chains/hooks/useEnabledChains'
 import { UniverseChainId } from 'uniswap/src/features/chains/types'
-import { logger } from 'utilities/src/logger/logger'
 import { DEFAULT_ERC20_DECIMALS } from 'utilities/src/tokens/constants'
 import { currencyKey } from 'utils/currencyKey'
 
@@ -180,8 +179,6 @@ export default function useMultiChainPositions(account: string): UseMultiChainPo
               tokenB: poolPairs[i][1],
             }),
           )
-        } else {
-          logger.debug('useMultiChainPositions', 'fetchPositionInfo', 'slot0 fetch errored', result)
         }
         return acc
       }, [])
@@ -211,11 +208,7 @@ export default function useMultiChainPositions(account: string): UseMultiChainPo
         const postionDetails = await fetchPositionDetails(pm, positionIds)
         return fetchPositionInfo(postionDetails, chainId, multicall)
       } catch (error) {
-        const wrappedError = new Error('Failed to fetch positions for chain', { cause: error })
-        logger.debug('useMultiChainPositions', 'fetchPositionsForChain', wrappedError.message, {
-          error: wrappedError,
-          chainId,
-        })
+        void error
         return []
       }
     },

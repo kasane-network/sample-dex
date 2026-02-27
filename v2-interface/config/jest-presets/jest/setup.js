@@ -1,9 +1,18 @@
 // Sets up global.chrome in jest environment
 //
 const storage = require('mem-storage-area')
-const mockRNCNetInfo = require('@react-native-community/netinfo/jest/netinfo-mock.js')
 const mockAsyncStorage = require('@react-native-async-storage/async-storage/jest/async-storage-mock')
-const mockRNDeviceInfo = require('react-native-device-info/jest/react-native-device-info-mock')
+
+const optionalRequire = (path, fallback) => {
+  try {
+    return require(path)
+  } catch {
+    return fallback
+  }
+}
+
+const mockRNCNetInfo = optionalRequire('@react-native-community/netinfo/jest/netinfo-mock.js', {})
+const mockRNDeviceInfo = optionalRequire('react-native-device-info/jest/react-native-device-info-mock', {})
 
 // required polyfill for rtk-query baseQueryFn
 require('cross-fetch/polyfill')
@@ -34,47 +43,6 @@ jest.mock('redux-persist', () => {
   }
 })
 
-// Mock expo libs due to native deps.
-jest.mock(
-  'expo-clipboard',
-  () => ({
-    setString: jest.fn(),
-    setStringAsync: jest.fn(),
-    getStringAsync: () => Promise.resolve(),
-  }),
-  { virtual: true },
-)
-jest.mock('expo-blur', () => ({ BlurView: {} }), { virtual: true })
-jest.mock(
-  'expo-haptics',
-  () => ({
-    impactAsync: jest.fn(),
-    notificationAsync: jest.fn(),
-    ImpactFeedbackStyle: jest.fn(),
-  }),
-  { virtual: true },
-)
-jest.mock('expo-linear-gradient', () => ({ LinearGradient: () => 'ExpoLinearGradient' }), { virtual: true })
-jest.mock('expo-screen-capture', () => ({ addScreenshotListener: jest.fn() }), { virtual: true })
-jest.mock(
-  'expo-secure-store',
-  () => ({
-    getItemAsync: jest.fn(() => Promise.resolve(null)),
-    setItemAsync: jest.fn(() => Promise.resolve()),
-    deleteItemAsync: jest.fn(() => Promise.resolve()),
-  }),
-  { virtual: true },
-)
-jest.mock(
-  'expo-local-authentication',
-  () => ({
-    authenticateAsync: jest.fn(() => Promise.resolve({ success: true })),
-    hasHardwareAsync: jest.fn(() => Promise.resolve(true)),
-    isEnrolledAsync: jest.fn(() => Promise.resolve(true)),
-    supportedAuthenticationTypesAsync: jest.fn(() => Promise.resolve([1, 2])),
-  }),
-  { virtual: true },
-)
 // Mock Amplitde log reporting
 jest.mock('@amplitude/analytics-react-native', () => ({
   flush: () => jest.fn(),
@@ -82,13 +50,10 @@ jest.mock('@amplitude/analytics-react-native', () => ({
   init: () => jest.fn(),
   setDeviceId: () => jest.fn(),
   track: () => jest.fn(),
-}))
+}), { virtual: true })
 
 jest.mock('react-native/Libraries/EventEmitter/NativeEventEmitter')
-jest.mock('react-native-device-info', () => mockRNDeviceInfo)
-
-// mock initProviders to avoid creating real ethers providers for each test
-jest.mock('wallet/src/features/providers/saga')
+jest.mock('react-native-device-info', () => mockRNDeviceInfo, { virtual: true })
 
 // Mock WalletConnect v2 packages
 jest.mock('@reown/walletkit', () => ({
@@ -118,7 +83,7 @@ jest.mock('react-native-appsflyer', () => {
   return {
     initSdk: jest.fn(),
   }
-})
+}, { virtual: true })
 
 // NetInfo mock does not export typescript types
 const NetInfoStateType = {
@@ -133,7 +98,7 @@ const NetInfoStateType = {
   other: 'other',
 }
 
-jest.mock('@react-native-community/netinfo', () => ({ ...mockRNCNetInfo, NetInfoStateType }))
+jest.mock('@react-native-community/netinfo', () => ({ ...mockRNCNetInfo, NetInfoStateType }), { virtual: true })
 
 jest.mock('@universe/gating', () => {
   const actual = jest.requireActual('@universe/gating')
@@ -163,9 +128,5 @@ jest.mock('@universe/gating', () => {
     },
   }
 })
-
-// TODO: Remove this mock after mocks in jest-expo are fixed
-// (see the issue: https://github.com/expo/expo/issues/26893)
-jest.mock('expo-web-browser', () => ({}), { virtual: true })
 
 global.__DEV__ = true

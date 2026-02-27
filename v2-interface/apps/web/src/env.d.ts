@@ -1,8 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/triple-slash-reference
 /// <reference path="../../../index.d.ts" />
 // eslint-disable-next-line @typescript-eslint/triple-slash-reference
-/// <reference path="../../../packages/uniswap/src/react-native-dotenv.d.ts" />
-// eslint-disable-next-line @typescript-eslint/triple-slash-reference
 /// <reference path="../../../packages/ui/src/env.d.ts" />
 
 import { config, TamaguiGroupNames } from 'tamagui.config'
@@ -15,5 +13,18 @@ declare module 'tamagui' {
 
   interface TypeOverride {
     groupNames(): TamaguiGroupNames
+  }
+}
+
+declare module 'react-native-fast-image' {
+  import type { ImageStyle, StyleProp } from 'react-native'
+
+  export type ResizeMode = 'contain' | 'cover' | 'stretch' | 'center'
+
+  export type FastImageProps = {
+    shouldRasterizeIOS?: boolean
+    style?: StyleProp<ImageStyle>
+    source?: { uri?: string }
+    resizeMode?: ResizeMode
   }
 }

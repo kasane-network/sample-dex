@@ -1,4 +1,4 @@
-import { GraphQLApi } from '@universe/api'
+import { BackendApi } from '@universe/api'
 import { EMPTY_NFT_ITEM, HIDDEN_NFTS_ROW } from 'uniswap/src/features/collectibles/constants'
 import { NFTItem } from 'uniswap/src/features/collectibles/types'
 import { NFTKeyToVisibility } from 'uniswap/src/features/visibility/slice'
@@ -77,7 +77,7 @@ export function buildNftsArray({
   return result
 }
 
-export function formatNftItems(data: GraphQLApi.NftsTabQuery | undefined): NFTItem[] {
+export function formatNftItems(data: BackendApi.NftsTabQuery | undefined): NFTItem[] {
   const edges = data?.nftBalances?.edges
   if (!edges || edges.length === 0) {
     return []

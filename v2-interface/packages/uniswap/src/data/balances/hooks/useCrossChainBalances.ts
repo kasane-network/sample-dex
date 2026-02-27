@@ -1,5 +1,5 @@
 import { WatchQueryFetchPolicy } from '@apollo/client'
-import { GraphQLApi } from '@universe/api'
+import { BackendApi } from '@universe/api'
 import { useMemo } from 'react'
 import { useBalances } from 'uniswap/src/data/balances/hooks/useBalances'
 import { fromGraphQLChain } from 'uniswap/src/features/chains/utils'
@@ -16,7 +16,7 @@ export function useCrossChainBalances({
   evmAddress?: Address
   svmAddress?: Address
   currencyId: string
-  crossChainTokens: Maybe<{ chain: GraphQLApi.Chain; address?: Maybe<string> }[]>
+  crossChainTokens: Maybe<{ chain: BackendApi.Chain; address?: Maybe<string> }[]>
   fetchPolicy?: WatchQueryFetchPolicy
 }): {
   currentChainBalance: PortfolioBalance | null

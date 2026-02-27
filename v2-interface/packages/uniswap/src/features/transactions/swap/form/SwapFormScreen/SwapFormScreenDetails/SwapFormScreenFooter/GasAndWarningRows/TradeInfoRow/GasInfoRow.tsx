@@ -4,7 +4,7 @@ import { UniswapXFee } from 'uniswap/src/components/gas/NetworkFee'
 import { NetworkFeeWarning } from 'uniswap/src/components/gas/NetworkFeeWarning'
 import type { GasInfo } from 'uniswap/src/features/transactions/swap/form/SwapFormScreen/SwapFormScreenDetails/SwapFormScreenFooter/GasAndWarningRows/types'
 import { usePriceUXEnabled } from 'uniswap/src/features/transactions/swap/hooks/usePriceUXEnabled'
-import { TestID } from 'uniswap/src/test/fixtures/testIDs'
+import { TestID } from 'uniswap/src/constants/testIDs'
 import { isWebApp } from 'utilities/src/platform'
 
 function NetworkFeeWarningContent({ gasInfo }: { gasInfo?: GasInfo }): JSX.Element | null {

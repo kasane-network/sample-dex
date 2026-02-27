@@ -1,4 +1,4 @@
-import { GraphQLApi } from '@universe/api'
+import { BackendApi } from '@universe/api'
 import { ETH_LOGO, ETHEREUM_LOGO, UNICHAIN_LOGO, UNICHAIN_SEPOLIA_LOGO } from 'ui/src/assets'
 import { DEFAULT_NATIVE_ADDRESS_LEGACY, getQuicknodeEndpointUrl } from 'uniswap/src/features/chains/evm/rpc'
 import { buildChainTokens } from 'uniswap/src/features/chains/evm/tokens'
@@ -28,7 +28,7 @@ export const UNICHAIN_CHAIN_INFO = {
   platform: Platform.EVM,
   assetRepoNetworkName: 'unichain',
   backendChain: {
-    chain: GraphQLApi.Chain.Unichain as GqlChainId,
+    chain: BackendApi.Chain.Unichain as GqlChainId,
     backendSupported: true,
     nativeTokenBackendAddress: undefined,
   },
@@ -91,7 +91,7 @@ export const UNICHAIN_SEPOLIA_CHAIN_INFO = {
   platform: Platform.EVM,
   assetRepoNetworkName: undefined,
   backendChain: {
-    chain: GraphQLApi.Chain.AstrochainSepolia as GqlChainId,
+    chain: BackendApi.Chain.AstrochainSepolia as GqlChainId,
     backendSupported: true,
     nativeTokenBackendAddress: undefined,
   },

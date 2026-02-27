@@ -2,7 +2,6 @@ import { LoadingBubble } from 'components/Tokens/loading'
 import { DeltaArrow } from 'components/Tokens/TokenDetails/Delta'
 import { Fragment, memo, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useDailyTVLWithChange } from 'state/explore/protocolStats'
 import { useSupabaseTotalTvlQuery, useSupabaseTotalVolume24hQuery } from 'state/explore/useSupabaseExploreStatsQuery'
 import { AnimatePresence, Flex, Text, useMedia } from 'ui/src'
 import { UniverseChainId } from 'uniswap/src/features/chains/types'
@@ -26,11 +25,6 @@ const ExploreStatsSection = ({
   const { t } = useTranslation()
   const { convertFiatAmountFormatted } = useLocalizationContext()
 
-  const {
-    totalTVL,
-    totalChangePercent: totalTVL24hrChangePercent,
-    isLoading: isTVLLoading,
-  } = useDailyTVLWithChange()
   const { data: supabaseTotalVolume24h, isLoading: isSupabaseTotalVolume24hLoading } = useSupabaseTotalVolume24hQuery({
     chainId,
     enabled: true,
@@ -40,7 +34,7 @@ const ExploreStatsSection = ({
     enabled: true,
   })
 
-  const isStatDataLoading = isTVLLoading || isSupabaseTotalVolume24hLoading || isSupabaseTotalTvlLoading
+  const isStatDataLoading = isSupabaseTotalVolume24hLoading || isSupabaseTotalTvlLoading
 
   const exploreStatsSectionData = useMemo(() => {
     const formatPrice = (price: number) => convertFiatAmountFormatted(price, NumberType.FiatTokenPrice)
@@ -53,8 +47,8 @@ const ExploreStatsSection = ({
       },
       {
         label: 'Total Kasane TVL',
-        value: formatPrice(supabaseTotalTvl ?? totalTVL),
-        change: totalTVL24hrChangePercent,
+        value: formatPrice(supabaseTotalTvl ?? 0),
+        change: 0,
       },
     ]
 
@@ -65,8 +59,6 @@ const ExploreStatsSection = ({
     convertFiatAmountFormatted,
     supabaseTotalVolume24h,
     supabaseTotalTvl,
-    totalTVL,
-    totalTVL24hrChangePercent,
   ])
 
   const visibleStats = media.md ? exploreStatsSectionData.slice(0, 2) : exploreStatsSectionData

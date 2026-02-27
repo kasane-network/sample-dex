@@ -1,7 +1,7 @@
 import { AdaptiveWebPopoverContent } from 'ui/src'
 import { TransactionSettingsModalContent } from 'uniswap/src/features/transactions/components/settings/TransactionSettingsModal/TransactionSettingsModalContent/TransactionSettingsModalContent'
 import { TransactionSettingsModalProps } from 'uniswap/src/features/transactions/components/settings/TransactionSettingsModal/types'
-import { TestID } from 'uniswap/src/test/fixtures/testIDs'
+import { TestID } from 'uniswap/src/constants/testIDs'
 
 const POPOVER_WIDTH = 320
 
@@ -14,19 +14,9 @@ export function TransactionSettingsModalInterface({
 }: TransactionSettingsModalProps): JSX.Element {
   return (
     <AdaptiveWebPopoverContent
-      animation={[
-        'quick',
-        {
-          opacity: {
-            overshootClamping: true,
-          },
-        },
-      ]}
       borderColor="$surface3"
       borderRadius="$rounded24"
       borderWidth="$spacing1"
-      enterStyle={{ y: -10, opacity: 0 }}
-      exitStyle={{ y: -10, opacity: 0 }}
       px="$spacing12"
       py="$spacing4"
       shadowColor="$shadowColor"

@@ -1,5 +1,5 @@
 import { ProtocolVersion as RestProtocolVersion } from '@uniswap/client-data-api/dist/data/v1/poolTypes_pb'
-import { GraphQLApi } from '@universe/api'
+import { BackendApi } from '@universe/api'
 import { FeeData } from 'components/Liquidity/Create/types'
 import { isDynamicFeeTier } from 'components/Liquidity/utils/feeTiers'
 import { getProtocolVersionLabel } from 'components/Liquidity/utils/protocolVersion'
@@ -74,7 +74,7 @@ export function LiquidityPositionInfoBadges({
   size = 'default',
   cta,
 }: {
-  version?: RestProtocolVersion | GraphQLApi.ProtocolVersion | string
+  version?: RestProtocolVersion | BackendApi.ProtocolVersion | string
   v4hook?: string
   feeTier?: FeeData
   size: 'small' | 'default'

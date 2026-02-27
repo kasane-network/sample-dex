@@ -1,7 +1,7 @@
 import { PoolData } from 'dataLayer/data/pools/usePoolData'
 import { getTokenDetailsURL, unwrapToken } from 'dataLayer/data/util'
 import { Currency } from '@uniswap/sdk-core'
-import { GraphQLApi } from '@universe/api'
+import { BackendApi } from '@universe/api'
 import Column from 'components/deprecated/Column'
 import Row from 'components/deprecated/Row'
 import CurrencyLogo from 'components/Logo/CurrencyLogo'
@@ -123,7 +123,7 @@ const StatHeaderBubble = deprecatedStyled(LoadingBubble)`
   border-radius: 8px;
 `
 
-type TokenFullData = GraphQLApi.Token & {
+type TokenFullData = BackendApi.Token & {
   price: number
   tvl: number
   percent: number

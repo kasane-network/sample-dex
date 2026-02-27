@@ -1,4 +1,4 @@
-import { PrefetchBalancesWrapper } from 'dataLayer/data/apollo/AdaptiveTokenBalancesProvider'
+import { PrefetchBalancesWrapper } from 'features/portfolio/noopBalanceProviders'
 import { Currency } from '@uniswap/sdk-core'
 import Row from 'components/deprecated/Row'
 import CurrencyLogo from 'components/Logo/CurrencyLogo'

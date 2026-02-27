@@ -1,6 +1,6 @@
 // biome-ignore-all lint/correctness/noRestrictedElements: ignoring for the whole file
 
-import { ProtocolVersion } from '@universe/api/src/clients/graphql/__generated__/schema-types'
+import { ProtocolVersion } from '@uniswap/client-data-api/dist/data/v1/poolTypes_pb'
 import { ImageResponse } from '@vercel/og'
 import { WATERMARK_URL } from 'functions/constants'
 import getFont from 'functions/utils/getFont'

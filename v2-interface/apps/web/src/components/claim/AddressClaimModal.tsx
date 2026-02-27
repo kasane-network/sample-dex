@@ -1,7 +1,6 @@
 import { isAddress } from '@ethersproject/address'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 import Circle from 'assets/images/blue-loader.svg'
-import tokenLogo from 'assets/images/token-logo.png'
 import AddressInputPanel from 'components/AddressInputPanel'
 import { AutoColumn } from 'components/deprecated/Column'
 import { Break, CardBGImage, CardBGImageSmaller, CardNoise, CardSection } from 'components/earn/styled'
@@ -11,7 +10,6 @@ import { useState } from 'react'
 import { useClaimCallback, useUserHasAvailableClaim, useUserUnclaimedAmount } from 'state/claim/hooks'
 import { useIsTransactionPending } from 'state/transactions/hooks'
 import { CustomLightSpinner } from 'theme/components/icons/spinner'
-import { UniTokenAnimated } from 'theme/components/icons/uniTokenAnimated'
 import { ExternalLink } from 'theme/components/Links'
 import { Button, Flex, Text, View } from 'ui/src'
 import { CloseIconWithHover } from 'ui/src/components/icons/CloseIconWithHover'
@@ -146,7 +144,9 @@ export default function AddressClaimModal({ isOpen, closeModal }: ModalState) {
             {!claimConfirmed ? (
               <CustomLightSpinner src={Circle} alt="loader" size="90px" />
             ) : (
-              <UniTokenAnimated width="72px" src={tokenLogo} alt="UNI logo" />
+              <Text variant="heading2" color="$black">
+                UNI
+              </Text>
             )}
           </Flex>
           <Flex gap={100} justifyContent="center">

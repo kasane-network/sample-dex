@@ -1,4 +1,4 @@
-import { GraphQLApi } from '@universe/api'
+import { BackendApi } from '@universe/api'
 import { ChartType } from 'components/Charts/utils'
 import { UTCTimestamp } from 'lightweight-charts'
 import ms from 'ms'
@@ -18,27 +18,27 @@ export enum DataQuality {
 }
 
 /** Used for expecting the same data freshness regardless of time period, e.g. 1y price chart should still have a recent point */
-const CONSTANT_STALENESS: Partial<Record<GraphQLApi.HistoryDuration, number>> = {
-  [GraphQLApi.HistoryDuration.Hour]: ms('15m'),
-  [GraphQLApi.HistoryDuration.Day]: ms('15m'),
-  [GraphQLApi.HistoryDuration.Week]: ms('15m'),
-  [GraphQLApi.HistoryDuration.Month]: ms('15m'),
-  [GraphQLApi.HistoryDuration.Year]: ms('15m'),
+const CONSTANT_STALENESS: Partial<Record<BackendApi.HistoryDuration, number>> = {
+  [BackendApi.HistoryDuration.Hour]: ms('15m'),
+  [BackendApi.HistoryDuration.Day]: ms('15m'),
+  [BackendApi.HistoryDuration.Week]: ms('15m'),
+  [BackendApi.HistoryDuration.Month]: ms('15m'),
+  [BackendApi.HistoryDuration.Year]: ms('15m'),
 }
 
 /** Used decreasing freshness regardless of time period, e.g. 1h volume chart has more recent data than 1y volume chart */
-const GRANULAR_STALENESS: Partial<Record<GraphQLApi.HistoryDuration, number>> = {
-  [GraphQLApi.HistoryDuration.Hour]: ms('15m'),
-  [GraphQLApi.HistoryDuration.Day]: ms('4h'),
-  [GraphQLApi.HistoryDuration.Week]: ms('1d'),
-  [GraphQLApi.HistoryDuration.Month]: ms('4d'),
-  [GraphQLApi.HistoryDuration.Year]: ms('30d'),
+const GRANULAR_STALENESS: Partial<Record<BackendApi.HistoryDuration, number>> = {
+  [BackendApi.HistoryDuration.Hour]: ms('15m'),
+  [BackendApi.HistoryDuration.Day]: ms('4h'),
+  [BackendApi.HistoryDuration.Week]: ms('1d'),
+  [BackendApi.HistoryDuration.Month]: ms('4d'),
+  [BackendApi.HistoryDuration.Year]: ms('30d'),
 }
 
 /** Maps from `ChartType` and `HistoryDuration` to expected data freshness threshold */
 const CHART_DURATION_STALE_THRESHOLD_MAP: Record<
   ChartType,
-  Partial<Record<GraphQLApi.HistoryDuration, number> | undefined>
+  Partial<Record<BackendApi.HistoryDuration, number> | undefined>
 > = {
   [ChartType.PRICE]: CONSTANT_STALENESS,
   [ChartType.VOLUME]: GRANULAR_STALENESS,
@@ -54,7 +54,7 @@ export function checkDataQuality({
 }: {
   data: { time: number }[]
   chartType: ChartType
-  duration: GraphQLApi.HistoryDuration
+  duration: BackendApi.HistoryDuration
 }): DataQuality {
   if (data.length < 3) {
     return DataQuality.INVALID

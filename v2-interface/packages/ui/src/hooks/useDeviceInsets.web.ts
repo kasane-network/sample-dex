@@ -1,4 +1,4 @@
-import type { EdgeInsets } from 'react-native-safe-area-context'
+import type { EdgeInsets } from 'ui/src/hooks/types'
 
 export function useDeviceInsets(): EdgeInsets {
   return {

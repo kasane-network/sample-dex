@@ -1,6 +1,6 @@
 import { ApolloCache, NormalizedCacheObject } from '@apollo/client'
 import { CurrencyAmount, NativeCurrency, Token } from '@uniswap/sdk-core'
-import { GraphQLApi, TradingApi } from '@universe/api'
+import { BackendApi, TradingApi } from '@universe/api'
 import { getNativeAddress } from 'uniswap/src/constants/addresses'
 import { fetchTradingApiIndicativeQuoteIgnoring404 } from 'uniswap/src/data/apiClients/tradingApi/useTradingApiIndicativeQuoteQuery'
 import { UniverseChainId } from 'uniswap/src/features/chains/types'
@@ -32,7 +32,7 @@ export async function fetchOnChainBalances({
   currencyIds,
 }: {
   apolloCache: ApolloCache<NormalizedCacheObject>
-  cachedPortfolio: NonNullable<GraphQLApi.PortfolioBalancesQuery['portfolios']>[0]
+  cachedPortfolio: NonNullable<BackendApi.PortfolioBalancesQuery['portfolios']>[0]
   accountAddress: Address
   currencyIds: Set<CurrencyId>
 }): Promise<OnChainMap> {
@@ -60,8 +60,8 @@ export async function fetchOnChainBalances({
         accountAddress,
       })
 
-      const token = apolloCache.readQuery<GraphQLApi.TokenQuery>({
-        query: GraphQLApi.TokenDocument,
+      const token = apolloCache.readQuery<BackendApi.TokenQuery>({
+        query: BackendApi.TokenDocument,
         variables: currencyIdToContractInput(currencyId),
       })?.token
 
@@ -124,8 +124,8 @@ async function getDenominatedValue({
 }: {
   accountAddress: Address
   onchainQuantityCurrencyAmount: CurrencyAmount<NativeCurrency | Token>
-  token: NonNullable<GraphQLApi.TokenQuery['token']>
-  cachedPortfolio: NonNullable<GraphQLApi.PortfolioBalancesQuery['portfolios']>[0]
+  token: NonNullable<BackendApi.TokenQuery['token']>
+  cachedPortfolio: NonNullable<BackendApi.PortfolioBalancesQuery['portfolios']>[0]
 }): Promise<DenominatedValue | undefined> {
   const inferredDenominatedValue = getInferredCachedDenominatedValue({
     cachedPortfolio,
@@ -206,8 +206,8 @@ function getInferredCachedDenominatedValue({
   token,
   onchainQuantityCurrencyAmount,
 }: {
-  cachedPortfolio: NonNullable<GraphQLApi.PortfolioBalancesQuery['portfolios']>[0]
-  token: NonNullable<GraphQLApi.TokenQuery['token']>
+  cachedPortfolio: NonNullable<BackendApi.PortfolioBalancesQuery['portfolios']>[0]
+  token: NonNullable<BackendApi.TokenQuery['token']>
   onchainQuantityCurrencyAmount: CurrencyAmount<NativeCurrency | Token>
 }): DenominatedValue | undefined {
   const cachedTokenBalance = cachedPortfolio?.tokenBalances?.find(

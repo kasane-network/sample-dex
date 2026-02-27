@@ -1,5 +1,5 @@
 import { ChartPeriod, GetPortfolioChartResponse } from '@uniswap/client-data-api/dist/data/v1/api_pb'
-import { GraphQLApi } from '@universe/api'
+import { BackendApi } from '@universe/api'
 import { ChartSkeleton } from 'components/Charts/LoadingState'
 import { PriceChart, PriceChartData } from 'components/Charts/PriceChart'
 import { ChartType, PriceChartType } from 'components/Charts/utils'
@@ -28,21 +28,21 @@ const ChartContainer = styled(Flex, {
 const CHART_HEIGHT = 300
 const UNFUNDED_CHART_SKELETON_HEIGHT = 275
 
-// Map ChartPeriod to GraphQLApi.HistoryDuration for PriceChart display
-function chartPeriodToHistoryDuration(period: ChartPeriod): GraphQLApi.HistoryDuration {
+// Map ChartPeriod to BackendApi.HistoryDuration for PriceChart display
+function chartPeriodToHistoryDuration(period: ChartPeriod): BackendApi.HistoryDuration {
   switch (period) {
     case ChartPeriod.HOUR:
-      return GraphQLApi.HistoryDuration.Hour
+      return BackendApi.HistoryDuration.Hour
     case ChartPeriod.DAY:
-      return GraphQLApi.HistoryDuration.Day
+      return BackendApi.HistoryDuration.Day
     case ChartPeriod.WEEK:
-      return GraphQLApi.HistoryDuration.Week
+      return BackendApi.HistoryDuration.Week
     case ChartPeriod.MONTH:
-      return GraphQLApi.HistoryDuration.Month
+      return BackendApi.HistoryDuration.Month
     case ChartPeriod.YEAR:
-      return GraphQLApi.HistoryDuration.Year
+      return BackendApi.HistoryDuration.Year
     default:
-      return GraphQLApi.HistoryDuration.Day
+      return BackendApi.HistoryDuration.Day
   }
 }
 

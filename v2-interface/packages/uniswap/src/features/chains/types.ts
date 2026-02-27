@@ -1,6 +1,6 @@
 // biome-ignore lint/style/noRestrictedImports: legacy import will be migrated
 import { CurrencyAmount, Token, ChainId as UniswapSDKChainId } from '@uniswap/sdk-core'
-import type { GraphQLApi } from '@universe/api'
+import type { BackendApi } from '@universe/api'
 import { SwapConfigKey } from '@universe/gating'
 import type { ImageSourcePropType } from 'react-native'
 // biome-ignore lint/style/noRestrictedImports: legacy import will be migrated
@@ -66,7 +66,7 @@ export interface RetryOptions {
   maxWait: number
 }
 
-export type GqlChainId = Exclude<GraphQLApi.Chain, GraphQLApi.Chain.UnknownChain | GraphQLApi.Chain.EthereumGoerli>
+export type GqlChainId = Exclude<BackendApi.Chain, BackendApi.Chain.UnknownChain | BackendApi.Chain.EthereumGoerli>
 
 export interface BackendChain {
   chain: GqlChainId

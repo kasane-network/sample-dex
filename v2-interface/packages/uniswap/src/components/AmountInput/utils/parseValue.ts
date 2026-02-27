@@ -23,7 +23,7 @@ export function parseValue({
   parsedValue = parsedValue.replace(/[^0-9.,]/g, '')
 
   if (isMobileWeb) {
-    // Override decimal handling in mweb since 'react-native-localize' provides unreliable native decimal separators in this specific env.
+    // Override decimal handling in mweb when native keyboard separator differs from app separator.
     // This isn't an ideal long-term solution (as it limits copy/paste flexibility), but it's necessary
     // to unblock users in various locales who are currently unable to input amounts correctly.
     parsedValue = parsedValue.replace(/,/g, '.')

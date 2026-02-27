@@ -1,5 +1,5 @@
 import { Button, type ButtonEmphasis, type ButtonVariant, Flex, type FlexProps } from 'ui/src'
-import { TestIDType } from 'uniswap/src/test/fixtures/testIDs'
+import { TestIDType } from 'uniswap/src/constants/testIDs'
 
 export type ButtonConfig = {
   testID?: TestIDType

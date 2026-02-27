@@ -1,5 +1,5 @@
 import { CurrencyAmount } from '@uniswap/sdk-core'
-import { GraphQLApi } from '@universe/api'
+import { BackendApi } from '@universe/api'
 import { LP_INCENTIVES_REWARD_TOKEN } from 'components/LpIncentives/constants'
 import { TFunction } from 'i18next'
 import JSBI from 'jsbi'
@@ -72,7 +72,7 @@ const BarChartSide = ({ percent, color, isLeft }: BarChartSideProps) => {
 export const LpIncentivesPoolDetailsRewardsDistribution = ({
   rewardsCampaign,
 }: {
-  rewardsCampaign?: GraphQLApi.RewardsCampaign
+  rewardsCampaign?: BackendApi.RewardsCampaign
 }) => {
   const { formatCurrencyAmount, convertFiatAmountFormatted } = useLocalizationContext()
   const { price: uniPrice } = useUSDCPrice(LP_INCENTIVES_REWARD_TOKEN)

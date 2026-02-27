@@ -1,7 +1,6 @@
 import { cloudflare } from '@cloudflare/vite-plugin'
 import { tamaguiPlugin } from '@tamagui/vite-plugin'
 import react from '@vitejs/plugin-react'
-import reactOxc from '@vitejs/plugin-react-oxc'
 import { execSync } from 'child_process'
 import { config as dotenvConfig } from 'dotenv'
 import fs from 'fs'
@@ -29,10 +28,11 @@ const DEPLOY_TARGET = process.env.DEPLOY_TARGET || 'cloudflare'
 const VITE_DISABLE_SOURCEMAP = process.env.VITE_DISABLE_SOURCEMAP === 'true'
 const DEBUG_PROXY = process.env.VITE_DEBUG_PROXY === 'true'
 const ENABLE_PROXY = process.env.VITE_ENABLE_ENTRY_GATEWAY_PROXY === 'true'
-const ENABLE_CLOUDFLARE_DEV = process.env.VITE_ENABLE_CLOUDFLARE_DEV === 'true'
 
 const DEFAULT_PORT = 3000
-
+const REANIMATED_JSX_IN_JS_RE = /node_modules\/react-native-reanimated\/.*\.js$/
+const REANIMATED_UPDATE_PROPS_RE =
+  /node_modules\/react-native-reanimated\/lib\/module\/ReanimatedModule\/js-reanimated\/index\.js$/
 const reactPlugin = () =>
   ENABLE_REACT_COMPILER
     ? react({
@@ -40,7 +40,7 @@ const reactPlugin = () =>
           plugins: [['babel-plugin-react-compiler', ReactCompilerConfig]],
         },
       })
-    : reactOxc()
+    : react()
 
 // Prints a warning if server automatically switches to a different port when `DEFAULT_PORT` is already in use
 const portWarningPlugin = (isProduction: boolean) =>
@@ -99,24 +99,43 @@ export default defineConfig(({ mode }) => {
     }
   }
 
+  // Env vars that should be overridable from Vercel/CI (process.env takes precedence over .env files)
+  const VERCEL_OVERRIDABLE_ENV_VARS = [
+    'UNISWAP_GATEWAY_DNS',
+    'API_BASE_URL_V2_OVERRIDE',
+    'ENTRY_GATEWAY_API_URL_OVERRIDE',
+  ]
+  for (const key of VERCEL_OVERRIDABLE_ENV_VARS) {
+    if (process.env[key]) {
+      env[key] = process.env[key]
+    }
+  }
+
   // Log environment loading for CI verification
   console.log(`ENV_LOADED: mode=${mode} REACT_APP_AWS_API_ENDPOINT=${env.REACT_APP_AWS_API_ENDPOINT}`)
 
   const isProduction = mode === 'production'
   const isStaging = mode === 'staging'
-  const isDevelopment = mode === 'development'
   const isVercelDeploy = DEPLOY_TARGET === 'vercel'
   const root = path.resolve(__dirname)
 
   // External package aliases only
   const overrides = {
     // External package aliases
-    'react-native': 'react-native-web',
+    'react-native': path.resolve(__dirname, '../../node_modules/react-native-web'),
+    'react-native-is-edge-to-edge': path.resolve(
+      __dirname,
+      '../../node_modules/react-native-is-edge-to-edge/dist/index.mjs',
+    ),
+    invariant: path.resolve(__dirname, 'src/lib/invariant.ts'),
+    'expo-blur': path.resolve(__dirname, './.storybook/__mocks__/expo-blur.jsx'),
+    '@web3-react/core': path.resolve(__dirname, 'src/connection/web3reactShim.ts'),
     'uniswap/src': path.resolve(__dirname, '../../packages/uniswap/src'),
     'utilities/src': path.resolve(__dirname, '../../packages/utilities/src'),
     'ui/src': path.resolve(__dirname, '../../packages/ui/src'),
     'expo-clipboard': path.resolve(__dirname, 'src/lib/expo-clipboard.jsx'),
-    jsbi: path.resolve(__dirname, '../../node_modules/jsbi/dist/jsbi.mjs'), // force consistent ESM build
+    // Force JSBI to use ESM build so transform plugin can add __esModule marker
+    jsbi: path.resolve(__dirname, '../../node_modules/jsbi/dist/jsbi.mjs'),
   }
 
   // Create process.env definitions for ALL environment variables
@@ -124,20 +143,21 @@ export default defineConfig(({ mode }) => {
     Object.entries(env).map(([key, value]) => [`process.env.${key}`, JSON.stringify(value)]),
   )
 
+  const defines = {
+    __DEV__: !isProduction,
+    'process.env.NODE_ENV': JSON.stringify(mode),
+    'process.env.EXPO_OS': JSON.stringify('web'),
+    'process.env.REACT_APP_GIT_COMMIT_HASH': JSON.stringify(commitHash),
+    'process.env.REACT_APP_STAGING': JSON.stringify(mode === 'staging'),
+    'process.env.REACT_APP_WEB_BUILD_TYPE': JSON.stringify('vite'),
+    // Enable Tamagui's global z-index stacking to fix modal stacking issues
+    'process.env.TAMAGUI_STACK_Z_INDEX_GLOBAL': JSON.stringify('true'),
+    ...envDefines,
+  }
+
   return {
     root,
-
-    define: {
-      __DEV__: !isProduction,
-      'process.env.NODE_ENV': JSON.stringify(mode),
-      'process.env.EXPO_OS': JSON.stringify('web'),
-      'process.env.REACT_APP_GIT_COMMIT_HASH': JSON.stringify(commitHash),
-      'process.env.REACT_APP_STAGING': JSON.stringify(mode === 'staging'),
-      'process.env.REACT_APP_WEB_BUILD_TYPE': JSON.stringify('vite'),
-      // Enable Tamagui's global z-index stacking to fix modal stacking issues
-      'process.env.TAMAGUI_STACK_Z_INDEX_GLOBAL': JSON.stringify('true'),
-      ...envDefines,
-    },
+    define: defines,
 
     resolve: {
       extensions: ['.web.tsx', '.web.ts', '.web.js', '.tsx', '.ts', '.js'],
@@ -158,26 +178,68 @@ export default defineConfig(({ mode }) => {
         'react-dom',
       ],
       alias: [
-        { find: /^@web3-react\/core$/, replacement: path.resolve(__dirname, 'src/connection/web3reactShim.ts') },
         ...Object.entries(overrides).map(([find, replacement]) => ({ find, replacement })),
       ],
     },
 
     plugins: [
+      // Fix JSBI ESM interop issue:
+      // Rollup's interop wrapper checks for __esModule and passes through if present.
+      // JSBI's pure ESM build doesn't have __esModule, so Rollup creates a proxy wrapper
+      // that loses static methods like BigInt(). By adding __esModule as a named export,
+      // the module namespace will include it, and the interop function returns the module
+      // as-is, preserving all static methods.
       {
-        name: 'transform-react-native-jsx',
-        async transform(code: string, id: string) {
-          // Transform JSX in react-native libraries that ship JSX in .js files
-          const needsJsxTransform = [
-            'node_modules/react-native-reanimated',
-          ].some(path => id.includes(path))
-
-          if (!needsJsxTransform || !id.endsWith('.js')) {
+        name: 'jsbi-esm-interop-fix',
+        enforce: 'pre' as const,
+        transform(code: string, id: string) {
+          // Only transform the JSBI ESM module
+          if (!id.includes('node_modules/jsbi/dist/jsbi.mjs')) {
             return null
           }
 
-          return transformWithOxc(code, id, {
-            jsx: { runtime: 'automatic' },
+          // Add __esModule as a named export so Rollup's interop passes it through
+          // The interop checks: hasOwnProperty(moduleNamespace, "__esModule")
+          // By exporting it, it will be a property on the module namespace object
+          return {
+            code: `${code}\nexport const __esModule = true;`,
+            map: null,
+          }
+        },
+      },
+      {
+        name: 'reanimated-update-props-guard',
+        enforce: 'pre',
+        transform(code: string, id: string) {
+          const cleanId = id.split('?')[0]
+          if (!REANIMATED_UPDATE_PROPS_RE.test(cleanId)) {
+            return null
+          }
+
+          let patched = code.replace(/Object\.keys\(updates\)\.reduce\(/g, 'Object.keys(updates ?? {}).reduce(')
+          patched = patched.replace(/Object\.keys\(component\.props\)/g, 'Object.keys(component.props ?? {})')
+          patched = patched.replace(/component\._touchableNode\.setAttribute\(/g, 'component._touchableNode?.setAttribute(')
+          patched = patched.replace(
+            /logger\.warn\(`It's not possible to manipulate the component \$\{componentName\}`\);/g,
+            'return;',
+          )
+          return patched === code ? null : patched
+        },
+      },
+      {
+        name: 'reanimated-jsx-in-js-transform',
+        enforce: 'pre',
+        async transform(code: string, id: string) {
+          const cleanId = id.split('?')[0]
+          if (!REANIMATED_JSX_IN_JS_RE.test(cleanId)) {
+            return null
+          }
+
+          return transformWithOxc(code, cleanId, {
+            lang: 'jsx',
+            jsx: {
+              runtime: 'automatic',
+            },
           })
         },
       },
@@ -256,7 +318,7 @@ export default defineConfig(({ mode }) => {
         ? undefined
         : bundlesize({
             limits: [
-              { name: 'assets/index-*.js', limit: '2.35 MB', mode: 'gzip' },
+              { name: 'assets/index-*.js', limit: '2.40 MB', mode: 'gzip' },
               { name: '**/*', limit: Infinity, mode: 'uncompressed' },
             ],
           }),
@@ -291,7 +353,7 @@ export default defineConfig(({ mode }) => {
           }
         },
       },
-      (DEPLOY_TARGET === 'cloudflare' && !isDevelopment) || ENABLE_CLOUDFLARE_DEV
+      DEPLOY_TARGET === 'cloudflare' || mode === 'development'
         ? cloudflare({
             configPath: './wrangler-vite-worker.jsonc',
             // Workaround for cloudflare plugin bug: explicitly set environment name based on CLOUDFLARE_ENV
@@ -305,18 +367,9 @@ export default defineConfig(({ mode }) => {
         : undefined,
     ].filter(Boolean as unknown as <T>(x: T) => x is NonNullable<T>),
 
-    // Isolate dep optimizer cache per dev-server process to avoid chunk races
-    // when multiple terminals run `bun web dev` at the same time.
-    cacheDir: path.resolve(__dirname, '../../node_modules/.vite-web', String(process.pid)),
-
     optimizeDeps: {
-      // Avoid stale pre-bundled chunks causing missing files under node_modules/.vite/deps.
-      force: true,
       entries: ['index.html'],
       include: [
-        'graphql',
-        'expo-linear-gradient',
-        'expo-modules-core',
         'react-native-web',
         'react-native-gesture-handler',
         'tamagui',
@@ -335,32 +388,27 @@ export default defineConfig(({ mode }) => {
         '@visx/responsive',
       ],
       // Libraries that shouldn't be pre-bundled
-      exclude: ['expo-clipboard', '@connectrpc/connect'],
-      esbuildOptions: {
-        resolveExtensions: ['.web.js', '.web.ts', '.web.tsx', '.js', '.ts', '.tsx'],
-        loader: {
-          '.js': 'jsx',
-          '.ts': 'ts',
-          '.tsx': 'tsx',
+      exclude: ['expo-clipboard', '@connectrpc/connect', 'react-native-reanimated'],
+      rollupOptions: {
+        resolve: {
+          extensions: ['.web.js', '.web.ts', '.web.tsx', '.js', '.ts', '.tsx'],
         },
       },
     },
 
     server: {
       port: DEFAULT_PORT,
-      strictPort: true,
-      hmr: isDevelopment
-        ? {
-            protocol: 'ws',
-            host: 'localhost',
-            port: DEFAULT_PORT,
-            clientPort: DEFAULT_PORT,
-          }
-        : false,
       proxy: {
+        '/config': {
+          target: 'https://gating.interface.gateway.uniswap.org',
+          changeOrigin: true,
+          secure: true,
+          rewrite: (path) => path.replace(/^\/config/, '/v1/statsig-proxy'),
+        },
         ...(ENABLE_PROXY ? {
           '/entry-gateway': createEntryGatewayProxy({ getLogger })
-        } : {})}
+        } : {}),
+      },
     },
 
     build: {
@@ -379,7 +427,7 @@ export default defineConfig(({ mode }) => {
       // Increase the warning limit for larger chunks
       chunkSizeWarningLimit: 800,
       commonjsOptions: {
-        include: [/jsbi/, /node_modules/], // force inclusion + conversion of jsbi CJS
+        include: [/node_modules/],
       },
     },
 
@@ -387,7 +435,7 @@ export default defineConfig(({ mode }) => {
     envPrefix: [],
 
     preview: {
-      port: 3000,
+      port: 3011,
     },
   }
 })

@@ -1,6 +1,5 @@
 import type { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { Text } from 'ui/src'
-import { useConnectionStatus } from 'uniswap/src/features/accounts/store/hooks'
 import type { CurrencyInfo } from 'uniswap/src/features/dataApi/types'
 import { useLocalizationContext } from 'uniswap/src/features/language/LocalizationContext'
 import { CurrencyField } from 'uniswap/src/types/currency'
@@ -22,11 +21,10 @@ export function CurrencyInputPanelBalance({
   hideBalance,
 }: CurrencyInputBalanceProps): JSX.Element | null {
   const { formatCurrencyAmount } = useLocalizationContext()
-  const { isDisconnected } = useConnectionStatus()
   const isOutput = currencyField === CurrencyField.OUTPUT
 
-  // Hide balance if panel is output, and no balance, or disconnected or the token selector is hidden
-  const hideCurrencyBalance = (isOutput && currencyBalance?.equalTo(0)) || isDisconnected || hideBalance
+  // Hide balance if balance is not loaded, output balance is exactly zero, or caller explicitly hides it.
+  const hideCurrencyBalance = !currencyBalance || (isOutput && currencyBalance.equalTo(0)) || hideBalance
 
   if (!currencyInfo || hideCurrencyBalance) {
     return null

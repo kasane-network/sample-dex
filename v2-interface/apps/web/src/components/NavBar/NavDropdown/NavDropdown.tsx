@@ -63,20 +63,11 @@ export function NavDropdown({
       <Popover.Content
         zIndex={zIndexes.popover}
         backgroundColor="transparent"
-        enterStyle={{ scale: 0.95, opacity: 0 }}
-        exitStyle={{ scale: 0.95, opacity: 0 }}
         width={width}
         minWidth={minWidth}
         mr={mr}
         elevate
-        animation={[
-          'fast',
-          {
-            opacity: {
-              overshootClamping: true,
-            },
-          },
-        ]}
+        animation={null}
         data-testid={dataTestId}
       >
         <Popover.Arrow />

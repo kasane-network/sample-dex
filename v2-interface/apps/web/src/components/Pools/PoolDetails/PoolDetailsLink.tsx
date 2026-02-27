@@ -1,5 +1,5 @@
 import { getTokenDetailsURL, gqlToCurrency } from 'dataLayer/data/util'
-import { GraphQLApi } from '@universe/api'
+import { BackendApi } from '@universe/api'
 import Row from 'components/deprecated/Row'
 import { EtherscanLogo } from 'components/Icons/Etherscan'
 import { ExplorerIcon } from 'components/Icons/ExplorerIcon'
@@ -87,7 +87,7 @@ const ButtonsRow = deprecatedStyled(Row)`
 interface PoolDetailsLinkProps {
   address?: string
   chainId?: UniverseChainId
-  tokens: (GraphQLApi.Token | undefined)[]
+  tokens: (BackendApi.Token | undefined)[]
   loading?: boolean
 }
 
@@ -102,7 +102,7 @@ export function PoolDetailsLink({ address, chainId, tokens, loading }: PoolDetai
   }, [address, setCopied])
   const isPool = tokens.length === 2
   const isNative =
-    address === NATIVE_CHAIN_ID || (tokens[0] && !isPool && tokens[0].standard === GraphQLApi.TokenStandard.Native)
+    address === NATIVE_CHAIN_ID || (tokens[0] && !isPool && tokens[0].standard === BackendApi.TokenStandard.Native)
   const currencies = isPool && tokens[1] ? [currency, gqlToCurrency(tokens[1])] : [currency]
   const explorerUrl =
     chainId &&

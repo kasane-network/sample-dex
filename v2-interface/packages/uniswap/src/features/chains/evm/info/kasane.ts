@@ -1,5 +1,5 @@
 import { Token } from '@uniswap/sdk-core'
-import { GraphQLApi } from '@universe/api'
+import { BackendApi } from '@universe/api'
 import { SwapConfigKey } from '@universe/gating'
 import { ETHEREUM_LOGO, ICP_LOGO } from 'ui/src/assets'
 import { DEFAULT_NATIVE_ADDRESS_LEGACY } from 'uniswap/src/features/chains/evm/rpc'
@@ -32,7 +32,7 @@ export const KASANE_CHAIN_INFO = {
   platform: Platform.EVM,
   assetRepoNetworkName: undefined,
   backendChain: {
-    chain: GraphQLApi.Chain.MonadTestnet as GqlChainId,
+    chain: BackendApi.Chain.MonadTestnet as GqlChainId,
     backendSupported: false,
     nativeTokenBackendAddress: undefined,
   },

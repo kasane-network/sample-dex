@@ -1,7 +1,7 @@
 import { type NetworkStatus } from '@apollo/client'
 import { type Contract } from '@uniswap/client-data-api/dist/data/v1/types_pb'
 import { type Currency } from '@uniswap/sdk-core'
-import { type GraphQLApi, type SpamCode } from '@universe/api'
+import { type BackendApi, type SpamCode } from '@universe/api'
 import { type FoTPercent } from 'uniswap/src/features/tokens/warnings/TokenWarningModal'
 import { type CurrencyId } from 'uniswap/src/types/currency'
 
@@ -38,7 +38,7 @@ export enum AttackType {
 export type SafetyInfo = {
   tokenList: TokenList
   attackType?: AttackType
-  protectionResult: GraphQLApi.ProtectionResult
+  protectionResult: BackendApi.ProtectionResult
   blockaidFees?: FoTPercent
 }
 
@@ -54,7 +54,7 @@ export type CurrencyInfo = {
   // Indicates if this token is a bridged asset
   isBridged?: Maybe<boolean>
   // Information about how to withdraw a bridged asset to its native chain
-  bridgedWithdrawalInfo?: Maybe<GraphQLApi.BridgedWithdrawalInfo>
+  bridgedWithdrawalInfo?: Maybe<BackendApi.BridgedWithdrawalInfo>
 }
 
 // Portfolio balance as exposed to the app

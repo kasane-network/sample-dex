@@ -82,20 +82,7 @@ vi.mock('@solana/wallet-adapter-coinbase', () => ({
   },
 }))
 
-vi.mock('react-native-reanimated', async () => {
-  const mock = await vi.importActual<any>('react-native-reanimated/src/mock')
-  return {
-    ...mock,
-    default: {
-      ...mock.default,
-      createAnimatedComponent: (component: any) => component,
-    },
-    createAnimatedComponent: (component: any) => component,
-  }
-})
-
 // Mock environment variables
-process.env.EXPO_OS = 'web'
 process.env.REACT_APP_ANALYTICS_REQUEST_TIMEOUT_MS = '10000'
 process.env.REACT_APP_ANALYTICS_FLUSH_TIMEOUT_MS = '5000'
 
@@ -146,8 +133,6 @@ const IntersectionObserverMock = vi.fn(() => ({
 }))
 
 vi.stubGlobal('IntersectionObserver', IntersectionObserverMock)
-
-vi.mock('react-native-svg', () => require('@tamagui/react-native-svg'))
 
 vi.mock('ui/src/components/touchable/TouchableArea', () => ({
   TouchableArea: ({ children, ..._props }: any) => {
@@ -239,35 +224,6 @@ vi.mock('uniswap/src/features/telemetry/Trace', () => ({
 
 vi.mock('uniswap/src/features/accounts/store/hooks', () => ({
   useConnectionStatus: vi.fn(() => ({ isConnecting: false })),
-}))
-
-vi.mock('expo-web-browser', () => ({
-  openBrowserAsync: vi.fn().mockResolvedValue({ type: 'opened' }),
-  dismissBrowser: vi.fn().mockResolvedValue(undefined),
-  openAuthSessionAsync: vi.fn().mockResolvedValue({ type: 'success', url: '' }),
-  maybeCompleteAuthSession: vi.fn().mockResolvedValue(undefined),
-  warmUpAsync: vi.fn().mockResolvedValue(undefined),
-  coolDownAsync: vi.fn().mockResolvedValue(undefined),
-  WebBrowserResultType: {
-    CANCEL: 'cancel',
-    DISMISS: 'dismiss',
-    OPENED: 'opened',
-    LOCKED: 'locked',
-  },
-}))
-
-vi.mock('expo-clipboard', () => ({
-  Clipboard: {
-    getStringAsync: vi.fn().mockResolvedValue(''),
-    setStringAsync: vi.fn().mockResolvedValue(undefined),
-    hasStringAsync: vi.fn().mockResolvedValue(false),
-    getImageAsync: vi.fn().mockResolvedValue(null),
-    setImageAsync: vi.fn().mockResolvedValue(undefined),
-    hasImageAsync: vi.fn().mockResolvedValue(false),
-  },
-  ClipboardPasteButton: ({ children, onPress, ...props }: any) => {
-    return React.createElement('button', { onClick: onPress, ...props }, children)
-  },
 }))
 
 vi.mock('moti', () => ({

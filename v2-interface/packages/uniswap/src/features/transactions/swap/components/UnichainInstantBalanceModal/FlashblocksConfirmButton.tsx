@@ -86,7 +86,7 @@ export function FlashblocksConfirmButton({ size }: { size: 'medium' | 'large' })
       pressStyle={{ backgroundColor: '$statusSuccess2', filter: 'none' }}
       animation="200ms"
     >
-      <Flex row alignItems="center" enterStyle={{ y: 10, opacity: 0 }} animation="200msDelayed160ms">
+      <Flex row alignItems="center" enterStyle={{ y: 10 }} animation="200msDelayed160ms">
         <Check
           strokeWidth={4}
           size="$icon.24"

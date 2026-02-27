@@ -1,5 +1,5 @@
 import { Currency } from '@uniswap/sdk-core'
-import { GraphQLApi } from '@universe/api'
+import { BackendApi } from '@universe/api'
 import { nativeOnChain } from 'uniswap/src/constants/tokens'
 import { UniverseChainId } from 'uniswap/src/features/chains/types'
 import { CurrencyInfo, SafetyInfo, TokenList } from 'uniswap/src/features/dataApi/types'
@@ -24,7 +24,7 @@ type CurrencyInfoOptions = {
 
 export const benignSafetyInfo: SafetyInfo = {
   tokenList: TokenList.Default,
-  protectionResult: GraphQLApi.ProtectionResult.Benign,
+  protectionResult: BackendApi.ProtectionResult.Benign,
   blockaidFees: {
     buyFeePercent: 0,
     sellFeePercent: 0,

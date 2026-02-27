@@ -1,4 +1,4 @@
-import { PrefetchBalancesWrapper } from 'dataLayer/data/apollo/AdaptiveTokenBalancesProvider'
+import { PrefetchBalancesWrapper } from 'features/portfolio/noopBalanceProviders'
 import type { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 import type { Pair } from '@uniswap/v2-sdk'
 import { ReactComponent as DropDown } from 'assets/images/dropdown.svg'

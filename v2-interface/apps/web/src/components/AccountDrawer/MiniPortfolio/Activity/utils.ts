@@ -1,5 +1,5 @@
 import { BigNumber } from '@ethersproject/bignumber'
-import { GraphQLApi, TradingApi } from '@universe/api'
+import { BackendApi, TradingApi } from '@universe/api'
 import { Activity, ActivityMap } from 'components/AccountDrawer/MiniPortfolio/Activity/types'
 import { getYear, isSameDay, isSameMonth, isSameWeek, isSameYear } from 'date-fns'
 import { parseUnits } from 'ethers/lib/utils'
@@ -19,7 +19,7 @@ interface ActivityGroup {
 /**
  * Helper function to get currency address with proper fallback for native tokens
  */
-export function getCurrencyAddress(token: GraphQLApi.TokenAssetPartsFragment, chainId: UniverseChainId): string {
+export function getCurrencyAddress(token: BackendApi.TokenAssetPartsFragment, chainId: UniverseChainId): string {
   return token.address || getNativeAddress(chainId) || ''
 }
 

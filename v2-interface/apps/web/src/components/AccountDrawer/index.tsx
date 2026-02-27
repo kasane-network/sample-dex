@@ -1,7 +1,7 @@
 import DefaultMenu from 'components/AccountDrawer/DefaultMenu'
 import { useAccountDrawer } from 'components/AccountDrawer/MiniPortfolio/hooks'
 import { useRenderUkBanner } from 'components/TopLevelBanners/UkBanner'
-import { Web3StatusRef } from 'components/Web3Status'
+import { Web3StatusRef } from 'components/Web3Status/Web3StatusRef'
 import { WebNotificationToastWrapper } from 'features/notifications/WebNotificationToastWrapper'
 import useDisableScrolling from 'hooks/useDisableScrolling'
 import { useIsUniswapExtensionConnected } from 'hooks/useIsUniswapExtensionConnected'
@@ -85,17 +85,11 @@ const DropdownContainer = styled(Flex, {
   ...sharedContainerStyles,
   maxHeight: `calc(100vh - ${INTERFACE_NAV_HEIGHT + 16}px)`,
   borderRadius: '$rounded20',
-  animation: 'fastHeavy',
   transformOrigin: 'right top',
-  enterStyle: { opacity: 0, scale: 0.98 },
-  exitStyle: { opacity: 0, scale: 0.98 },
 })
 
 const SideDrawerWrapper = styled(Flex, {
   row: true,
-  animation: 'fastHeavy',
-  enterStyle: { x: '100%' },
-  exitStyle: { x: '100%' },
 })
 
 const SideDrawerContainer = styled(Flex, {
@@ -128,9 +122,6 @@ const CloseDrawer = styled(Flex, {
 const ChevronBackground = styled(Flex, {
   centered: true,
   width: 'max-content',
-  animation: 'fastHeavy',
-  enterStyle: { opacity: 0 },
-  exitStyle: { opacity: 0 },
   variants: {
     backgroundFilled: {
       true: {
@@ -149,6 +140,7 @@ type AccountDrawerProps = {
 }
 
 function AccountDropdown({ isOpen, onClose, children }: AccountDrawerProps) {
+  const colors = useSporeColors()
   const shadowProps = useShadowPropsMedium()
   const scrollbarStyles = useScrollbarStyles()
   const modalRef = useRef<HTMLDivElement>(null)
@@ -166,7 +158,8 @@ function AccountDropdown({ isOpen, onClose, children }: AccountDrawerProps) {
       {isOpen && (
         <DropdownContainer
           ref={modalRef}
-          animation="fastHeavy"
+          backgroundColor={colors.surface1.val}
+          borderColor={colors.surface3.val}
           {...shadowProps}
           style={scrollbarStyles}
           $platform-web={{ overflow: 'auto' }}
@@ -207,7 +200,11 @@ function AccountSideDrawer({ isOpen, onClose, children }: AccountDrawerProps) {
                 </CloseDrawer>
               </TouchableArea>
             </Trace>
-            <SideDrawerContainer {...shadowProps}>
+            <SideDrawerContainer
+              backgroundColor={colors.surface1.val}
+              borderColor={colors.surface3.val}
+              {...shadowProps}
+            >
               {/* id used for child InfiniteScrolls to reference when it has reached the bottom of the component */}
               <AccountDrawerScrollWrapper
                 ref={scrollRef}

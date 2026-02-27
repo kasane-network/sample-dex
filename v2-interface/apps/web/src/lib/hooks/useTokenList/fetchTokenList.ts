@@ -2,7 +2,6 @@ import type { TokenList } from '@uniswap/token-lists'
 import contenthashToUri from 'lib/utils/contenthashToUri'
 import parseENSAddress from 'lib/utils/parseENSAddress'
 import { uriToHttpUrls } from 'utilities/src/format/urls'
-import { logger } from 'utilities/src/logger/logger'
 import { validateTokenList } from 'utils/validateTokenList'
 
 const listCache = new Map<string, TokenList>()
@@ -34,7 +33,6 @@ export default async function fetchTokenList({
       contentHashUri = await resolveENSContentHash(parsedENS.ensName)
     } catch (error) {
       const message = `failed to resolve ENS name: ${parsedENS.ensName}`
-      logger.debug('fetchTokenList', 'fetchTokenList', message, error)
       throw new Error(message)
     }
     let translatedUri
@@ -42,7 +40,6 @@ export default async function fetchTokenList({
       translatedUri = contenthashToUri(contentHashUri)
     } catch (error) {
       const message = `failed to translate contenthash to URI: ${contentHashUri}`
-      logger.debug('fetchTokenList', 'fetchTokenList', message, error)
       throw new Error(message)
     }
     urls = uriToHttpUrls(`${translatedUri}${parsedENS.ensPath ?? ''}`)
@@ -60,13 +57,11 @@ export default async function fetchTokenList({
     let response
     try {
       response = await fetch(url, { credentials: 'omit' })
-    } catch (error) {
-      logger.debug('fetchTokenList', 'fetchTokenList', `failed to fetch list: ${listUrl} (${url})`, error)
+    } catch {
       continue
     }
 
     if (!response.ok) {
-      logger.debug('fetchTokenList', 'fetchTokenList', `failed to fetch list ${listUrl} (${url})`, response.statusText)
       continue
     }
 
@@ -77,13 +72,7 @@ export default async function fetchTokenList({
       const list = skipValidation ? json : await validateTokenList(json)
       listCache.set(listUrl, list)
       return list
-    } catch (error) {
-      logger.debug(
-        'fetchTokenList',
-        'fetchTokenList',
-        `failed to parse and validate list response: ${listUrl} (${url})`,
-        error,
-      )
+    } catch {
       continue
     }
   }

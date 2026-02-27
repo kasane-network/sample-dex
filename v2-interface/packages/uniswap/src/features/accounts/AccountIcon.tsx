@@ -56,7 +56,7 @@ export function AccountIcon({
       style={sizeTransitionStyle}
       {...flexProps}
     >
-      <Flex animation="fast" enterStyle={{ opacity: 0 }}>
+      <Flex>
         <UniversalImage
           style={{ image: { borderRadius: size, ...sizeTransitionStyle } }}
           fallback={uniconImage}

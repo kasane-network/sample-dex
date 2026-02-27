@@ -1,4 +1,4 @@
-import { GraphQLApi } from '@universe/api'
+import { BackendApi } from '@universe/api'
 import { PriceChartData } from 'components/Charts/PriceChart'
 import { ChartType } from 'components/Charts/utils'
 import { ChartQueryResult, DataQuality } from 'components/Tokens/TokenDetails/ChartSection/util'
@@ -7,8 +7,8 @@ import { hashKey } from 'utilities/src/reactQuery/hashKey'
 
 export type PDPChartQueryVars = {
   addressOrId?: string
-  chain: GraphQLApi.Chain
-  duration: GraphQLApi.HistoryDuration
+  chain: BackendApi.Chain
+  duration: BackendApi.HistoryDuration
   isV2: boolean
   isV3: boolean
   isV4: boolean

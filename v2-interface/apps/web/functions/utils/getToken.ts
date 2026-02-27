@@ -1,4 +1,4 @@
-import { GraphQLApi } from '@universe/api'
+import { BackendApi } from '@universe/api'
 import client from 'functions/client'
 import { Data } from 'functions/utils/cache'
 import { formatTokenMetatagTitleName } from 'shared-cloud/metatags'
@@ -7,9 +7,9 @@ import { NATIVE_CHAIN_ID } from 'src/constants/tokens'
 const convertTokenAddress = (networkName: string, tokenAddress: string) => {
   if (tokenAddress === NATIVE_CHAIN_ID) {
     switch (networkName) {
-      case GraphQLApi.Chain.Celo:
+      case BackendApi.Chain.Celo:
         return '0x471EcE3750Da237f93B8E339c536989b8978a438'
-      case GraphQLApi.Chain.Polygon:
+      case BackendApi.Chain.Polygon:
         return '0x0000000000000000000000000000000000001010'
       default:
         return undefined
@@ -31,8 +31,8 @@ export default async function getToken({
   const image = origin + '/api/image/tokens/' + networkName + '/' + tokenAddress
   const uppercaseNetworkName = networkName.toUpperCase()
   const convertedTokenAddress = convertTokenAddress(uppercaseNetworkName, tokenAddress)
-  const { data } = await client.query<GraphQLApi.TokenWebQuery>({
-    query: GraphQLApi.TokenWebDocument,
+  const { data } = await client.query<BackendApi.TokenWebQuery>({
+    query: BackendApi.TokenWebDocument,
     variables: {
       chain: uppercaseNetworkName,
       address: convertedTokenAddress,

@@ -7,7 +7,6 @@ import { Erc20Bytes32Interface } from 'uniswap/src/abis/types/Erc20Bytes32'
 import { UniswapInterfaceMulticall } from 'uniswap/src/abis/types/v3'
 import { UniverseChainId } from 'uniswap/src/features/chains/types'
 import { getValidAddress } from 'uniswap/src/utils/addresses'
-import { logger } from 'utilities/src/logger/logger'
 import { DEFAULT_ERC20_DECIMALS } from 'utilities/src/tokens/constants'
 import { arrayToSlices } from 'utils/arrays'
 import { buildCurrencyKey, CurrencyKey, currencyKey } from 'utils/currencyKey'
@@ -35,7 +34,6 @@ async function fetchChunk(multicall: UniswapInterfaceMulticall, chunk: Call[]): 
         ]).then(([c0, c1]) => [...c0, ...c1])
       }
     }
-    logger.debug('getTokensAsync', 'fetchChunk', 'Error fetching chunk', { error, extra: { chunk } })
     throw error
   }
 }
@@ -57,8 +55,7 @@ function tryParseToken({ address, chainId, data }: { address: string; chainId: U
     const decimals = decimalsData.success ? parseInt(decimalsData.returnData) : DEFAULT_ERC20_DECIMALS
 
     return new Token(chainId, address, decimals, symbol, name)
-  } catch (error) {
-    logger.debug('getTokensAsync', 'tryParseToken', 'Failed to parse token', { error, address, chainId })
+  } catch {
     return undefined
   }
 }

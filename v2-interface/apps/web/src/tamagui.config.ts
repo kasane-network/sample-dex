@@ -1,6 +1,6 @@
 import { createTamagui } from 'ui/src'
-import { animations } from 'ui/src/theme/animations'
 import { configWithoutAnimations, TamaguiGroupNames } from 'ui/src/theme/config'
+import { cssAnimations } from './theme/cssAnimations'
 
 const {
   // web has specific settings (see below)
@@ -10,7 +10,7 @@ const {
 
 export const config = createTamagui({
   ...defaultConfig,
-  animations,
+  animations: cssAnimations,
   settings: {
     // leaving out allowedStyleValues - we want looser string values for most
     // styles (so you can use "1rem", "calc(...)" and other CSS goodies):

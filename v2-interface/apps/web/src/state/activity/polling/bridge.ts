@@ -85,12 +85,7 @@ export function usePollPendingBridgeTransactions(onActivityUpdate: OnActivityUpd
               })
             }
           }
-        } catch {
-          logger.debug('bridge', `usePollPendingBridgeTransactions`, 'failed to fetch from swapStatus', {
-            chainId,
-            txHashes,
-          })
-        }
+        } catch {}
       }
     },
     [onActivityUpdate],
@@ -99,7 +94,7 @@ export function usePollPendingBridgeTransactions(onActivityUpdate: OnActivityUpd
   useEffect(() => {
     let attempts = 0
     let interval = 500
-    let timeoutId: NodeJS.Timeout
+    let timeoutId: ReturnType<typeof setTimeout>
     let isPolling = true
 
     const poll = async () => {

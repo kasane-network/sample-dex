@@ -1,5 +1,5 @@
 import { CurrencyAmount } from '@uniswap/sdk-core'
-import { GraphQLApi } from '@universe/api'
+import { BackendApi } from '@universe/api'
 import { SwapConfigKey } from '@universe/gating'
 import { ETH_LOGO, ETHEREUM_LOGO } from 'ui/src/assets'
 import { config } from 'uniswap/src/config'
@@ -41,7 +41,7 @@ export const MAINNET_CHAIN_INFO = {
   platform: Platform.EVM,
   assetRepoNetworkName: 'ethereum',
   backendChain: {
-    chain: GraphQLApi.Chain.Ethereum as GqlChainId,
+    chain: BackendApi.Chain.Ethereum as GqlChainId,
     backendSupported: true,
     nativeTokenBackendAddress: undefined,
   },
@@ -126,7 +126,7 @@ export const SEPOLIA_CHAIN_INFO = {
   platform: Platform.EVM,
   assetRepoNetworkName: undefined,
   backendChain: {
-    chain: GraphQLApi.Chain.EthereumSepolia as GqlChainId,
+    chain: BackendApi.Chain.EthereumSepolia as GqlChainId,
     backendSupported: true,
     nativeTokenBackendAddress: undefined,
   },

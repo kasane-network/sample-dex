@@ -1,7 +1,7 @@
 import { PoolData, usePoolData } from 'dataLayer/data/pools/usePoolData'
 import { calculateApr } from 'dataLayer/data/pools/useTopPools'
 import { gqlToCurrency, unwrapToken } from 'dataLayer/data/util'
-import { GraphQLApi } from '@universe/api'
+import { BackendApi } from '@universe/api'
 import { FeatureFlags, useFeatureFlag } from '@universe/gating'
 import Column from 'components/deprecated/Column'
 import Row from 'components/deprecated/Row'
@@ -98,10 +98,10 @@ function getUnwrappedPoolToken({
 }: {
   poolData?: PoolData
   chainId?: number
-  protocolVersion?: GraphQLApi.ProtocolVersion
-}): [GraphQLApi.Token | undefined, GraphQLApi.Token | undefined] {
+  protocolVersion?: BackendApi.ProtocolVersion
+}): [BackendApi.Token | undefined, BackendApi.Token | undefined] {
   // for v4 pools can be created with ETH or WETH so we need to keep the original tokens
-  if (protocolVersion === GraphQLApi.ProtocolVersion.V4) {
+  if (protocolVersion === BackendApi.ProtocolVersion.V4) {
     return [poolData?.token0, poolData?.token1]
   }
 
@@ -269,7 +269,7 @@ export default function PoolDetailsPage() {
                 <Trans i18nKey="common.links" />
               </TokenDetailsHeader>
               <LinksContainer>
-                {poolData?.protocolVersion !== GraphQLApi.ProtocolVersion.V4 && (
+                {poolData?.protocolVersion !== BackendApi.ProtocolVersion.V4 && (
                   <PoolDetailsLink
                     address={poolAddress}
                     chainId={chainInfo.id}

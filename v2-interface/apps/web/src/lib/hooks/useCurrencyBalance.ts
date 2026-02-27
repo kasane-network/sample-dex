@@ -1,11 +1,8 @@
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { useAccount } from 'hooks/useAccount'
-import { useTokenBalances } from 'hooks/useTokenBalances'
 import JSBI from 'jsbi'
 import { useMemo } from 'react'
-import { getCurrencyAmount, ValueType } from 'uniswap/src/features/tokens/getCurrencyAmount'
 import { isEVMAddress } from 'utilities/src/addresses/evm/evm'
-import { currencyKey } from 'utils/currencyKey'
 import { assume0xAddress } from 'utils/wagmi'
 import { erc20Abi } from 'viem'
 import { useBalance, useReadContracts } from 'wagmi'
@@ -118,62 +115,14 @@ function useRpcCurrencyBalances(
 }
 
 /**
- * Returns raw balances as CurrencyAmounts for tokens in users balanceMap via graphql.
- * Balances from graphql are used as a fallback when user is not connected to chain.
- * Currently they're returned from graphql formatted so we need to convert to the base unit.
- */
-function useGqlCurrencyBalances(
-  account?: string,
-  currencies?: (Currency | undefined)[],
-): (CurrencyAmount<Currency> | undefined)[] {
-  const { balanceMap } = useTokenBalances({ cacheOnly: true })
-
-  return useMemo(() => {
-    if (!account || !currencies) {
-      return []
-    }
-
-    return currencies.map((currency) => {
-      if (!currency) {
-        return undefined
-      }
-
-      const key = currencyKey(currency)
-      const balance = balanceMap[key]
-
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-      if (balance) {
-        const currencyAmount = getCurrencyAmount({
-          value: balance.balance.toString(),
-          valueType: ValueType.Exact,
-          currency,
-        })
-        if (!currencyAmount) {
-          return undefined
-        }
-        return currencyAmount
-      } else {
-        return CurrencyAmount.fromRawAmount(currency, 0)
-      }
-    })
-  }, [account, balanceMap, currencies])
-}
-
-/**
  * @deprecated use usePortfolioBalances & getOnChainBalancesFetch from packages/uniswap instead
  *
  * Returns balances for tokens on currently-connected chainId via RPC.
- * Falls back to graphql TokenBalances if user is not connected to chain, a.k.a !isSynced.
  */
 export function useCurrencyBalances(
   account?: string,
   currencies?: (Currency | undefined)[],
 ): (CurrencyAmount<Currency> | undefined)[] {
-  const { chainId: providerChainId } = useAccount()
-  const chainId = useMemo(() => currencies?.[0]?.chainId, [currencies])
-  const isSynced = !chainId || chainId === providerChainId
-
-  const gqlCurrencyBalances = useGqlCurrencyBalances(account, currencies)
   const rpcCurrencyBalances = useRpcCurrencyBalances(account, currencies)
 
   return useMemo(() => {
@@ -181,8 +130,8 @@ export function useCurrencyBalances(
       return []
     }
 
-    return isSynced ? rpcCurrencyBalances : gqlCurrencyBalances
-  }, [account, currencies, isSynced, gqlCurrencyBalances, rpcCurrencyBalances])
+    return rpcCurrencyBalances
+  }, [account, currencies, rpcCurrencyBalances])
 }
 
 // get the balance for a single token/account combo

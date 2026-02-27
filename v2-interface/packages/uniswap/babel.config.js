@@ -1,9 +1,17 @@
 const { NODE_ENV } = process.env
 
 const inProduction = NODE_ENV === 'production'
+const inTest = NODE_ENV === 'test'
 
 module.exports = function (api) {
   api.cache.using(() => process.env.NODE_ENV)
+
+  if (inTest) {
+    return {
+      presets: [['@babel/preset-env', { targets: { node: 'current' } }]],
+      plugins: [],
+    }
+  }
 
   let plugins = inProduction ? ['transform-remove-console'] : []
 
@@ -33,7 +41,7 @@ module.exports = function (api) {
   ]
 
   return {
-    presets: ['babel-preset-expo'],
+    presets: ['module:@react-native/babel-preset'],
     plugins,
   }
 }

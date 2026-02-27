@@ -4,6 +4,7 @@ import type { StyleProp, ViewStyle } from 'react-native'
 import { useAnimatedStyle, useSharedValue } from 'react-native-reanimated'
 import { errorShakeAnimation } from 'ui/src/animations/errorShakeAnimation'
 import { PlusMinusButtonType } from 'ui/src/components/buttons/PlusMinusButton'
+import { isWebPlatform } from 'utilities/src/platform'
 import {
   MAX_AUTO_SLIPPAGE_TOLERANCE,
   MAX_CUSTOM_SLIPPAGE_TOLERANCE,
@@ -71,12 +72,13 @@ export function useSlippageSettings(params?: SlippageSettingsProps): {
   const showSlippageWarning = parsedInputSlippageTolerance > autoSlippageTolerance
 
   const inputShakeX = useSharedValue(0)
-  const inputAnimatedStyle = useAnimatedStyle(
+  const animatedInputStyle = useAnimatedStyle(
     () => ({
       transform: [{ translateX: inputShakeX.value }],
     }),
     [inputShakeX],
   )
+  const inputAnimatedStyle = isWebPlatform ? undefined : animatedInputStyle
 
   const onPressAutoSlippage = (): void => {
     setAutoSlippageEnabled(true)
@@ -142,7 +144,9 @@ export function useSlippageSettings(params?: SlippageSettingsProps): {
        * without the input shaking (ex. typing 0.x shouldn't shake after typing char)
        */
       if (isInvalidNumber || overMaxTolerance || moreThanOneDecimalSymbol || moreThanTwoDecimals) {
-        inputShakeX.value = errorShakeAnimation(inputShakeX)
+        if (!isWebPlatform) {
+          inputShakeX.value = errorShakeAnimation(inputShakeX)
+        }
         return
       }
 

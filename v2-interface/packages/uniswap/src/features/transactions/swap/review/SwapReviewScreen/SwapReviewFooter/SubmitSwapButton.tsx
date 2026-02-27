@@ -20,7 +20,7 @@ import type { SwapTxAndGasInfo } from 'uniswap/src/features/transactions/swap/ty
 import { PermitMethod } from 'uniswap/src/features/transactions/swap/types/swapTxAndGasInfo'
 import { isChained, isClassic } from 'uniswap/src/features/transactions/swap/utils/routing'
 import { WrapType } from 'uniswap/src/features/transactions/types/wrap'
-import { TestID } from 'uniswap/src/test/fixtures/testIDs'
+import { TestID } from 'uniswap/src/constants/testIDs'
 import { isWebApp } from 'utilities/src/platform'
 
 interface SubmitSwapButtonProps {

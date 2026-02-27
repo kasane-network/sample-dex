@@ -3,7 +3,7 @@ import { Flex } from 'ui/src'
 import { iconSizes, zIndexes } from 'ui/src/theme'
 import { NetworkLogo } from 'uniswap/src/components/CurrencyLogo/NetworkLogo'
 import { UniverseChainId } from 'uniswap/src/features/chains/types'
-import { TestID } from 'uniswap/src/test/fixtures/testIDs'
+import { TestID } from 'uniswap/src/constants/testIDs'
 
 const BANNER_SIZE = iconSizes.icon32
 const LOGO_SIZES = {

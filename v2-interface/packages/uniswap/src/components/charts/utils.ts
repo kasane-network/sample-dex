@@ -1,4 +1,4 @@
-import { GraphQLApi } from '@universe/api'
+import { BackendApi } from '@universe/api'
 
 const STABLECOIN_VARIANCE_PERCENT_THRESHOLD = 0.5
 
@@ -16,14 +16,14 @@ export function isLowVarianceRange({
 }: {
   min: number
   max: number
-  duration?: GraphQLApi.HistoryDuration
+  duration?: BackendApi.HistoryDuration
 }): boolean {
   if (min <= 0) {
     return false
   }
 
   // Always return false for 1H time windows
-  if (duration === GraphQLApi.HistoryDuration.Hour) {
+  if (duration === BackendApi.HistoryDuration.Hour) {
     return false
   }
 
