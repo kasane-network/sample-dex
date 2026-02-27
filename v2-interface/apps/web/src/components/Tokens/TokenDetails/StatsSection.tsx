@@ -2,13 +2,10 @@ import { TokenQueryData } from 'dataLayer/data/Token'
 import { TokenSortMethod } from 'components/Tokens/state'
 import { HEADER_DESCRIPTIONS } from 'components/Tokens/TokenTable'
 import { MouseoverTooltip } from 'components/Tooltip'
-import { useTDPContext } from 'pages/TokenDetails/TDPContext'
-import { ReactNode, useMemo } from 'react'
+import { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Flex, FlexProps, Text } from 'ui/src'
-import { useTokenMarketStats } from 'uniswap/src/features/dataApi/tokenDetails/useTokenDetailsData'
 import { useLocalizationContext } from 'uniswap/src/features/language/LocalizationContext'
-import { currencyId } from 'uniswap/src/utils/currencyId'
 import { NumberType } from 'utilities/src/format/types'
 
 export const StatWrapper = ({ children, ...props }: { children: ReactNode } & FlexProps) => (
@@ -78,13 +75,11 @@ type StatsSectionProps = {
 export default function StatsSection(props: StatsSectionProps) {
   const { tokenQueryData } = props
   const { t } = useTranslation()
-  const { currency } = useTDPContext()
 
-  // Construct currencyId for shared hooks
-  const currencyIdValue = useMemo(() => currencyId(currency), [currency])
-
-  // Use shared hook for unified data fetching (CoinGecko-first strategy)
-  const { marketCap, fdv } = useTokenMarketStats(currencyIdValue)
+  // TokenDetails' GraphQL/Apollo data path has been retired for Kasane.
+  // Keep this section fully local to avoid requiring Apollo context.
+  const marketCap = tokenQueryData?.project?.markets?.[0]?.marketCap?.value
+  const fdv = tokenQueryData?.project?.markets?.[0]?.fullyDilutedValuation?.value
 
   // Volume and TVL come from tokenQueryData to avoid fragment timing issues
   // These are already loaded with the main TokenWebQuery

@@ -140,7 +140,7 @@ export function TransactionDetails({
         <Flex gap="$spacing8" px="$spacing8">
           {showChildren && priceUXEnabled ? (
             <AnimatePresence>
-              <Flex animation="fast" exitStyle={{ opacity: 0 }} enterStyle={{ opacity: 0 }} gap="$spacing8">
+              <Flex animation="fast" gap="$spacing8">
                 {children}
               </Flex>
             </AnimatePresence>
@@ -165,7 +165,7 @@ export function TransactionDetails({
           {!isChainedTrade && <ExpectedSpeed chainId={chainId} />}
           {showChildren && !priceUXEnabled ? (
             <AnimatePresence>
-              <Flex animation="fast" exitStyle={{ opacity: 0 }} enterStyle={{ opacity: 0 }} gap="$spacing8">
+              <Flex animation="fast" gap="$spacing8">
                 {children}
               </Flex>
             </AnimatePresence>

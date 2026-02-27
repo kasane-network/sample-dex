@@ -95,7 +95,7 @@ export function ProgressIndicator({
   }
 
   return (
-    <Flex enterStyle={{ opacity: 0 }} animation="quicker" gap="$spacing16">
+    <Flex animation="quicker" gap="$spacing16">
       <Flex row gap="$spacing12" alignItems="center">
         <Separator my="$spacing12" />
         <Text color="$neutral2" variant="body3">

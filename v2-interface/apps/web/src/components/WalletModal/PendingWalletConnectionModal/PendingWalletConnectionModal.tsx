@@ -60,8 +60,6 @@ export default function PendingWalletConnectionModal() {
                 alignItems="center"
                 key={modalContent?.key}
                 animation="200ms"
-                enterStyle={{ opacity: 0 }}
-                exitStyle={{ opacity: 0 }}
                 gap="$spacing8"
               >
                 <Text variant="subheading1" color="$neutral1">

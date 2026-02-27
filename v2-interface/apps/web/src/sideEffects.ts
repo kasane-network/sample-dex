@@ -51,10 +51,7 @@ import * as WalletConnect from '@walletconnect/ethereum-provider'
 import { setupWagmiAutoConnect } from 'components/Web3Provider/wagmiAutoConnect'
 import { setupVitePreloadErrorHandler } from 'utils/setupVitePreloadErrorHandler'
 
-if (WalletConnect) {
-  // biome-ignore lint/suspicious/noConsole: Side effects module needs console for initialization logging
-  console.debug('WalletConnect is defined')
-}
+void WalletConnect
 
 // adding these so webpack won't tree shake this away, sideEffects was giving trouble
 setupi18n()
