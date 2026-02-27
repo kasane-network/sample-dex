@@ -1,4 +1,4 @@
-import { GraphQLApi } from '@universe/api'
+import { BackendApi } from '@universe/api'
 import { STALE_TRANSACTION_TIME_MS } from 'uniswap/src/features/notifications/constants'
 import {
   erc20ApproveAssetChange,
@@ -19,72 +19,72 @@ export * from './tokens'
  * Base fixtures
  */
 
-export const assetActivity = createFixture<GraphQLApi.AssetActivity>()(() => ({
+export const assetActivity = createFixture<BackendApi.AssetActivity>()(() => ({
   id: faker.datatype.uuid(),
   chain: randomChoice(GQL_CHAINS),
   /** @deprecated use assetChanges field in details */
-  assetChanges: [] as GraphQLApi.AssetChange[],
+  assetChanges: [] as BackendApi.AssetChange[],
   details: gqlTransactionDetails(),
   timestamp: faker.datatype.number({ max: MAX_FIXTURE_TIMESTAMP }),
   /** @deprecated use type field in details */
   transaction: gqlTransaction(),
   /** @deprecated use type field in details */
-  type: randomEnumValue(GraphQLApi.ActivityType),
+  type: randomEnumValue(BackendApi.ActivityType),
 }))
 
 /**
  * Derived fixtures
  */
 
-export const approveAssetActivity = createFixture<GraphQLApi.AssetActivity>()(() =>
+export const approveAssetActivity = createFixture<BackendApi.AssetActivity>()(() =>
   assetActivity({
-    chain: GraphQLApi.Chain.MonadTestnet,
+    chain: BackendApi.Chain.MonadTestnet,
     /** @deprecated use type field in details */
-    type: GraphQLApi.ActivityType.Approve,
+    type: BackendApi.ActivityType.Approve,
     details: gqlTransactionDetails({
-      type: GraphQLApi.TransactionType.Approve,
-      transactionStatus: GraphQLApi.TransactionStatus.Confirmed,
+      type: BackendApi.TransactionType.Approve,
+      transactionStatus: BackendApi.TransactionStatus.Confirmed,
       assetChanges: [erc20ApproveAssetChange()],
     }),
   }),
 )
 
-export const erc20SwapAssetActivity = createFixture<GraphQLApi.AssetActivity>()(() =>
+export const erc20SwapAssetActivity = createFixture<BackendApi.AssetActivity>()(() =>
   assetActivity({
-    chain: GraphQLApi.Chain.MonadTestnet,
+    chain: BackendApi.Chain.MonadTestnet,
     /** @deprecated use type field in details */
-    type: GraphQLApi.ActivityType.Swap,
+    type: BackendApi.ActivityType.Swap,
     details: gqlTransactionDetails({
-      type: GraphQLApi.TransactionType.Swap,
-      transactionStatus: GraphQLApi.TransactionStatus.Confirmed,
+      type: BackendApi.TransactionType.Swap,
+      transactionStatus: BackendApi.TransactionStatus.Confirmed,
       assetChanges: [erc20TransferIn(), erc20TokenTransferOut()],
     }),
   }),
 )
 
-export const erc20RecentReceiveAssetActivity = createFixture<GraphQLApi.AssetActivity>()(() =>
+export const erc20RecentReceiveAssetActivity = createFixture<BackendApi.AssetActivity>()(() =>
   assetActivity({
-    chain: GraphQLApi.Chain.MonadTestnet,
+    chain: BackendApi.Chain.MonadTestnet,
     /** @deprecated use type field in details */
-    type: GraphQLApi.ActivityType.Receive,
+    type: BackendApi.ActivityType.Receive,
     timestamp: (Date.now() - ONE_MINUTE_MS * 5) / 1000,
     details: gqlTransactionDetails({
-      type: GraphQLApi.TransactionType.Receive,
-      transactionStatus: GraphQLApi.TransactionStatus.Confirmed,
+      type: BackendApi.TransactionType.Receive,
+      transactionStatus: BackendApi.TransactionStatus.Confirmed,
       assetChanges: [erc20TransferIn()],
     }),
   }),
 )
 
-export const erc20StaleReceiveAssetActivity = createFixture<GraphQLApi.AssetActivity>()(() =>
+export const erc20StaleReceiveAssetActivity = createFixture<BackendApi.AssetActivity>()(() =>
   assetActivity({
-    chain: GraphQLApi.Chain.MonadTestnet,
+    chain: BackendApi.Chain.MonadTestnet,
     /** @deprecated use type field in details */
-    type: GraphQLApi.ActivityType.Receive,
+    type: BackendApi.ActivityType.Receive,
     timestamp: (Date.now() - STALE_TRANSACTION_TIME_MS * 2) / 1000,
     details: gqlTransactionDetails({
-      type: GraphQLApi.TransactionType.Receive,
-      transactionStatus: GraphQLApi.TransactionStatus.Confirmed,
+      type: BackendApi.TransactionType.Receive,
+      transactionStatus: BackendApi.TransactionStatus.Confirmed,
       assetChanges: [erc20TransferIn()],
     }),
   }),

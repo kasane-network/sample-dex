@@ -1,6 +1,6 @@
 /* eslint-disable consistent-return */
 import { Currency, NativeCurrency } from '@uniswap/sdk-core'
-import { GraphQLApi } from '@universe/api'
+import { BackendApi } from '@universe/api'
 import { useTranslation } from 'react-i18next'
 import { ColorTokens } from 'ui/src'
 import { getAlertColor } from 'uniswap/src/components/modals/WarningModal/getAlertColor'
@@ -89,24 +89,24 @@ export function getTokenProtectionWarning(currencyInfo?: Maybe<CurrencyInfo>): T
     return TokenProtectionWarning.MaliciousHoneypot
   } else if (
     (feeOnTransfer && feeOnTransfer >= TOKEN_PROTECTION_FOT_HIGH_FEE_BREAKPOINT) ||
-    ((protectionResult === GraphQLApi.ProtectionResult.Malicious ||
-      protectionResult === GraphQLApi.ProtectionResult.Spam) &&
+    ((protectionResult === BackendApi.ProtectionResult.Malicious ||
+      protectionResult === BackendApi.ProtectionResult.Spam) &&
       attackType === AttackType.HighFees)
   ) {
     return TokenProtectionWarning.FotVeryHigh
   } else if (
-    (protectionResult === GraphQLApi.ProtectionResult.Malicious ||
-      protectionResult === GraphQLApi.ProtectionResult.Spam) &&
+    (protectionResult === BackendApi.ProtectionResult.Malicious ||
+      protectionResult === BackendApi.ProtectionResult.Spam) &&
     attackType === AttackType.Impersonator
   ) {
     return TokenProtectionWarning.MaliciousImpersonator
   } else if (feeOnTransfer && feeOnTransfer >= TOKEN_PROTECTION_FOT_FEE_BREAKPOINT) {
     return TokenProtectionWarning.FotHigh
-  } else if (protectionResult === GraphQLApi.ProtectionResult.Malicious) {
+  } else if (protectionResult === BackendApi.ProtectionResult.Malicious) {
     return TokenProtectionWarning.MaliciousGeneral
   } else if (attackType === AttackType.Honeypot) {
     return TokenProtectionWarning.PotentialHoneypot
-  } else if (protectionResult === GraphQLApi.ProtectionResult.Spam && attackType === AttackType.Airdrop) {
+  } else if (protectionResult === BackendApi.ProtectionResult.Spam && attackType === AttackType.Airdrop) {
     return TokenProtectionWarning.SpamAirdrop
   } else if (feeOnTransfer && feeOnTransfer > 0 && feeOnTransfer < TOKEN_PROTECTION_FOT_FEE_BREAKPOINT) {
     return TokenProtectionWarning.FotLow

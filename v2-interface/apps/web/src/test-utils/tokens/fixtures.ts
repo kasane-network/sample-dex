@@ -1,5 +1,5 @@
 import { QueryResult } from '@apollo/client'
-import { GraphQLApi } from '@universe/api'
+import { BackendApi } from '@universe/api'
 
 export const validTokenProjectResponse = {
   data: {
@@ -25,6 +25,6 @@ export const validTokenProjectResponse = {
     },
   },
 } as unknown as QueryResult<
-  GraphQLApi.TokenProjectWebQuery,
-  GraphQLApi.Exact<{ chain: GraphQLApi.Chain; address?: string }>
+  BackendApi.TokenProjectWebQuery,
+  BackendApi.Exact<{ chain: BackendApi.Chain; address?: string }>
 >

@@ -1,5 +1,5 @@
 import { TimePeriod, toHistoryDuration } from 'dataLayer/data/util'
-import { GraphQLApi } from '@universe/api'
+import { BackendApi } from '@universe/api'
 import { refitChartContentAtom } from 'components/Charts/ChartModel'
 import { ChartSkeleton } from 'components/Charts/LoadingState'
 import { PriceChart, PriceChartData } from 'components/Charts/PriceChart'
@@ -74,7 +74,7 @@ const InvalidChartMessage = () => <Trans i18nKey="chart.error.tokens" />
 /** Exported to `TDPContext` to fire queries on pageload. `TDPChartState` should be accessed through `useTDPContext` rather than this hook. */
 export function useCreateTDPChartState(
   tokenDBAddress: string | undefined,
-  currencyChainName: GraphQLApi.Chain,
+  currencyChainName: BackendApi.Chain,
 ): TDPChartState {
   const [timePeriod, setTimePeriod] = useState<TimePeriod>(TimePeriod.DAY)
 

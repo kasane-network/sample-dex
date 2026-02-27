@@ -1,4 +1,4 @@
-import { GraphQLApi } from '@universe/api'
+import { BackendApi } from '@universe/api'
 import { assetActivity } from 'uniswap/src/test/fixtures/gql'
 import { amount } from 'uniswap/src/test/fixtures/gql/amounts'
 import { tokenBalance } from 'uniswap/src/test/fixtures/gql/assets'
@@ -10,7 +10,7 @@ type PortfolioOptions = {
   tokenBalancesCount: number
 }
 
-export const portfolio = createFixture<GraphQLApi.Portfolio, PortfolioOptions>({
+export const portfolio = createFixture<BackendApi.Portfolio, PortfolioOptions>({
   activitiesCount: 2,
   tokenBalancesCount: 2,
 })(({ tokenBalancesCount, activitiesCount }) => ({

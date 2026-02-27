@@ -2,12 +2,13 @@ import { ApolloClient, NormalizedCacheObject } from '@apollo/client'
 import { GetPortfolioResponse } from '@uniswap/client-data-api/dist/data/v1/api_pb'
 import { Balance } from '@uniswap/client-data-api/dist/data/v1/types_pb'
 import { Portfolio } from '@uniswap/client-data-api/dist/data/v1/types_pb.d'
-import { GQLQueries, SharedQueryClient } from '@universe/api'
+import { SharedQueryClient } from '@universe/api'
 import { all, call, delay, put } from 'typed-redux-saga'
 import { getNativeAddress } from 'uniswap/src/constants/addresses'
 import { normalizeCurrencyIdForMapLookup } from 'uniswap/src/data/cache'
 import { doesGetPortfolioQueryMatchAddress, getPortfolioQueriesToUpdate } from 'uniswap/src/data/rest/getPortfolio'
 import { chainIdToPlatform } from 'uniswap/src/features/platforms/utils/chains'
+import { NFTS_TAB_QUERY_NAME } from 'uniswap/src/features/portfolio/queryNames'
 import { getCurrenciesWithExpectedUpdates } from 'uniswap/src/features/portfolio/portfolioUpdates/getCurrenciesWithExpectedUpdates'
 import {
   fetchOnChainBalancesRest,
@@ -253,7 +254,7 @@ export function* refetchRestQueriesViaOnchainOverrideVariant({
 
   // Once NFTs are migrated to REST we won't need to do this
   if (apolloClient) {
-    yield* call([apolloClient, apolloClient.refetchQueries], { include: [GQLQueries.NftsTab] })
+    yield* call([apolloClient, apolloClient.refetchQueries], { include: [NFTS_TAB_QUERY_NAME] })
   } else {
     log.debug(`Ignoring NFT GQL refetch for ${platform} because apolloClient is null`)
   }

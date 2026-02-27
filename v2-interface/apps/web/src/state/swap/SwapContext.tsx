@@ -1,4 +1,4 @@
-import { useReportTotalBalancesUsdForAnalytics } from 'dataLayer/data/apollo/useReportTotalBalancesUsdForAnalytics'
+import { useReportTotalBalancesUsdForAnalytics } from 'features/portfolio/noopBalanceProviders'
 import { Currency } from '@uniswap/sdk-core'
 import usePrevious from 'hooks/usePrevious'
 import { PropsWithChildren, useEffect, useMemo, useState } from 'react'

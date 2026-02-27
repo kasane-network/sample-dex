@@ -1,4 +1,4 @@
-import { GraphQLApi, TradingApi } from '@universe/api'
+import { BackendApi, TradingApi } from '@universe/api'
 import {
   type OnchainItemListOption,
   OnchainItemListOptionType,
@@ -28,16 +28,16 @@ export function createEmptyTokenOptionFromBridgingToken(
   }
 }
 
-export function toGqlSafetyLevel(safetyLevel: TradingApi.SafetyLevel): GraphQLApi.SafetyLevel | null {
+export function toGqlSafetyLevel(safetyLevel: TradingApi.SafetyLevel): BackendApi.SafetyLevel | null {
   switch (safetyLevel) {
     case TradingApi.SafetyLevel.BLOCKED:
-      return GraphQLApi.SafetyLevel.Blocked
+      return BackendApi.SafetyLevel.Blocked
     case TradingApi.SafetyLevel.MEDIUM_WARNING:
-      return GraphQLApi.SafetyLevel.MediumWarning
+      return BackendApi.SafetyLevel.MediumWarning
     case TradingApi.SafetyLevel.STRONG_WARNING:
-      return GraphQLApi.SafetyLevel.StrongWarning
+      return BackendApi.SafetyLevel.StrongWarning
     case TradingApi.SafetyLevel.VERIFIED:
-      return GraphQLApi.SafetyLevel.Verified
+      return BackendApi.SafetyLevel.Verified
     default:
       return null
   }

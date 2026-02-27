@@ -1,5 +1,5 @@
 import { Percent } from '@uniswap/sdk-core'
-import { GraphQLApi } from '@universe/api'
+import { BackendApi } from '@universe/api'
 import { FeeData as CreatePositionFeeData } from 'components/Liquidity/Create/types'
 
 type PricePoint = { timestamp: number; value: number }
@@ -20,11 +20,11 @@ interface ExploreTokenProject {
 
 export interface ExploreTokenRef {
   address: string
-  chain: GraphQLApi.Chain | string
+  chain: BackendApi.Chain | string
   symbol?: string
   name?: string
   decimals?: number
-  standard?: GraphQLApi.TokenStandard
+  standard?: BackendApi.TokenStandard
   logo?: string
   project?: {
     name?: string
@@ -48,14 +48,14 @@ export interface TokenStat extends ExploreTokenRef {
   priceHistoryYear?: PriceHistory
   project?: ExploreTokenProject
   priceHistory?: PricePoint[]
-  feeData?: GraphQLApi.FeeData
+  feeData?: BackendApi.FeeData
   volume?: Amount
 }
 
 export interface PoolStat {
   id: string
-  chain: GraphQLApi.Chain | string
-  protocolVersion?: GraphQLApi.ProtocolVersion
+  chain: BackendApi.Chain | string
+  protocolVersion?: BackendApi.ProtocolVersion
   feeTier?: CreatePositionFeeData
   token0?: ExploreTokenRef
   token1?: ExploreTokenRef

@@ -1,4 +1,4 @@
-import { GraphQLApi, TradingApi } from '@universe/api'
+import { BackendApi, TradingApi } from '@universe/api'
 import { isUniswapX } from 'uniswap/src/features/transactions/swap/utils/routing'
 import {
   TransactionDetails,
@@ -32,19 +32,19 @@ export function convertOrderTypeToRouting(
 }
 
 /**
- * Converts a GraphQL GraphQLApi.SwapOrderType to internal Routing type.
+ * Converts a GraphQL BackendApi.SwapOrderType to internal Routing type.
  * Used when creating transactions from external UniswapX orders.
  */
 export function convertSwapOrderTypeToRouting(
-  orderType: GraphQLApi.SwapOrderType,
+  orderType: BackendApi.SwapOrderType,
 ): TradingApi.Routing.DUTCH_LIMIT | TradingApi.Routing.DUTCH_V2 | TradingApi.Routing.PRIORITY {
   switch (orderType) {
-    case GraphQLApi.SwapOrderType.Priority:
+    case BackendApi.SwapOrderType.Priority:
       return TradingApi.Routing.PRIORITY
-    case GraphQLApi.SwapOrderType.Dutch:
-    case GraphQLApi.SwapOrderType.DutchV2:
+    case BackendApi.SwapOrderType.Dutch:
+    case BackendApi.SwapOrderType.DutchV2:
       return TradingApi.Routing.DUTCH_V2
-    case GraphQLApi.SwapOrderType.Limit:
+    case BackendApi.SwapOrderType.Limit:
       return TradingApi.Routing.DUTCH_LIMIT
     default:
       return TradingApi.Routing.DUTCH_V2
@@ -79,19 +79,19 @@ export function convertOrderStatusToTransactionStatus(status: TradingApi.OrderSt
  * Converts a GraphQL OrderStatus to internal TransactionStatus.
  * Used for syncing order status from backend to local transaction state.
  */
-export function remoteOrderStatusToLocalTxStatus(orderStatus: GraphQLApi.SwapOrderStatus): TransactionStatus {
+export function remoteOrderStatusToLocalTxStatus(orderStatus: BackendApi.SwapOrderStatus): TransactionStatus {
   switch (orderStatus) {
-    case GraphQLApi.SwapOrderStatus.Open:
+    case BackendApi.SwapOrderStatus.Open:
       return TransactionStatus.Pending
-    case GraphQLApi.SwapOrderStatus.Expired:
+    case BackendApi.SwapOrderStatus.Expired:
       return TransactionStatus.Expired
-    case GraphQLApi.SwapOrderStatus.Error:
+    case BackendApi.SwapOrderStatus.Error:
       return TransactionStatus.Failed
-    case GraphQLApi.SwapOrderStatus.InsufficientFunds:
+    case BackendApi.SwapOrderStatus.InsufficientFunds:
       return TransactionStatus.InsufficientFunds
-    case GraphQLApi.SwapOrderStatus.Filled:
+    case BackendApi.SwapOrderStatus.Filled:
       return TransactionStatus.Success
-    case GraphQLApi.SwapOrderStatus.Cancelled:
+    case BackendApi.SwapOrderStatus.Cancelled:
       return TransactionStatus.Canceled
     default:
       return TransactionStatus.Unknown

@@ -1,4 +1,4 @@
-import { GraphQLApi } from '@universe/api'
+import { BackendApi } from '@universe/api'
 import { PersistState } from 'redux-persist'
 import { PreV55SearchResult, PreV55SearchResultType, TokenSearchResult } from 'uniswap/src/state/oldTypes'
 
@@ -11,7 +11,7 @@ const recentSearchAtomName = 'recentlySearchedAssetsV3'
 type TokenSearchResultWeb = Omit<TokenSearchResult, 'type'> & {
   type: PreV55SearchResultType.Token | PreV55SearchResultType.NFTCollection
   address: string
-  chain: GraphQLApi.Chain
+  chain: BackendApi.Chain
   isNft?: boolean
   isToken?: boolean
   isNative?: boolean

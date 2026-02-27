@@ -3,7 +3,7 @@
  * Modifications are called out with comments.
  */
 
-import { GraphQLApi } from '@universe/api'
+import { BackendApi } from '@universe/api'
 import { roundRect } from 'components/Charts/utils'
 import {
   ColumnPosition,
@@ -29,7 +29,7 @@ export interface SingleHistogramData extends CustomData {
 }
 
 export interface StackedHistogramData extends CustomData {
-  values: Record<GraphQLApi.PriceSource, number | undefined>
+  values: Record<BackendApi.PriceSource, number | undefined>
   time: UTCTimestamp
 }
 

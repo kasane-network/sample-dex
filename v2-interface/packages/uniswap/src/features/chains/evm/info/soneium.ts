@@ -1,5 +1,5 @@
 import { Token } from '@uniswap/sdk-core'
-import { GraphQLApi } from '@universe/api'
+import { BackendApi } from '@universe/api'
 import { ETH_LOGO, SONEIUM_LOGO } from 'ui/src/assets'
 import { config } from 'uniswap/src/config'
 import { DEFAULT_NATIVE_ADDRESS_LEGACY, DEFAULT_RETRY_OPTIONS } from 'uniswap/src/features/chains/evm/rpc'
@@ -36,7 +36,7 @@ export const SONEIUM_CHAIN_INFO = {
   platform: Platform.EVM,
   assetRepoNetworkName: 'soneium',
   backendChain: {
-    chain: GraphQLApi.Chain.Soneium as GqlChainId,
+    chain: BackendApi.Chain.Soneium as GqlChainId,
     backendSupported: true,
     nativeTokenBackendAddress: undefined,
   },

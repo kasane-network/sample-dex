@@ -4,7 +4,7 @@ import { GraphQLFileLoader } from '@graphql-tools/graphql-file-loader'
 import { loadSchemaSync } from '@graphql-tools/load'
 import { mergeResolvers } from '@graphql-tools/merge'
 import { addMocksToSchema } from '@graphql-tools/mock'
-import { GraphQLApi } from '@universe/api'
+import { BackendApi } from '@universe/api'
 import path from 'path'
 import { PropsWithChildren } from 'react'
 import { setupSharedApolloCache } from 'uniswap/src/data/cache'
@@ -18,7 +18,7 @@ const baseSchema = loadSchemaSync(GQL_SCHEMA_PATH, { loaders: [new GraphQLFileLo
 
 type AutoMockedApolloProviderProps = PropsWithChildren<{
   cache?: InMemoryCache
-  resolvers?: Partial<GraphQLApi.Resolvers>
+  resolvers?: Partial<BackendApi.Resolvers>
 }>
 
 export function AutoMockedApolloProvider({

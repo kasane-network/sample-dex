@@ -1,4 +1,4 @@
-import { PrefetchBalancesWrapper } from 'dataLayer/data/apollo/AdaptiveTokenBalancesProvider'
+import { PrefetchBalancesWrapper } from 'features/portfolio/noopBalanceProviders'
 import { FeatureFlags, useFeatureFlag } from '@universe/gating'
 import PortfolioDrawer from 'components/AccountDrawer'
 import { usePendingActivity } from 'components/AccountDrawer/MiniPortfolio/Activity/hooks'

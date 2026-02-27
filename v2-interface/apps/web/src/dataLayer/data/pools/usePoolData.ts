@@ -5,7 +5,7 @@
  */
 import { useMemo } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { GraphQLApi } from '@universe/api'
+import { BackendApi } from '@universe/api'
 import { FeeData } from 'components/Liquidity/Create/types'
 import {
   bigintToNumber,
@@ -33,12 +33,12 @@ export interface PoolData {
   idOrAddress: string
   feeTier?: FeeData
   txCount?: number
-  protocolVersion?: GraphQLApi.ProtocolVersion
+  protocolVersion?: BackendApi.ProtocolVersion
   hookAddress?: string
-  token0: GraphQLApi.Token
+  token0: BackendApi.Token
   tvlToken0?: number
   token0Price?: number
-  token1: GraphQLApi.Token
+  token1: BackendApi.Token
   tvlToken1?: number
   token1Price?: number
   volumeUSD24H?: number
@@ -163,7 +163,7 @@ export function usePoolData(params: {
 
     return {
       idOrAddress: params.poolIdOrAddress.toLowerCase(),
-      protocolVersion: GraphQLApi.ProtocolVersion.V2,
+      protocolVersion: BackendApi.ProtocolVersion.V2,
       feeTier: {
         feeAmount: snapshot?.fee_tier_bps ?? V2_DEFAULT_FEE_TIER,
         isDynamic: false,
@@ -175,7 +175,7 @@ export function usePoolData(params: {
         symbol: token0Symbol ?? snapshot?.token0_symbol ?? 'TOKEN0',
         name: token0Name ?? snapshot?.token0_name ?? token0Symbol ?? 'Token 0',
         decimals: resolvedToken0Decimals,
-        standard: GraphQLApi.TokenStandard.Erc20,
+        standard: BackendApi.TokenStandard.Erc20,
         project: {
           name: token0Name ?? snapshot?.token0_name ?? token0Symbol ?? 'Token 0',
           logo: snapshot?.token0_logo_uri ? { url: snapshot.token0_logo_uri } : undefined,
@@ -188,7 +188,7 @@ export function usePoolData(params: {
         symbol: token1Symbol ?? snapshot?.token1_symbol ?? 'TOKEN1',
         name: token1Name ?? snapshot?.token1_name ?? token1Symbol ?? 'Token 1',
         decimals: resolvedToken1Decimals,
-        standard: GraphQLApi.TokenStandard.Erc20,
+        standard: BackendApi.TokenStandard.Erc20,
         project: {
           name: token1Name ?? snapshot?.token1_name ?? token1Symbol ?? 'Token 1',
           logo: snapshot?.token1_logo_uri ? { url: snapshot.token1_logo_uri } : undefined,

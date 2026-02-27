@@ -1,5 +1,5 @@
 import { getProtocolColor, getProtocolName } from 'dataLayer/data/util'
-import { GraphQLApi } from '@universe/api'
+import { BackendApi } from '@universe/api'
 import { useHeaderDateFormatter } from 'components/Charts/hooks/useHeaderDateFormatter'
 import { PROTOCOL_LEGEND_ELEMENT_ID } from 'components/Charts/types'
 import { UTCTimestamp } from 'lightweight-charts'
@@ -9,7 +9,7 @@ import { Flex, styled, Text, useSporeColors } from 'ui/src'
 import { useLocalizationContext } from 'uniswap/src/features/language/LocalizationContext'
 import { FiatNumberType, NumberType } from 'utilities/src/format/types'
 
-type ChartHeaderProtocolInfo = { protocol: GraphQLApi.PriceSource; value?: number }
+type ChartHeaderProtocolInfo = { protocol: BackendApi.PriceSource; value?: number }
 
 const ProtocolLegendWrapper = styled(Flex, {
   position: 'absolute',

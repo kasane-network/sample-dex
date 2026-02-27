@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { createSupabaseTokenReadClient, GqlResult, GraphQLApi } from '@universe/api'
+import { createSupabaseTokenReadClient, GqlResult, BackendApi } from '@universe/api'
 import type { TokenReadModel } from '@universe/api/src/tokenIndexer/supabaseReadClient'
 import { useMemo } from 'react'
 import { COMMON_BASES } from 'uniswap/src/constants/routing'
@@ -68,7 +68,7 @@ export function toCurrencyInfoFromSupabase(model: TokenReadModel): CurrencyInfo 
     isSpam: model.registry.isSpam,
     safetyInfo: {
       tokenList: TokenList.Default,
-      protectionResult: GraphQLApi.ProtectionResult.Benign,
+      protectionResult: BackendApi.ProtectionResult.Benign,
     },
   })
 }

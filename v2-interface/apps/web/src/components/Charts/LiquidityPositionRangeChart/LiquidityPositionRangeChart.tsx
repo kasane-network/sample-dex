@@ -4,7 +4,7 @@ import { Currency, Price } from '@uniswap/sdk-core'
 import { Pair } from '@uniswap/v2-sdk'
 import { FeeAmount, Pool as V3Pool } from '@uniswap/v3-sdk'
 import { Pool as V4Pool } from '@uniswap/v4-sdk'
-import { GraphQLApi } from '@universe/api'
+import { BackendApi } from '@universe/api'
 import { ActiveLiquidityChart } from 'components/Charts/ActiveLiquidityChart/ActiveLiquidityChart'
 import { BandsIndicator } from 'components/Charts/BandsIndicator/bands-indicator'
 import { cloneReadonly } from 'components/Charts/BandsIndicator/helpers/simple-clone'
@@ -352,7 +352,7 @@ interface LiquidityPositionRangeChartProps {
   }
   width?: number | string
   height?: number
-  duration?: GraphQLApi.HistoryDuration
+  duration?: BackendApi.HistoryDuration
   showXAxis?: boolean
   showYAxis?: boolean
   interactive?: boolean
@@ -481,7 +481,7 @@ function LiquidityPositionRangeChart({
     ? {
         addressOrId: poolAddressOrId,
         chain: chainInfo.backendChain.chain,
-        duration: duration ?? GraphQLApi.HistoryDuration.Month,
+        duration: duration ?? BackendApi.HistoryDuration.Month,
         isV4,
         isV3,
         isV2,

@@ -1,5 +1,5 @@
 import { fiatOnRampToCurrency, gqlToCurrency, PricePoint } from 'dataLayer/data/util'
-import { GraphQLApi } from '@universe/api'
+import { BackendApi } from '@universe/api'
 import { useCallback } from 'react'
 import { useAllCommonBaseCurrencies } from 'uniswap/src/components/TokenSelector/hooks/useAllCommonBaseCurrencies'
 import { MELD_NATIVE_SOL_ADDRESS_SOLANA } from 'uniswap/src/features/chains/svm/defaults'
@@ -15,7 +15,7 @@ import { currencyId } from 'uniswap/src/utils/currencyId'
 // TODO(WEB-3839): replace all usage of Currency in the web app with CurrencyInfo
 
 // TODO: remove this function once we have it in the shared package
-export function gqlTokenToCurrencyInfo(token?: GraphQLApi.Token): CurrencyInfo | undefined {
+export function gqlTokenToCurrencyInfo(token?: BackendApi.Token): CurrencyInfo | undefined {
   if (!token) {
     return undefined
   }
@@ -32,7 +32,7 @@ export function gqlTokenToCurrencyInfo(token?: GraphQLApi.Token): CurrencyInfo |
     logoUrl: token.project?.logo?.url ?? token.project?.logoUrl,
     isSpam: token.project?.isSpam ?? false,
     safetyInfo: getCurrencySafetyInfo(
-      token.project?.safetyLevel ?? GraphQLApi.SafetyLevel.StrongWarning,
+      token.project?.safetyLevel ?? BackendApi.SafetyLevel.StrongWarning,
       token.protectionInfo,
     ),
   })
@@ -71,7 +71,7 @@ export function useMeldSupportedCurrencyToCurrencyInfo(): {
           logoUrl: forCurrency.symbol,
           safetyInfo: {
             tokenList: TokenList.Default,
-            protectionResult: GraphQLApi.ProtectionResult.Benign,
+            protectionResult: BackendApi.ProtectionResult.Benign,
           },
           isSpam: false,
         }
@@ -87,7 +87,7 @@ export function useMeldSupportedCurrencyToCurrencyInfo(): {
         logoUrl: forCurrency.symbol,
         safetyInfo: {
           tokenList: TokenList.Default,
-          protectionResult: GraphQLApi.ProtectionResult.Benign,
+          protectionResult: BackendApi.ProtectionResult.Benign,
         },
         isSpam: false,
       })

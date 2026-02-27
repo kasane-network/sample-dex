@@ -101,13 +101,15 @@
       "options": {
         "cwd": "{projectRoot}"
       },
-      "continuous": true
+      "continuous": true,
+      "dependsOn": ["prepare"]
     },
     "dev": {
       "command": "ROLLDOWN_OPTIONS_VALIDATION=loose vite dev --port 3011 --strictPort",
       "options": {
         "cwd": "{projectRoot}"
-      }
+      },
+      "dependsOn": ["prepare"]
     },
     "build:production": {
       "command": "CLOUDFLARE_ENV=production ROLLDOWN_OPTIONS_VALIDATION=loose vite build",

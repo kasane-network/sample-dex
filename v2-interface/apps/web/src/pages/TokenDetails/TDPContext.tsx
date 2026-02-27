@@ -1,12 +1,12 @@
 import { Currency } from '@uniswap/sdk-core'
-import { GraphQLApi } from '@universe/api'
+import { BackendApi } from '@universe/api'
 import { TDPChartState } from 'components/Tokens/TokenDetails/ChartSection'
 import { createContext, PropsWithChildren, useContext } from 'react'
 import { GqlChainId, UniverseChainId } from 'uniswap/src/features/chains/types'
 import { PortfolioBalance } from 'uniswap/src/features/dataApi/types'
 
 export type MultiChainMap = {
-  [chain in GraphQLApi.Chain]?: { address?: string; balance?: PortfolioBalance } | undefined
+  [chain in BackendApi.Chain]?: { address?: string; balance?: PortfolioBalance } | undefined
 }
 
 type BaseTDPContext = {
@@ -18,7 +18,7 @@ type BaseTDPContext = {
   address: string
 
   tokenQuery: {
-    data?: { token?: GraphQLApi.TokenWebQuery['token'] }
+    data?: { token?: BackendApi.TokenWebQuery['token'] }
     loading: boolean
     error?: Error
   }

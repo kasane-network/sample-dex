@@ -1,5 +1,5 @@
 import { Token } from '@uniswap/sdk-core'
-import { GraphQLApi } from '@universe/api'
+import { BackendApi } from '@universe/api'
 import { SwapConfigKey } from '@universe/gating'
 import { AVALANCHE_LOGO } from 'ui/src/assets'
 import { config } from 'uniswap/src/config'
@@ -32,7 +32,7 @@ export const AVALANCHE_CHAIN_INFO = {
   platform: Platform.EVM,
   assetRepoNetworkName: 'avalanchec',
   backendChain: {
-    chain: GraphQLApi.Chain.Avalanche as GqlChainId,
+    chain: BackendApi.Chain.Avalanche as GqlChainId,
     backendSupported: true,
     nativeTokenBackendAddress: undefined,
   },

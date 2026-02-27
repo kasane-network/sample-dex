@@ -1,6 +1,6 @@
 import { OrderDirection } from 'dataLayer/data/util'
 import { Percent } from '@uniswap/sdk-core'
-import { GraphQLApi } from '@universe/api'
+import { BackendApi } from '@universe/api'
 import { FeeData } from 'components/Liquidity/Create/types'
 import { BIPS_BASE } from 'uniswap/src/constants/misc'
 
@@ -61,15 +61,15 @@ export function calculateApr({
 
 export interface TablePool {
   hash: string
-  token0: GraphQLApi.Token
-  token1: GraphQLApi.Token
+  token0: BackendApi.Token
+  token1: BackendApi.Token
   tvl: number
   volume24h: number
   volume30d: number
   apr: Percent
   volOverTvl: number
   feeTier: FeeData
-  protocolVersion: GraphQLApi.ProtocolVersion
+  protocolVersion: BackendApi.ProtocolVersion
   hookAddress?: string
   boostedApr?: number
 }

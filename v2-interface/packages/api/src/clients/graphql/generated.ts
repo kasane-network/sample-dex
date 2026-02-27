@@ -1,5 +1,3 @@
-/** biome-ignore-all assist/source/organizeImports: manual ordering */
-export * from './__generated__/schema-types'
-export * from './__generated__/resolvers'
-export * from './__generated__/operations'
-export * from './__generated__/react-hooks'
+// Temporary GraphQL namespace shim.
+// Keeps module resolution working after removing generated GraphQL sources.
+export {}

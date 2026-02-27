@@ -1,7 +1,7 @@
 import { getTokenDetailsURL, gqlToCurrency } from 'dataLayer/data/util'
 import { ProtocolVersion } from '@uniswap/client-data-api/dist/data/v1/poolTypes_pb'
 import { Percent } from '@uniswap/sdk-core'
-import { GraphQLApi, parseRestProtocolVersion } from '@universe/api'
+import { BackendApi, parseRestProtocolVersion } from '@universe/api'
 import { FeatureFlags, useFeatureFlag } from '@universe/gating'
 import { BreadcrumbNavContainer, BreadcrumbNavLink, CurrentPageBreadcrumb } from 'components/BreadcrumbNav'
 import { Dropdown } from 'components/Dropdowns/Dropdown'
@@ -52,8 +52,8 @@ const StyledExternalLink = deprecatedStyled(ExternalLink)`
 interface PoolDetailsBreadcrumbProps {
   chainId?: UniverseChainId
   poolAddress?: string
-  token0?: GraphQLApi.Token
-  token1?: GraphQLApi.Token
+  token0?: BackendApi.Token
+  token1?: BackendApi.Token
   loading?: boolean
 }
 
@@ -91,11 +91,11 @@ const PoolDetailsTitle = ({
   toggleReversed,
   hookAddress,
 }: {
-  token0?: GraphQLApi.Token
-  token1?: GraphQLApi.Token
+  token0?: BackendApi.Token
+  token1?: BackendApi.Token
   chainId?: UniverseChainId
   feeTier?: FeeData
-  protocolVersion?: GraphQLApi.ProtocolVersion
+  protocolVersion?: BackendApi.ProtocolVersion
   toggleReversed: React.DispatchWithoutAction
   hookAddress?: string
 }) => {
@@ -167,7 +167,7 @@ const ContractsDropdownRow = ({
 }: {
   address?: string
   chainId?: number
-  tokens: (GraphQLApi.Token | undefined)[]
+  tokens: (BackendApi.Token | undefined)[]
 }) => {
   const colors = useSporeColors()
   const currency = tokens[0] && gqlToCurrency(tokens[0])
@@ -221,9 +221,9 @@ const PoolDetailsHeaderActions = ({
   chainId?: UniverseChainId
   poolAddress?: string
   poolName: string
-  token0?: GraphQLApi.Token
-  token1?: GraphQLApi.Token
-  protocolVersion?: GraphQLApi.ProtocolVersion
+  token0?: BackendApi.Token
+  token1?: BackendApi.Token
+  protocolVersion?: BackendApi.ProtocolVersion
 }) => {
   const { t } = useTranslation()
   const colors = useSporeColors()
@@ -272,7 +272,7 @@ const PoolDetailsHeaderActions = ({
         alignRight
       >
         <>
-          {protocolVersion !== GraphQLApi.ProtocolVersion.V4 && (
+          {protocolVersion !== BackendApi.ProtocolVersion.V4 && (
             <ContractsDropdownRow address={poolAddress} chainId={chainId} tokens={[token0, token1]} />
           )}
           <ContractsDropdownRow address={token0?.address} chainId={chainId} tokens={[token0]} />
@@ -328,10 +328,10 @@ const StyledLink = styled(Link, {
 interface PoolDetailsHeaderProps {
   chainId?: number
   poolAddress?: string
-  token0?: GraphQLApi.Token
-  token1?: GraphQLApi.Token
+  token0?: BackendApi.Token
+  token1?: BackendApi.Token
   feeTier?: FeeData
-  protocolVersion?: GraphQLApi.ProtocolVersion
+  protocolVersion?: BackendApi.ProtocolVersion
   toggleReversed: React.DispatchWithoutAction
   loading?: boolean
   hookAddress?: string

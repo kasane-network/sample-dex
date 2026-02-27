@@ -1,4 +1,4 @@
-import { PrefetchBalancesWrapper } from 'dataLayer/data/apollo/AdaptiveTokenBalancesProvider'
+import { PrefetchBalancesWrapper } from 'features/portfolio/noopBalanceProviders'
 import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
 import {
   LimitCustomMarketPriceButton,

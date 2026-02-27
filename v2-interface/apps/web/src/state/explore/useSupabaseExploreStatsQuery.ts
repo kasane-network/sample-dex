@@ -3,7 +3,7 @@ import {
   createSupabaseExploreReadClient,
   ExplorePoolReadModel,
   ExploreTokenReadModel,
-  GraphQLApi,
+  BackendApi,
 } from '@universe/api'
 import { Percent } from '@uniswap/sdk-core'
 import { DEFAULT_TICK_SPACING, V2_DEFAULT_FEE_TIER } from 'uniswap/src/constants/pools'
@@ -97,13 +97,13 @@ function toTokenStat(model: ExploreTokenReadModel, chainId: UniverseChainId): To
 function parseProtocolVersion(version: string): PoolStat['protocolVersion'] {
   const lowered = version.toLowerCase()
   if (lowered === 'v2') {
-    return GraphQLApi.ProtocolVersion.V2
+    return BackendApi.ProtocolVersion.V2
   }
   if (lowered === 'v3') {
-    return GraphQLApi.ProtocolVersion.V3
+    return BackendApi.ProtocolVersion.V3
   }
   if (lowered === 'v4') {
-    return GraphQLApi.ProtocolVersion.V4
+    return BackendApi.ProtocolVersion.V4
   }
   return undefined
 }
@@ -154,9 +154,9 @@ function buildExploreStatsData(tokens: ExploreTokenReadModel[], pools: ExplorePo
     stats: {
       tokenStats,
       poolStats,
-      poolStatsV2: poolStats.filter((pool) => pool.protocolVersion === GraphQLApi.ProtocolVersion.V2),
-      poolStatsV3: poolStats.filter((pool) => pool.protocolVersion === GraphQLApi.ProtocolVersion.V3),
-      poolStatsV4: poolStats.filter((pool) => pool.protocolVersion === GraphQLApi.ProtocolVersion.V4),
+      poolStatsV2: poolStats.filter((pool) => pool.protocolVersion === BackendApi.ProtocolVersion.V2),
+      poolStatsV3: poolStats.filter((pool) => pool.protocolVersion === BackendApi.ProtocolVersion.V3),
+      poolStatsV4: poolStats.filter((pool) => pool.protocolVersion === BackendApi.ProtocolVersion.V4),
     },
   } satisfies ExploreStatsData
 }

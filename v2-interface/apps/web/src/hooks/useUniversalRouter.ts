@@ -1,4 +1,4 @@
-import { useTotalBalancesUsdForAnalytics } from 'dataLayer/data/apollo/useTotalBalancesUsdForAnalytics'
+import { useTotalBalancesUsdForAnalytics } from 'features/portfolio/noopBalanceProviders'
 import { TransactionResponse } from '@ethersproject/abstract-provider'
 import { BigNumber } from '@ethersproject/bignumber'
 import { Percent } from '@uniswap/sdk-core'

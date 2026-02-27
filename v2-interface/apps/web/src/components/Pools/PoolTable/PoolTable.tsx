@@ -5,7 +5,7 @@ import { gqlToCurrency, OrderDirection, unwrapToken } from 'dataLayer/data/util'
 import { ApolloError } from '@apollo/client'
 import { createColumnHelper, Row } from '@tanstack/react-table'
 import { Percent } from '@uniswap/sdk-core'
-import { GraphQLApi } from '@universe/api'
+import { BackendApi } from '@universe/api'
 import { FeatureFlags, useFeatureFlag } from '@universe/gating'
 import { PortfolioLogo } from 'components/AccountDrawer/MiniPortfolio/PortfolioLogo'
 import { FeeData } from 'components/Liquidity/Create/types'
@@ -76,8 +76,8 @@ function PoolDescription({
   token1,
   chainId,
 }: {
-  token0?: GraphQLApi.Token | ExploreTokenRef
-  token1?: GraphQLApi.Token | ExploreTokenRef
+  token0?: BackendApi.Token | ExploreTokenRef
+  token1?: BackendApi.Token | ExploreTokenRef
   chainId: UniverseChainId
 }) {
   const currencies = [token0 ? gqlToCurrency(token0) : undefined, token1 ? gqlToCurrency(token1) : undefined]
@@ -260,11 +260,11 @@ export function PoolsTable({
         const token0Address = pool.token0?.address || getNativeAddress(chainId)
         const token1Address = pool.token1?.address || getNativeAddress(chainId)
         const currency0Id =
-          pool.protocolVersion === GraphQLApi.ProtocolVersion.V4 && token0Address
+          pool.protocolVersion === BackendApi.ProtocolVersion.V4 && token0Address
             ? buildCurrencyId(chainId, token0Address)
             : undefined
         const currency1Id =
-          pool.protocolVersion === GraphQLApi.ProtocolVersion.V4 && token1Address
+          pool.protocolVersion === BackendApi.ProtocolVersion.V4 && token1Address
             ? buildCurrencyId(chainId, token1Address)
             : undefined
 

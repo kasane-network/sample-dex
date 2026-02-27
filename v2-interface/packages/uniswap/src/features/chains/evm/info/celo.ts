@@ -1,4 +1,4 @@
-import { GraphQLApi } from '@universe/api'
+import { BackendApi } from '@universe/api'
 import { SwapConfigKey } from '@universe/gating'
 import { CELO_LOGO } from 'ui/src/assets'
 import { config } from 'uniswap/src/config'
@@ -28,7 +28,7 @@ export const CELO_CHAIN_INFO = {
   platform: Platform.EVM,
   assetRepoNetworkName: 'celo',
   backendChain: {
-    chain: GraphQLApi.Chain.Celo as GqlChainId,
+    chain: BackendApi.Chain.Celo as GqlChainId,
     backendSupported: true,
     nativeTokenBackendAddress: '0x471EcE3750Da237f93B8E339c536989b8978a438',
   },

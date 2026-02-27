@@ -1,4 +1,4 @@
-import { GraphQLApi } from '@universe/api'
+import { BackendApi } from '@universe/api'
 
 export enum FiatOnRampTransactionStatus {
   INITIATED = 'INITIATED',
@@ -8,13 +8,13 @@ export enum FiatOnRampTransactionStatus {
 }
 
 // eslint-disable-next-line consistent-return
-export function backendStatusToFiatOnRampStatus(status: GraphQLApi.TransactionStatus) {
+export function backendStatusToFiatOnRampStatus(status: BackendApi.TransactionStatus) {
   switch (status) {
-    case GraphQLApi.TransactionStatus.Confirmed:
+    case BackendApi.TransactionStatus.Confirmed:
       return FiatOnRampTransactionStatus.COMPLETE
-    case GraphQLApi.TransactionStatus.Pending:
+    case BackendApi.TransactionStatus.Pending:
       return FiatOnRampTransactionStatus.PENDING
-    case GraphQLApi.TransactionStatus.Failed:
+    case BackendApi.TransactionStatus.Failed:
       return FiatOnRampTransactionStatus.FAILED
   }
 }

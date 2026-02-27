@@ -1,5 +1,5 @@
 import { gqlToCurrency } from 'dataLayer/data/util'
-import { GraphQLApi } from '@universe/api'
+import { BackendApi } from '@universe/api'
 import { PositionInfo } from 'components/AccountDrawer/MiniPortfolio/Pools/cache'
 import useMultiChainPositions from 'components/AccountDrawer/MiniPortfolio/Pools/useMultiChainPositions'
 import { Scrim } from 'components/AccountDrawer/Scrim'
@@ -74,13 +74,13 @@ const SwapModalWrapper = deprecatedStyled(Column)<{ open?: boolean }>`
 
 interface PoolDetailsStatsButtonsProps {
   chainId?: UniverseChainId
-  token0?: GraphQLApi.Token
-  token1?: GraphQLApi.Token
+  token0?: BackendApi.Token
+  token1?: BackendApi.Token
   feeTier?: number
   tickSpacing?: number
   hookAddress?: string
   isDynamic?: boolean
-  protocolVersion?: GraphQLApi.ProtocolVersion
+  protocolVersion?: BackendApi.ProtocolVersion
   loading?: boolean
 }
 
@@ -115,8 +115,8 @@ function findMatchingPosition({
   feeTier,
 }: {
   positions: PositionInfo[]
-  token0?: GraphQLApi.Token
-  token1?: GraphQLApi.Token
+  token0?: BackendApi.Token
+  token1?: BackendApi.Token
   feeTier?: number
 }) {
   return positions.find(

@@ -1,4 +1,4 @@
-import { GraphQLApi } from '@universe/api'
+import { BackendApi } from '@universe/api'
 import { WatchQueryFetchPolicy } from '@apollo/client'
 import { GetThemeValueForKey } from 'ui/src'
 
@@ -15,12 +15,12 @@ export interface SearchInputProps {
 export type NftsNextFetchPolicy = WatchQueryFetchPolicy
 
 export type GQLNftAsset = NonNullable<
-  NonNullable<NonNullable<GraphQLApi.NftBalanceQuery['nftBalances']>['edges'][number]>['node']['ownedAsset']
+  NonNullable<NonNullable<BackendApi.NftBalanceQuery['nftBalances']>['edges'][number]>['node']['ownedAsset']
 >
 
 export interface NFTItem {
   id: string
-  chain?: GraphQLApi.Chain
+  chain?: BackendApi.Chain
   contractAddress?: string
   tokenId?: string
   name?: string

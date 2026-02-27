@@ -1,4 +1,4 @@
-import { GraphQLApi } from '@universe/api'
+import { BackendApi } from '@universe/api'
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 import { GQL_CHAINS } from 'uniswap/src/test/fixtures'
 import { faker, MAX_FIXTURE_TIMESTAMP } from 'uniswap/src/test/shared'
@@ -10,12 +10,12 @@ export const mocks = {
     description: () => faker.lorem.sentence(),
     logoUrl: () => faker.image.imageUrl(),
     name: () => faker.lorem.word(),
-    safetyLevel: () => GraphQLApi.SafetyLevel.Verified,
+    safetyLevel: () => BackendApi.SafetyLevel.Verified,
     tokens: () => new Array(4),
     markets: () => null,
   },
   TokenProjectMarket: {
-    currency: () => GraphQLApi.Currency.Eth,
+    currency: () => BackendApi.Currency.Eth,
     id: () => faker.datatype.uuid(),
     tokenProject: () => ({ id: faker.datatype.uuid(), tokens: [] }),
     priceHistory: () => new Array(2),
@@ -26,7 +26,7 @@ export const mocks = {
     chain: () => randomChoice(GQL_CHAINS),
     decimals: () => 6,
     symbol: () => faker.lorem.word(),
-    protectionInfo: () => ({ result: randomEnumValue(GraphQLApi.ProtectionResult), attackTypes: [] }),
+    protectionInfo: () => ({ result: randomEnumValue(BackendApi.ProtectionResult), attackTypes: [] }),
     feeData: () => ({ buyFeeBps: '', sellFeeBps: '' }),
     isBridged: () => null,
     bridgedWithdrawalInfo: () => null,
@@ -53,7 +53,7 @@ export const mocks = {
   },
   TransactionDetails: {
     id: () => faker.datatype.uuid(),
-    status: () => randomEnumValue(GraphQLApi.TransactionStatus),
+    status: () => randomEnumValue(BackendApi.TransactionStatus),
     to: () => faker.finance.ethereumAddress(),
     from: () => faker.finance.ethereumAddress(),
     nonce: () => faker.datatype.number(),
@@ -64,7 +64,7 @@ export const mocks = {
     id: () => faker.datatype.uuid(),
     offerer: () => faker.finance.ethereumAddress(),
     hash: () => faker.datatype.uuid(),
-    status: () => randomEnumValue(GraphQLApi.SwapOrderStatus),
+    status: () => randomEnumValue(BackendApi.SwapOrderStatus),
   },
   ApplicationContract: {
     id: () => faker.datatype.uuid(),

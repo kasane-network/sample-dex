@@ -1,7 +1,7 @@
 import { DeepPartial } from '@apollo/client/utilities'
 import { DataTag, DefaultError, QueryKey, queryOptions, UndefinedInitialDataOptions } from '@tanstack/react-query'
 import { Currency } from '@uniswap/sdk-core'
-import { GraphQLApi } from '@universe/api'
+import { BackendApi } from '@universe/api'
 import { DEFAULT_GQL_CHAIN } from 'constants/chains'
 import { NATIVE_CHAIN_ID } from 'constants/tokens'
 import ms from 'ms'
@@ -40,30 +40,30 @@ export enum TimePeriod {
 }
 
 // eslint-disable-next-line consistent-return
-export function toHistoryDuration(timePeriod: TimePeriod): GraphQLApi.HistoryDuration {
+export function toHistoryDuration(timePeriod: TimePeriod): BackendApi.HistoryDuration {
   switch (timePeriod) {
     case TimePeriod.HOUR:
-      return GraphQLApi.HistoryDuration.Hour
+      return BackendApi.HistoryDuration.Hour
     case TimePeriod.DAY:
-      return GraphQLApi.HistoryDuration.Day
+      return BackendApi.HistoryDuration.Day
     case TimePeriod.WEEK:
-      return GraphQLApi.HistoryDuration.Week
+      return BackendApi.HistoryDuration.Week
     case TimePeriod.MONTH:
-      return GraphQLApi.HistoryDuration.Month
+      return BackendApi.HistoryDuration.Month
     case TimePeriod.YEAR:
-      return GraphQLApi.HistoryDuration.Year
+      return BackendApi.HistoryDuration.Year
   }
 }
 
 export type PricePoint = { timestamp: number; value: number }
 
-export function toContractInput(currency: Currency, fallback: UniverseChainId): GraphQLApi.ContractInput {
+export function toContractInput(currency: Currency, fallback: UniverseChainId): BackendApi.ContractInput {
   const supportedChainId = toSupportedChainId(currency.chainId)
   const chain = toGraphQLChain(supportedChainId ?? fallback)
   return { chain, address: currency.isToken ? currency.address : getNativeTokenDBAddress(chain) }
 }
 
-export function gqlToCurrency(token: DeepPartial<GraphQLApi.Token | TokenStat>): Currency | undefined {
+export function gqlToCurrency(token: DeepPartial<BackendApi.Token | TokenStat>): Currency | undefined {
   if (!token.chain) {
     return undefined
   }
@@ -72,7 +72,7 @@ export function gqlToCurrency(token: DeepPartial<GraphQLApi.Token | TokenStat>):
   if (!chainId) {
     return undefined
   }
-  if (token.standard === GraphQLApi.TokenStandard.Native || token.address === NATIVE_CHAIN_ID || !token.address) {
+  if (token.standard === BackendApi.TokenStandard.Native || token.address === NATIVE_CHAIN_ID || !token.address) {
     return nativeOnChain(chainId)
   } else {
     return buildCurrency({
@@ -109,8 +109,8 @@ export function fiatOnRampToCurrency(forCurrency: FORSupportedToken): Currency |
 }
 
 export function supportedChainIdFromGQLChain(chain: GqlChainId): UniverseChainId
-export function supportedChainIdFromGQLChain(chain: GraphQLApi.Chain): UniverseChainId | undefined
-export function supportedChainIdFromGQLChain(chain: GraphQLApi.Chain): UniverseChainId | undefined {
+export function supportedChainIdFromGQLChain(chain: BackendApi.Chain): UniverseChainId | undefined
+export function supportedChainIdFromGQLChain(chain: BackendApi.Chain): UniverseChainId | undefined {
   return isBackendSupportedChain(chain) ? (fromGraphQLChain(chain) ?? undefined) : undefined
 }
 
@@ -126,7 +126,7 @@ export function getTokenDetailsURL({
   outputAddress,
 }: {
   address?: string | null
-  chain?: GraphQLApi.Chain
+  chain?: BackendApi.Chain
   chainUrlParam?: string
   inputAddress?: string | null
   outputAddress?: string | null
@@ -179,36 +179,36 @@ export function unwrapToken<
 }
 
 type ProtocolMeta = { name: string; color: ColorTokens; gradient: { start: string; end: string } }
-const PROTOCOL_META: { [source in GraphQLApi.PriceSource]: ProtocolMeta } = {
-  [GraphQLApi.PriceSource.SubgraphV2]: {
+const PROTOCOL_META: { [source in BackendApi.PriceSource]: ProtocolMeta } = {
+  [BackendApi.PriceSource.SubgraphV2]: {
     name: 'v2',
     color: '$DEP_blue400',
     gradient: { start: 'rgba(96, 123, 238, 0.20)', end: 'rgba(55, 70, 136, 0.00)' },
   },
-  [GraphQLApi.PriceSource.SubgraphV3]: {
+  [BackendApi.PriceSource.SubgraphV3]: {
     name: 'v3',
     color: '$accent1',
     gradient: { start: 'rgba(252, 116, 254, 0.20)', end: 'rgba(252, 116, 254, 0.00)' },
   },
-  [GraphQLApi.PriceSource.SubgraphV4]: {
+  [BackendApi.PriceSource.SubgraphV4]: {
     name: 'v4',
     color: '$chain_137',
     gradient: { start: 'rgba(96, 123, 238, 0.20)', end: 'rgba(55, 70, 136, 0.00)' },
   },
-  [GraphQLApi.PriceSource.External]: {
+  [BackendApi.PriceSource.External]: {
     // TODO (LP-350): Remove this since this protocol chart does not exist anymore
     name: 'external',
     color: '$neutral1',
     gradient: { start: 'rgba(252, 116, 254, 0.20)', end: 'rgba(252, 116, 254, 0.00)' },
   },
-  /* [GraphQLApi.PriceSource.UniswapX]: { name: 'UniswapX', color: purple } */
+  /* [BackendApi.PriceSource.UniswapX]: { name: 'UniswapX', color: purple } */
 }
 
-export function getProtocolColor(priceSource: GraphQLApi.PriceSource): ColorTokens {
+export function getProtocolColor(priceSource: BackendApi.PriceSource): ColorTokens {
   return PROTOCOL_META[priceSource].color
 }
 
-export function getProtocolName(priceSource: GraphQLApi.PriceSource): string {
+export function getProtocolName(priceSource: BackendApi.PriceSource): string {
   return PROTOCOL_META[priceSource].name
 }
 

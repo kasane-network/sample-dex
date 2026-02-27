@@ -1,4 +1,4 @@
-import { GraphQLApi } from '@universe/api'
+import { BackendApi } from '@universe/api'
 import { ETH_LOGO, ZORA_LOGO } from 'ui/src/assets'
 import { DEFAULT_NATIVE_ADDRESS_LEGACY, getQuicknodeEndpointUrl } from 'uniswap/src/features/chains/evm/rpc'
 import { buildChainTokens } from 'uniswap/src/features/chains/evm/tokens'
@@ -27,7 +27,7 @@ export const ZORA_CHAIN_INFO = {
   platform: Platform.EVM,
   assetRepoNetworkName: 'zora',
   backendChain: {
-    chain: GraphQLApi.Chain.Zora as GqlChainId,
+    chain: BackendApi.Chain.Zora as GqlChainId,
     backendSupported: true,
     nativeTokenBackendAddress: undefined,
   },

@@ -1,4 +1,4 @@
-import { GraphQLApi } from '@universe/api'
+import { BackendApi } from '@universe/api'
 import { useCallback, useMemo } from 'react'
 import { FiatCurrency } from 'uniswap/src/features/fiatCurrency/constants'
 import { getFiatCurrencyCode, useAppFiatCurrency } from 'uniswap/src/features/fiatCurrency/hooks'
@@ -6,81 +6,81 @@ import { LocalizationContextState } from 'uniswap/src/features/language/Localiza
 import { FiatNumberType } from 'utilities/src/format/types'
 
 type SupportedServerCurrency = Extract<
-  GraphQLApi.Currency,
-  | GraphQLApi.Currency.Ars
-  | GraphQLApi.Currency.Aud
-  | GraphQLApi.Currency.Brl
-  | GraphQLApi.Currency.Cad
-  | GraphQLApi.Currency.Cny
-  | GraphQLApi.Currency.Cop
-  | GraphQLApi.Currency.Eur
-  | GraphQLApi.Currency.Gbp
-  | GraphQLApi.Currency.Hkd
-  | GraphQLApi.Currency.Idr
-  | GraphQLApi.Currency.Inr
-  | GraphQLApi.Currency.Jpy
-  | GraphQLApi.Currency.Krw
-  | GraphQLApi.Currency.Mxn
-  | GraphQLApi.Currency.Ngn
-  | GraphQLApi.Currency.Pkr
-  | GraphQLApi.Currency.Rub
-  | GraphQLApi.Currency.Sgd
-  | GraphQLApi.Currency.Try
-  | GraphQLApi.Currency.Uah
-  | GraphQLApi.Currency.Usd
-  | GraphQLApi.Currency.Vnd
+  BackendApi.Currency,
+  | BackendApi.Currency.Ars
+  | BackendApi.Currency.Aud
+  | BackendApi.Currency.Brl
+  | BackendApi.Currency.Cad
+  | BackendApi.Currency.Cny
+  | BackendApi.Currency.Cop
+  | BackendApi.Currency.Eur
+  | BackendApi.Currency.Gbp
+  | BackendApi.Currency.Hkd
+  | BackendApi.Currency.Idr
+  | BackendApi.Currency.Inr
+  | BackendApi.Currency.Jpy
+  | BackendApi.Currency.Krw
+  | BackendApi.Currency.Mxn
+  | BackendApi.Currency.Ngn
+  | BackendApi.Currency.Pkr
+  | BackendApi.Currency.Rub
+  | BackendApi.Currency.Sgd
+  | BackendApi.Currency.Try
+  | BackendApi.Currency.Uah
+  | BackendApi.Currency.Usd
+  | BackendApi.Currency.Vnd
 >
-const mapServerCurrencyToFiatCurrency: Record<GraphQLApi.Currency, FiatCurrency | undefined> = {
-  [GraphQLApi.Currency.Ars]: FiatCurrency.ArgentinePeso,
-  [GraphQLApi.Currency.Aud]: FiatCurrency.AustralianDollar,
-  [GraphQLApi.Currency.Brl]: FiatCurrency.BrazilianReal,
-  [GraphQLApi.Currency.Cad]: FiatCurrency.CanadianDollar,
-  [GraphQLApi.Currency.Cny]: FiatCurrency.ChineseYuan,
-  [GraphQLApi.Currency.Cop]: FiatCurrency.ColombianPeso,
-  [GraphQLApi.Currency.Eur]: FiatCurrency.Euro,
-  [GraphQLApi.Currency.Gbp]: FiatCurrency.BritishPound,
-  [GraphQLApi.Currency.Hkd]: FiatCurrency.HongKongDollar,
-  [GraphQLApi.Currency.Idr]: FiatCurrency.IndonesianRupiah,
-  [GraphQLApi.Currency.Inr]: FiatCurrency.IndianRupee,
-  [GraphQLApi.Currency.Jpy]: FiatCurrency.JapaneseYen,
-  [GraphQLApi.Currency.Krw]: FiatCurrency.SouthKoreanWon,
-  [GraphQLApi.Currency.Mxn]: FiatCurrency.MexicanPeso,
-  [GraphQLApi.Currency.Ngn]: FiatCurrency.NigerianNaira,
-  [GraphQLApi.Currency.Pkr]: FiatCurrency.PakistaniRupee,
-  [GraphQLApi.Currency.Rub]: FiatCurrency.RussianRuble,
-  [GraphQLApi.Currency.Sgd]: FiatCurrency.SingaporeDollar,
-  [GraphQLApi.Currency.Try]: FiatCurrency.TurkishLira,
-  [GraphQLApi.Currency.Uah]: FiatCurrency.UkrainianHryvnia,
-  [GraphQLApi.Currency.Usd]: FiatCurrency.UnitedStatesDollar,
-  [GraphQLApi.Currency.Vnd]: FiatCurrency.VietnameseDong,
-  [GraphQLApi.Currency.Eth]: undefined,
-  [GraphQLApi.Currency.Matic]: undefined,
-  [GraphQLApi.Currency.Nzd]: undefined,
-  [GraphQLApi.Currency.Thb]: undefined,
+const mapServerCurrencyToFiatCurrency: Record<BackendApi.Currency, FiatCurrency | undefined> = {
+  [BackendApi.Currency.Ars]: FiatCurrency.ArgentinePeso,
+  [BackendApi.Currency.Aud]: FiatCurrency.AustralianDollar,
+  [BackendApi.Currency.Brl]: FiatCurrency.BrazilianReal,
+  [BackendApi.Currency.Cad]: FiatCurrency.CanadianDollar,
+  [BackendApi.Currency.Cny]: FiatCurrency.ChineseYuan,
+  [BackendApi.Currency.Cop]: FiatCurrency.ColombianPeso,
+  [BackendApi.Currency.Eur]: FiatCurrency.Euro,
+  [BackendApi.Currency.Gbp]: FiatCurrency.BritishPound,
+  [BackendApi.Currency.Hkd]: FiatCurrency.HongKongDollar,
+  [BackendApi.Currency.Idr]: FiatCurrency.IndonesianRupiah,
+  [BackendApi.Currency.Inr]: FiatCurrency.IndianRupee,
+  [BackendApi.Currency.Jpy]: FiatCurrency.JapaneseYen,
+  [BackendApi.Currency.Krw]: FiatCurrency.SouthKoreanWon,
+  [BackendApi.Currency.Mxn]: FiatCurrency.MexicanPeso,
+  [BackendApi.Currency.Ngn]: FiatCurrency.NigerianNaira,
+  [BackendApi.Currency.Pkr]: FiatCurrency.PakistaniRupee,
+  [BackendApi.Currency.Rub]: FiatCurrency.RussianRuble,
+  [BackendApi.Currency.Sgd]: FiatCurrency.SingaporeDollar,
+  [BackendApi.Currency.Try]: FiatCurrency.TurkishLira,
+  [BackendApi.Currency.Uah]: FiatCurrency.UkrainianHryvnia,
+  [BackendApi.Currency.Usd]: FiatCurrency.UnitedStatesDollar,
+  [BackendApi.Currency.Vnd]: FiatCurrency.VietnameseDong,
+  [BackendApi.Currency.Eth]: undefined,
+  [BackendApi.Currency.Matic]: undefined,
+  [BackendApi.Currency.Nzd]: undefined,
+  [BackendApi.Currency.Thb]: undefined,
 }
 export const mapFiatCurrencyToServerCurrency: Record<FiatCurrency, SupportedServerCurrency> = {
-  [FiatCurrency.ArgentinePeso]: GraphQLApi.Currency.Ars,
-  [FiatCurrency.AustralianDollar]: GraphQLApi.Currency.Aud,
-  [FiatCurrency.BrazilianReal]: GraphQLApi.Currency.Brl,
-  [FiatCurrency.CanadianDollar]: GraphQLApi.Currency.Cad,
-  [FiatCurrency.ChineseYuan]: GraphQLApi.Currency.Cny,
-  [FiatCurrency.ColombianPeso]: GraphQLApi.Currency.Cop,
-  [FiatCurrency.Euro]: GraphQLApi.Currency.Eur,
-  [FiatCurrency.BritishPound]: GraphQLApi.Currency.Gbp,
-  [FiatCurrency.HongKongDollar]: GraphQLApi.Currency.Hkd,
-  [FiatCurrency.IndonesianRupiah]: GraphQLApi.Currency.Idr,
-  [FiatCurrency.IndianRupee]: GraphQLApi.Currency.Inr,
-  [FiatCurrency.JapaneseYen]: GraphQLApi.Currency.Jpy,
-  [FiatCurrency.MexicanPeso]: GraphQLApi.Currency.Mxn,
-  [FiatCurrency.SouthKoreanWon]: GraphQLApi.Currency.Krw,
-  [FiatCurrency.NigerianNaira]: GraphQLApi.Currency.Ngn,
-  [FiatCurrency.PakistaniRupee]: GraphQLApi.Currency.Pkr,
-  [FiatCurrency.RussianRuble]: GraphQLApi.Currency.Rub,
-  [FiatCurrency.SingaporeDollar]: GraphQLApi.Currency.Sgd,
-  [FiatCurrency.TurkishLira]: GraphQLApi.Currency.Try,
-  [FiatCurrency.UkrainianHryvnia]: GraphQLApi.Currency.Uah,
-  [FiatCurrency.UnitedStatesDollar]: GraphQLApi.Currency.Usd,
-  [FiatCurrency.VietnameseDong]: GraphQLApi.Currency.Vnd,
+  [FiatCurrency.ArgentinePeso]: BackendApi.Currency.Ars,
+  [FiatCurrency.AustralianDollar]: BackendApi.Currency.Aud,
+  [FiatCurrency.BrazilianReal]: BackendApi.Currency.Brl,
+  [FiatCurrency.CanadianDollar]: BackendApi.Currency.Cad,
+  [FiatCurrency.ChineseYuan]: BackendApi.Currency.Cny,
+  [FiatCurrency.ColombianPeso]: BackendApi.Currency.Cop,
+  [FiatCurrency.Euro]: BackendApi.Currency.Eur,
+  [FiatCurrency.BritishPound]: BackendApi.Currency.Gbp,
+  [FiatCurrency.HongKongDollar]: BackendApi.Currency.Hkd,
+  [FiatCurrency.IndonesianRupiah]: BackendApi.Currency.Idr,
+  [FiatCurrency.IndianRupee]: BackendApi.Currency.Inr,
+  [FiatCurrency.JapaneseYen]: BackendApi.Currency.Jpy,
+  [FiatCurrency.MexicanPeso]: BackendApi.Currency.Mxn,
+  [FiatCurrency.SouthKoreanWon]: BackendApi.Currency.Krw,
+  [FiatCurrency.NigerianNaira]: BackendApi.Currency.Ngn,
+  [FiatCurrency.PakistaniRupee]: BackendApi.Currency.Pkr,
+  [FiatCurrency.RussianRuble]: BackendApi.Currency.Rub,
+  [FiatCurrency.SingaporeDollar]: BackendApi.Currency.Sgd,
+  [FiatCurrency.TurkishLira]: BackendApi.Currency.Try,
+  [FiatCurrency.UkrainianHryvnia]: BackendApi.Currency.Uah,
+  [FiatCurrency.UnitedStatesDollar]: BackendApi.Currency.Usd,
+  [FiatCurrency.VietnameseDong]: BackendApi.Currency.Vnd,
 }
 
 export interface FiatConverter {
@@ -93,7 +93,7 @@ export interface FiatConverter {
   conversionRate?: number
 }
 
-const SOURCE_CURRENCY = GraphQLApi.Currency.Usd // Assuming all currency data comes from USD
+const SOURCE_CURRENCY = BackendApi.Currency.Usd // Assuming all currency data comes from USD
 
 /**
  * Hook used to return a converter with a set of all necessary conversion logic needed for

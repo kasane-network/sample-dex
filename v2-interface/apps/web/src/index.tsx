@@ -1,11 +1,7 @@
 // Ordering is intentional and must be preserved: sideEffects followed by functionality.
 import 'sideEffects'
 
-import { AssetActivityProvider } from 'dataLayer/data/apollo/AssetActivityProvider'
-import { apolloClient } from 'dataLayer/data/apollo/client'
-import { TokenBalancesProvider } from 'dataLayer/data/apollo/TokenBalancesProvider'
 import { getDeviceId } from '@amplitude/analytics-browser'
-import { ApolloProvider } from '@apollo/client'
 import { datadogRum } from '@datadog/browser-rum'
 import type { StatsigUser } from '@universe/gating'
 import { QueryClientPersistProvider } from 'components/PersistQueryClient'
@@ -102,16 +98,6 @@ function Updaters() {
 
 // Production Web3Provider – always reconnects on mount and runs capability effects.
 const Web3Provider = createWeb3Provider({ wagmiConfig })
-
-function GraphqlProviders({ children }: { children: React.ReactNode }) {
-  return (
-    <ApolloProvider client={apolloClient}>
-      <AssetActivityProvider>
-        <TokenBalancesProvider>{children}</TokenBalancesProvider>
-      </AssetActivityProvider>
-    </ApolloProvider>
-  )
-}
 function StatsigProvider({ children }: PropsWithChildren) {
   const account = useAccount()
 
@@ -167,9 +153,8 @@ const RootApp = (): JSX.Element => {
                           <WalletCapabilitiesEffects />
                           <ExternalWalletProvider>
                             <ConnectWalletMutationProvider>
-                              <WebAccountsStoreProvider>
-                                <WebUniswapProvider>
-                                  <GraphqlProviders>
+                                <WebAccountsStoreProvider>
+                                  <WebUniswapProvider>
                                     <LocalizationContextProvider>
                                       <BlockNumberProvider>
                                         <Updaters />
@@ -184,7 +169,6 @@ const RootApp = (): JSX.Element => {
                                         </ThemeProvider>
                                       </BlockNumberProvider>
                                     </LocalizationContextProvider>
-                                  </GraphqlProviders>
                                 </WebUniswapProvider>
                               </WebAccountsStoreProvider>
                             </ConnectWalletMutationProvider>

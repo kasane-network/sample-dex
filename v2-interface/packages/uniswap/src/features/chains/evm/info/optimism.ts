@@ -1,4 +1,4 @@
-import { GraphQLApi } from '@universe/api'
+import { BackendApi } from '@universe/api'
 import { ETH_LOGO, OPTIMISM_LOGO } from 'ui/src/assets'
 import { config } from 'uniswap/src/config'
 import {
@@ -35,7 +35,7 @@ export const OPTIMISM_CHAIN_INFO = {
   platform: Platform.EVM,
   assetRepoNetworkName: 'optimism',
   backendChain: {
-    chain: GraphQLApi.Chain.Optimism as GqlChainId,
+    chain: BackendApi.Chain.Optimism as GqlChainId,
     backendSupported: true,
     nativeTokenBackendAddress: undefined,
   },

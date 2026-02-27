@@ -8,7 +8,7 @@ import {
 } from 'dataLayer/data/pools/usePoolTransactions'
 import { supportedChainIdFromGQLChain } from 'dataLayer/data/util'
 import { createColumnHelper } from '@tanstack/react-table'
-import { GraphQLApi } from '@universe/api'
+import { BackendApi } from '@universe/api'
 import { DEFAULT_CHAIN_ID } from 'constants/chains'
 import { Table } from 'components/Table'
 import { Cell } from 'components/Table/Cell'
@@ -58,7 +58,7 @@ const PoolTransactionColumnWidth: { [key in PoolTransactionColumn]: number } = {
   [PoolTransactionColumn.OutputAmount]: 125,
 }
 
-function comparePoolTokens(tokenA: PoolTableTransaction['pool']['token0'], tokenB?: GraphQLApi.Token) {
+function comparePoolTokens(tokenA: PoolTableTransaction['pool']['token0'], tokenB?: BackendApi.Token) {
   if (tokenB?.address === NATIVE_CHAIN_ID) {
     const chainId = supportedChainIdFromGQLChain(tokenB.chain)
     return (
@@ -82,9 +82,9 @@ export function PoolDetailsTransactionsTable({
   protocolVersion,
 }: {
   poolAddress: string
-  token0?: GraphQLApi.Token
-  token1?: GraphQLApi.Token
-  protocolVersion?: GraphQLApi.ProtocolVersion
+  token0?: BackendApi.Token
+  token1?: BackendApi.Token
+  protocolVersion?: BackendApi.ProtocolVersion
 }) {
   const chainId = useChainIdFromUrlParam() ?? DEFAULT_CHAIN_ID
   const activeLocalCurrency = useAppFiatCurrency()

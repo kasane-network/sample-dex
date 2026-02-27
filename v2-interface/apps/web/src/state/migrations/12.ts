@@ -1,4 +1,4 @@
-import { GraphQLApi } from '@universe/api'
+import { BackendApi } from '@universe/api'
 import { PersistState } from 'redux-persist'
 import { TransactionInfo } from 'state/transactions/types'
 import { UniverseChainId } from 'uniswap/src/features/chains/types'
@@ -26,7 +26,7 @@ export interface OldTransactionState {
 }
 
 interface BaseTransactionDetails {
-  status: GraphQLApi.TransactionStatus
+  status: BackendApi.TransactionStatus
   hash: string
   batchInfo?: { connectorId?: string; batchId: string; chainId: UniverseChainId }
   addedTime: number
@@ -37,13 +37,13 @@ interface BaseTransactionDetails {
 }
 
 interface PendingTransactionDetails extends BaseTransactionDetails {
-  status: GraphQLApi.TransactionStatus.Pending
+  status: BackendApi.TransactionStatus.Pending
   lastCheckedBlockNumber?: number
   deadline?: number
 }
 
 interface ConfirmedTransactionDetails extends BaseTransactionDetails {
-  status: GraphQLApi.TransactionStatus.Confirmed | GraphQLApi.TransactionStatus.Failed
+  status: BackendApi.TransactionStatus.Confirmed | BackendApi.TransactionStatus.Failed
   confirmedTime: number
 }
 
@@ -76,11 +76,11 @@ export const migration12 = (state: PersistAppStateV12 | undefined) => {
 
       const status = receipt
         ? receipt.status === 1
-          ? GraphQLApi.TransactionStatus.Confirmed
-          : GraphQLApi.TransactionStatus.Failed
-        : GraphQLApi.TransactionStatus.Pending
+          ? BackendApi.TransactionStatus.Confirmed
+          : BackendApi.TransactionStatus.Failed
+        : BackendApi.TransactionStatus.Pending
 
-      ;(tx as unknown as { status: GraphQLApi.TransactionStatus }).status = status
+      ;(tx as unknown as { status: BackendApi.TransactionStatus }).status = status
 
       transactionsForChain[txHash] = tx
     }

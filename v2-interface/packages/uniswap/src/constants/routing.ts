@@ -1,5 +1,5 @@
 import { Currency, Token, WETH9 } from '@uniswap/sdk-core'
-import { GraphQLApi } from '@universe/api'
+import { BackendApi } from '@universe/api'
 import type { ImageSourcePropType } from 'react-native'
 import { CELO_LOGO, ETH_LOGO, ICP_LOGO } from 'ui/src/assets'
 import {
@@ -267,7 +267,7 @@ export function buildPartialCurrencyInfo(commonBase: Currency): CurrencyInfo {
     logoUrl,
     safetyInfo: {
       tokenList: TokenList.Default,
-      protectionResult: GraphQLApi.ProtectionResult.Benign,
+      protectionResult: BackendApi.ProtectionResult.Benign,
     },
     isSpam: false,
   } as CurrencyInfo)

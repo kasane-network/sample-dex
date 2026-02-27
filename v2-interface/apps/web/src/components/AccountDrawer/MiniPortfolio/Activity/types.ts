@@ -1,5 +1,5 @@
 import { Currency } from '@uniswap/sdk-core'
-import { GraphQLApi } from '@universe/api'
+import { BackendApi } from '@universe/api'
 import { UniverseChainId } from 'uniswap/src/features/chains/types'
 import {
   TransactionOptions,
@@ -31,7 +31,7 @@ export type Activity = {
   prefixIconSrc?: string
   suffixIconSrc?: string
   isSpam?: boolean
-  type?: GraphQLApi.TransactionType
+  type?: BackendApi.TransactionType
 }
 
 export type ActivityMap = { [id: string]: Activity | undefined }

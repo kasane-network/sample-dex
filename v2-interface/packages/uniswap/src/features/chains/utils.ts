@@ -1,6 +1,6 @@
 import { BigNumber, BigNumberish } from '@ethersproject/bignumber'
 import { Token } from '@uniswap/sdk-core'
-import { GraphQLApi } from '@universe/api'
+import { BackendApi } from '@universe/api'
 import { PollingInterval } from 'uniswap/src/constants/misc'
 import { ALL_CHAIN_IDS, getChainInfo, ORDERED_CHAINS } from 'uniswap/src/features/chains/chainInfo'
 import { EnabledChainsInfo, GqlChainId, NetworkLayer, UniverseChainId } from 'uniswap/src/features/chains/types'
@@ -36,7 +36,7 @@ export function isBackendSupportedChainId(chainId: UniverseChainId): boolean {
   return info.backendChain.backendSupported
 }
 
-export function isBackendSupportedChain(chain: GraphQLApi.Chain): chain is GqlChainId {
+export function isBackendSupportedChain(chain: BackendApi.Chain): chain is GqlChainId {
   const chainId = fromGraphQLChain(chain)
   if (!chainId) {
     return false
@@ -65,45 +65,45 @@ export function toGraphQLChain(chainId: UniverseChainId): GqlChainId {
   return getChainInfo(chainId).backendChain.chain
 }
 
-export function fromGraphQLChain(chain: GraphQLApi.Chain | string | undefined): UniverseChainId | null {
+export function fromGraphQLChain(chain: BackendApi.Chain | string | undefined): UniverseChainId | null {
   switch (chain) {
-    case GraphQLApi.Chain.Ethereum:
+    case BackendApi.Chain.Ethereum:
       return UniverseChainId.Mainnet
-    case GraphQLApi.Chain.Arbitrum:
+    case BackendApi.Chain.Arbitrum:
       return UniverseChainId.ArbitrumOne
-    case GraphQLApi.Chain.Avalanche:
+    case BackendApi.Chain.Avalanche:
       return UniverseChainId.Avalanche
-    case GraphQLApi.Chain.Base:
+    case BackendApi.Chain.Base:
       return UniverseChainId.Base
-    case GraphQLApi.Chain.Bnb:
+    case BackendApi.Chain.Bnb:
       return UniverseChainId.Bnb
-    case GraphQLApi.Chain.Blast:
+    case BackendApi.Chain.Blast:
       return UniverseChainId.Blast
-    case GraphQLApi.Chain.Celo:
+    case BackendApi.Chain.Celo:
       return UniverseChainId.Celo
-    case GraphQLApi.Chain.Monad:
+    case BackendApi.Chain.Monad:
       return UniverseChainId.Monad
-    case GraphQLApi.Chain.Optimism:
+    case BackendApi.Chain.Optimism:
       return UniverseChainId.Optimism
-    case GraphQLApi.Chain.Polygon:
+    case BackendApi.Chain.Polygon:
       return UniverseChainId.Polygon
-    case GraphQLApi.Chain.EthereumSepolia:
+    case BackendApi.Chain.EthereumSepolia:
       return UniverseChainId.Sepolia
-    case GraphQLApi.Chain.MonadTestnet:
+    case BackendApi.Chain.MonadTestnet:
       return UniverseChainId.Kasane
-    case GraphQLApi.Chain.Unichain:
+    case BackendApi.Chain.Unichain:
       return UniverseChainId.Unichain
-    case GraphQLApi.Chain.Solana:
+    case BackendApi.Chain.Solana:
       return UniverseChainId.Solana
-    case GraphQLApi.Chain.Soneium:
+    case BackendApi.Chain.Soneium:
       return UniverseChainId.Soneium
-    case GraphQLApi.Chain.AstrochainSepolia:
+    case BackendApi.Chain.AstrochainSepolia:
       return UniverseChainId.UnichainSepolia
-    case GraphQLApi.Chain.Worldchain:
+    case BackendApi.Chain.Worldchain:
       return UniverseChainId.WorldChain
-    case GraphQLApi.Chain.Zksync:
+    case BackendApi.Chain.Zksync:
       return UniverseChainId.Zksync
-    case GraphQLApi.Chain.Zora:
+    case BackendApi.Chain.Zora:
       return UniverseChainId.Zora
   }
 
@@ -116,41 +116,41 @@ export function getPollingIntervalByBlocktime(chainId?: UniverseChainId): Pollin
 
 export function fromUniswapWebAppLink(network: string | null): UniverseChainId {
   switch (network) {
-    case GraphQLApi.Chain.Ethereum.toLowerCase():
+    case BackendApi.Chain.Ethereum.toLowerCase():
       return UniverseChainId.Mainnet
-    case GraphQLApi.Chain.Arbitrum.toLowerCase():
+    case BackendApi.Chain.Arbitrum.toLowerCase():
       return UniverseChainId.ArbitrumOne
-    case GraphQLApi.Chain.Avalanche.toLowerCase():
+    case BackendApi.Chain.Avalanche.toLowerCase():
       return UniverseChainId.Avalanche
-    case GraphQLApi.Chain.Base.toLowerCase():
+    case BackendApi.Chain.Base.toLowerCase():
       return UniverseChainId.Base
-    case GraphQLApi.Chain.Blast.toLowerCase():
+    case BackendApi.Chain.Blast.toLowerCase():
       return UniverseChainId.Blast
-    case GraphQLApi.Chain.Bnb.toLowerCase():
+    case BackendApi.Chain.Bnb.toLowerCase():
       return UniverseChainId.Bnb
-    case GraphQLApi.Chain.Celo.toLowerCase():
+    case BackendApi.Chain.Celo.toLowerCase():
       return UniverseChainId.Celo
-    case GraphQLApi.Chain.Monad.toLowerCase():
+    case BackendApi.Chain.Monad.toLowerCase():
       return UniverseChainId.Monad
-    case GraphQLApi.Chain.Optimism.toLowerCase():
+    case BackendApi.Chain.Optimism.toLowerCase():
       return UniverseChainId.Optimism
-    case GraphQLApi.Chain.Polygon.toLowerCase():
+    case BackendApi.Chain.Polygon.toLowerCase():
       return UniverseChainId.Polygon
-    case GraphQLApi.Chain.EthereumSepolia.toLowerCase():
+    case BackendApi.Chain.EthereumSepolia.toLowerCase():
       return UniverseChainId.Sepolia
-    case GraphQLApi.Chain.MonadTestnet.toLowerCase():
+    case BackendApi.Chain.MonadTestnet.toLowerCase():
       return UniverseChainId.Kasane
-    case GraphQLApi.Chain.Unichain.toLowerCase():
+    case BackendApi.Chain.Unichain.toLowerCase():
       return UniverseChainId.Unichain
-    case GraphQLApi.Chain.Soneium.toLowerCase():
+    case BackendApi.Chain.Soneium.toLowerCase():
       return UniverseChainId.Soneium
-    case GraphQLApi.Chain.AstrochainSepolia.toLowerCase():
+    case BackendApi.Chain.AstrochainSepolia.toLowerCase():
       return UniverseChainId.UnichainSepolia
-    case GraphQLApi.Chain.Worldchain.toLowerCase():
+    case BackendApi.Chain.Worldchain.toLowerCase():
       return UniverseChainId.WorldChain
-    case GraphQLApi.Chain.Zksync.toLowerCase():
+    case BackendApi.Chain.Zksync.toLowerCase():
       return UniverseChainId.Zksync
-    case GraphQLApi.Chain.Zora.toLowerCase():
+    case BackendApi.Chain.Zora.toLowerCase():
       return UniverseChainId.Zora
     default:
       throw new Error(`Network "${network}" can not be mapped`)
@@ -160,41 +160,41 @@ export function fromUniswapWebAppLink(network: string | null): UniverseChainId {
 export function toUniswapWebAppLink(chainId: UniverseChainId): string | null {
   switch (chainId) {
     case UniverseChainId.Mainnet:
-      return GraphQLApi.Chain.Ethereum.toLowerCase()
+      return BackendApi.Chain.Ethereum.toLowerCase()
     case UniverseChainId.ArbitrumOne:
-      return GraphQLApi.Chain.Arbitrum.toLowerCase()
+      return BackendApi.Chain.Arbitrum.toLowerCase()
     case UniverseChainId.Avalanche:
-      return GraphQLApi.Chain.Avalanche.toLowerCase()
+      return BackendApi.Chain.Avalanche.toLowerCase()
     case UniverseChainId.Base:
-      return GraphQLApi.Chain.Base.toLowerCase()
+      return BackendApi.Chain.Base.toLowerCase()
     case UniverseChainId.Blast:
-      return GraphQLApi.Chain.Blast.toLowerCase()
+      return BackendApi.Chain.Blast.toLowerCase()
     case UniverseChainId.Bnb:
-      return GraphQLApi.Chain.Bnb.toLowerCase()
+      return BackendApi.Chain.Bnb.toLowerCase()
     case UniverseChainId.Celo:
-      return GraphQLApi.Chain.Celo.toLowerCase()
+      return BackendApi.Chain.Celo.toLowerCase()
     case UniverseChainId.Monad:
-      return GraphQLApi.Chain.Monad.toLowerCase()
+      return BackendApi.Chain.Monad.toLowerCase()
     case UniverseChainId.Optimism:
-      return GraphQLApi.Chain.Optimism.toLowerCase()
+      return BackendApi.Chain.Optimism.toLowerCase()
     case UniverseChainId.Polygon:
-      return GraphQLApi.Chain.Polygon.toLowerCase()
+      return BackendApi.Chain.Polygon.toLowerCase()
     case UniverseChainId.Sepolia:
-      return GraphQLApi.Chain.EthereumSepolia.toLowerCase()
+      return BackendApi.Chain.EthereumSepolia.toLowerCase()
     case UniverseChainId.Kasane:
-      return GraphQLApi.Chain.MonadTestnet.toLowerCase()
+      return BackendApi.Chain.MonadTestnet.toLowerCase()
     case UniverseChainId.Unichain:
-      return GraphQLApi.Chain.Unichain.toLowerCase()
+      return BackendApi.Chain.Unichain.toLowerCase()
     case UniverseChainId.Soneium:
-      return GraphQLApi.Chain.Soneium.toLowerCase()
+      return BackendApi.Chain.Soneium.toLowerCase()
     case UniverseChainId.UnichainSepolia:
-      return GraphQLApi.Chain.AstrochainSepolia.toLowerCase()
+      return BackendApi.Chain.AstrochainSepolia.toLowerCase()
     case UniverseChainId.WorldChain:
-      return GraphQLApi.Chain.Worldchain.toLowerCase()
+      return BackendApi.Chain.Worldchain.toLowerCase()
     case UniverseChainId.Zksync:
-      return GraphQLApi.Chain.Zksync.toLowerCase()
+      return BackendApi.Chain.Zksync.toLowerCase()
     case UniverseChainId.Zora:
-      return GraphQLApi.Chain.Zora.toLowerCase()
+      return BackendApi.Chain.Zora.toLowerCase()
     default:
       throw new Error(`ChainID "${chainId}" can not be mapped`)
   }

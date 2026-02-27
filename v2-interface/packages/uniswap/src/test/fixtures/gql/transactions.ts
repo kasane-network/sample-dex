@@ -1,8 +1,8 @@
-import { GraphQLApi } from '@universe/api'
+import { BackendApi } from '@universe/api'
 import { faker } from 'uniswap/src/test/shared'
 import { createFixture, randomEnumValue } from 'uniswap/src/test/utils'
 
-export const gqlTransaction = createFixture<GraphQLApi.Transaction>()(() => ({
+export const gqlTransaction = createFixture<BackendApi.Transaction>()(() => ({
   __typename: 'Transaction',
   id: faker.datatype.uuid(),
   hash: faker.datatype.uuid(),
@@ -10,15 +10,15 @@ export const gqlTransaction = createFixture<GraphQLApi.Transaction>()(() => ({
   from: faker.finance.ethereumAddress(),
   to: faker.finance.ethereumAddress(),
   nonce: faker.datatype.number(),
-  status: randomEnumValue(GraphQLApi.TransactionStatus),
+  status: randomEnumValue(BackendApi.TransactionStatus),
 }))
 
 type TransactionDetailsBaseOptions = {
-  transactionStatus: GraphQLApi.TransactionStatus
+  transactionStatus: BackendApi.TransactionStatus
 }
 
-export const gqlTransactionDetails = createFixture<GraphQLApi.TransactionDetails, TransactionDetailsBaseOptions>({
-  transactionStatus: randomEnumValue(GraphQLApi.TransactionStatus),
+export const gqlTransactionDetails = createFixture<BackendApi.TransactionDetails, TransactionDetailsBaseOptions>({
+  transactionStatus: randomEnumValue(BackendApi.TransactionStatus),
 })(({ transactionStatus }) => ({
   __typename: 'TransactionDetails',
   id: faker.datatype.uuid(),
@@ -29,6 +29,6 @@ export const gqlTransactionDetails = createFixture<GraphQLApi.TransactionDetails
   /** @deprecated use transactionStatus to disambiguate from swapOrderStatus */
   status: transactionStatus,
   transactionStatus,
-  type: randomEnumValue(GraphQLApi.TransactionType),
-  assetChanges: [] as GraphQLApi.AssetChange[],
+  type: randomEnumValue(BackendApi.TransactionType),
+  assetChanges: [] as BackendApi.AssetChange[],
 }))

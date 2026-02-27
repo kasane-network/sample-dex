@@ -1,6 +1,6 @@
 import { SpamCode as RestSpamCode, TokenType } from '@uniswap/client-data-api/dist/data/v1/types_pb'
 import { Token as SdkToken } from '@uniswap/sdk-core'
-import { GraphQLApi } from '@universe/api'
+import { BackendApi } from '@universe/api'
 import { getNativeAddress } from 'uniswap/src/constants/addresses'
 import { nativeOnChain } from 'uniswap/src/constants/tokens'
 import { AssetType } from 'uniswap/src/entities/assets'
@@ -39,15 +39,15 @@ export function getAddressFromAsset({
   chain,
   address,
 }: {
-  tokenStandard: GraphQLApi.TokenStandard
-  chain: GraphQLApi.Chain | undefined
+  tokenStandard: BackendApi.TokenStandard
+  chain: BackendApi.Chain | undefined
   address: Maybe<string>
 }): Maybe<string> {
   const supportedChainId = fromGraphQLChain(chain)
   if (!supportedChainId) {
     return null
   }
-  if (tokenStandard === GraphQLApi.TokenStandard.Native) {
+  if (tokenStandard === BackendApi.TokenStandard.Native) {
     return getNativeAddress(supportedChainId)
   }
   return address
@@ -65,8 +65,8 @@ export function isRestTokenSpam(spamCode?: RestSpamCode): boolean {
  * @param transactedValue Transacted value amount from TokenTransfer API response
  * @returns parsed USD value as a number if currency is of type USD
  */
-export function parseUSDValueFromAssetChange(transactedValue: Maybe<Partial<GraphQLApi.Amount>>): number | undefined {
-  return transactedValue?.currency === GraphQLApi.Currency.Usd ? (transactedValue.value ?? undefined) : undefined
+export function parseUSDValueFromAssetChange(transactedValue: Maybe<Partial<BackendApi.Amount>>): number | undefined {
+  return transactedValue?.currency === BackendApi.Currency.Usd ? (transactedValue.value ?? undefined) : undefined
 }
 
 /**
@@ -84,8 +84,8 @@ export function deriveCurrencyAmountFromAssetResponse({
   decimals,
   quantity,
 }: {
-  tokenStandard: GraphQLApi.TokenStandard
-  chain: GraphQLApi.Chain
+  tokenStandard: BackendApi.TokenStandard
+  chain: BackendApi.Chain
   address: Maybe<string>
   decimals: Maybe<number>
   quantity: string
@@ -96,7 +96,7 @@ export function deriveCurrencyAmountFromAssetResponse({
   }
 
   const currency =
-    tokenStandard === GraphQLApi.TokenStandard.Native
+    tokenStandard === BackendApi.TokenStandard.Native
       ? nativeOnChain(chainId)
       : address && decimals
         ? new SdkToken(chainId, address, decimals)
@@ -113,22 +113,22 @@ export function deriveCurrencyAmountFromAssetResponse({
 
 // eslint-disable-next-line consistent-return
 export function remoteTxStatusToLocalTxStatus(
-  type: GraphQLApi.TransactionType,
-  status: GraphQLApi.TransactionStatus,
+  type: BackendApi.TransactionType,
+  status: BackendApi.TransactionStatus,
 ): TransactionStatus {
   switch (status) {
-    case GraphQLApi.TransactionStatus.Failed:
-      if (type === GraphQLApi.TransactionType.Cancel) {
+    case BackendApi.TransactionStatus.Failed:
+      if (type === BackendApi.TransactionType.Cancel) {
         return TransactionStatus.FailedCancel
       }
       return TransactionStatus.Failed
-    case GraphQLApi.TransactionStatus.Pending:
-      if (type === GraphQLApi.TransactionType.Cancel) {
+    case BackendApi.TransactionStatus.Pending:
+      if (type === BackendApi.TransactionType.Cancel) {
         return TransactionStatus.Cancelling
       }
       return TransactionStatus.Pending
-    case GraphQLApi.TransactionStatus.Confirmed:
-      if (type === GraphQLApi.TransactionType.Cancel) {
+    case BackendApi.TransactionStatus.Confirmed:
+      if (type === BackendApi.TransactionType.Cancel) {
         return TransactionStatus.Canceled
       }
       return TransactionStatus.Success

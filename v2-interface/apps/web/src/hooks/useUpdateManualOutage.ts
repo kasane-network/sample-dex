@@ -1,5 +1,5 @@
 import { ApolloError } from '@apollo/client'
-import { GraphQLApi } from '@universe/api'
+import { BackendApi } from '@universe/api'
 import { RESET, useAtomCallback } from 'jotai/utils'
 import { useCallback, useEffect } from 'react'
 import { manualChainOutageAtom } from 'state/outage/atoms'
@@ -48,7 +48,7 @@ export function useUpdateManualOutage({
         if (hasAnyOutageError) {
           set(
             manualChainOutageAtom,
-            hasOutageErrorV2 ? { chainId, version: GraphQLApi.ProtocolVersion.V2 } : { chainId },
+            hasOutageErrorV2 ? { chainId, version: BackendApi.ProtocolVersion.V2 } : { chainId },
           )
         } else {
           set(manualChainOutageAtom, RESET)

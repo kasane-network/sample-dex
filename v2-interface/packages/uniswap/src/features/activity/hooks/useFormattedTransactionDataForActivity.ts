@@ -1,7 +1,7 @@
 import { NetworkStatus, QueryHookOptions } from '@apollo/client'
 import { PartialMessage } from '@bufbuild/protobuf'
 import { FiatOnRampParams } from '@uniswap/client-data-api/dist/data/v1/api_pb'
-import { GraphQLApi } from '@universe/api'
+import { BackendApi } from '@universe/api'
 import isEqual from 'lodash/isEqual'
 import { useCallback, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -33,8 +33,8 @@ function hasReachedLimit(transactions: TransactionDetails[] | undefined): boolea
 // Contract for returning Transaction data
 
 type TransactionListQueryArgs = QueryHookOptions<
-  GraphQLApi.TransactionListQuery,
-  GraphQLApi.TransactionListQueryVariables
+  BackendApi.TransactionListQuery,
+  BackendApi.TransactionListQueryVariables
 >
 interface UseFormattedTransactionDataOptions {
   evmAddress?: Address
