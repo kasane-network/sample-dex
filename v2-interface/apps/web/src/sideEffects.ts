@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-condition */
-import React from 'react'
 
 // Suppress noisy Tamagui / React Native Web warnings about DOM-incompatible props
 const SUPPRESSED_WARNINGS = [
@@ -12,25 +11,6 @@ const SUPPRESSED_WARNINGS = [
 ]
 const origError = console.error
 const origWarn = console.warn
-
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === 'object' && value !== null
-}
-
-function patchReactOwnerAccessorForReanimatedWeb(): void {
-  // Work around a Vite prebundle output where reanimated reads
-  // React.__CLIENT_INTERNALS...A.getOwner without null-guarding A.
-  const clientInternals = Reflect.get(React, '__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE')
-  if (!isRecord(clientInternals)) {
-    return
-  }
-
-  if (Reflect.get(clientInternals, 'A') === null) {
-    Reflect.set(clientInternals, 'A', {
-      getOwner: () => undefined,
-    })
-  }
-}
 
 function normalizeConsoleArg(arg: unknown): string {
   if (typeof arg === 'string') {
@@ -57,7 +37,6 @@ const filterWarnings =
     }
 console.error = filterWarnings(origError)
 console.warn = filterWarnings(origWarn)
-patchReactOwnerAccessorForReanimatedWeb()
 
 // note the reason for the setupi18n function is to avoid webpack tree shaking the file out
 import { setupi18n } from 'uniswap/src/i18n/i18n-setup-interface'

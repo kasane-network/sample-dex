@@ -6,7 +6,7 @@ import { useExploreParams } from 'pages/Explore/redirects'
 import { useEffect, useState } from 'react'
 import { Check } from 'react-feather'
 import { useTranslation } from 'react-i18next'
-import { Flex, useMedia, useSporeColors } from 'ui/src'
+import { Flex, Text, useMedia, useSporeColors } from 'ui/src'
 import { UniverseChainId } from 'uniswap/src/features/chains/types'
 import { TestID } from 'uniswap/src/test/fixtures/testIDs'
 import { getChainIdFromChainUrlParam } from 'utils/chainParams'
@@ -96,9 +96,9 @@ export default function VolumeTimeFrameSelector() {
               toggleMenu(false)
             }}
           >
-            <Flex>
+            <Text>
               {DISPLAYS[time]} {t('common.volume').toLowerCase()}
-            </Flex>
+            </Text>
             {time === activeTime && <Check color={colors.accent1.val} size={16} />}
           </InternalMenuItem>
         ))}

@@ -1,4 +1,13 @@
-import { Easing, useAnimatedStyle, useSharedValue, withRepeat, withSequence, withTiming } from 'react-native-reanimated'
+import { useEffect } from 'react'
+import {
+  Easing,
+  cancelAnimation,
+  useAnimatedStyle,
+  useSharedValue,
+  withRepeat,
+  withSequence,
+  withTiming,
+} from 'react-native-reanimated'
 import { CurrencyInputPanelProps } from 'uniswap/src/components/CurrencyInputPanel/types'
 import { usePrevious } from 'utilities/src/react/hooks'
 
@@ -13,15 +22,6 @@ export function useRefetchAnimationStyle({
 } {
   const loadingFlexProgress = useSharedValue(1)
 
-  loadingFlexProgress.value = withRepeat(
-    withSequence(
-      withTiming(0.4, { duration: 400, easing: Easing.ease }),
-      withTiming(1, { duration: 400, easing: Easing.ease }),
-    ),
-    -1,
-    true,
-  )
-
   const previousAmount = usePrevious(currencyAmount)
 
   const amountIsTheSame = currencyAmount && previousAmount?.equalTo(currencyAmount)
@@ -30,10 +30,22 @@ export function useRefetchAnimationStyle({
   // The component is 'refetching' the full quote when the amount hasn't changed, and there is no indicative UI being displayed.
   const isRefetching = isLoading && amountIsTheSame && noIndicativeUI
 
-  return useAnimatedStyle(
-    () => ({
-      opacity: isRefetching ? loadingFlexProgress.value : 1,
-    }),
-    [isRefetching, loadingFlexProgress],
-  )
+  useEffect(() => {
+    if (isRefetching) {
+      loadingFlexProgress.value = withRepeat(
+        withSequence(
+          withTiming(0.4, { duration: 400, easing: Easing.ease }),
+          withTiming(1, { duration: 400, easing: Easing.ease }),
+        ),
+        -1,
+        true,
+      )
+      return
+    }
+
+    cancelAnimation(loadingFlexProgress)
+    loadingFlexProgress.value = 1
+  }, [isRefetching, loadingFlexProgress])
+
+  return useAnimatedStyle(() => ({ opacity: isRefetching ? loadingFlexProgress.value : 1 }), [isRefetching, loadingFlexProgress])
 }

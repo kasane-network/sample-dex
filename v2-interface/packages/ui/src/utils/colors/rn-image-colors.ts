@@ -1,5 +1,12 @@
 export default {
-  getColors: async (_imageUrl: string) => ({
+  getColors: async (
+    _imageUrl: string,
+    _options?: {
+      key?: string
+      fallback?: string
+      cache?: boolean
+    },
+  ) => ({
     platform: 'web',
     dominant: '#808080',
     vibrant: '#a0a0a0',

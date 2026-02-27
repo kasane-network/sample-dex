@@ -1,7 +1,5 @@
 import { ProtocolStatsResponse } from '@uniswap/client-explore/dist/uniswap/explore/v1/service_pb'
-import { ALL_NETWORKS_ARG } from '@universe/api'
 import { createContext, useMemo } from 'react'
-import { useProtocolStatsQuery } from 'uniswap/src/data/rest/protocolStats'
 import { useIsSupportedChainId } from 'uniswap/src/features/chains/hooks/useSupportedChainId'
 import { UniverseChainId } from 'uniswap/src/features/chains/types'
 import { ExploreStatsData } from 'state/explore/types'
@@ -59,13 +57,10 @@ export function ExploreContextProvider({
     chainId: isSupportedChain ? chainId : UniverseChainId.Kasane,
     enabled: Boolean(isSupportedChain || chainId === undefined || chainId === UniverseChainId.Kasane),
   })
-  const {
-    data: protocolStatsData,
-    isLoading: protocolStatsLoading,
-    error: protocolStatsError,
-  } = useProtocolStatsQuery({
-    chainId: isSupportedChain ? chainId.toString() : ALL_NETWORKS_ARG,
-  })
+  // Protocol stats query is intentionally disabled in this trimmed data mode.
+  const protocolStatsData = undefined
+  const protocolStatsLoading = false
+  const protocolStatsError = false
 
   const exploreContext = useMemo(() => {
     return {
