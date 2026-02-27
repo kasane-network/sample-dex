@@ -9,4 +9,4 @@ export * from '@universe/api/src/clients/graphql/__generated__/react-hooks'
 
 // Historical alias used in consumers.
 export type PortfolioBalancesQueryResult =
-  import('@universe/api/src/clients/graphql/__generated__/operations').PortfolioBalancesQuery
+  import('@universe/api/src/clients/graphql/__generated__/react-hooks').PortfolioBalancesQueryResult

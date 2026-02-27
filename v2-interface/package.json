@@ -92,7 +92,10 @@
     "node-gyp": "10.0.1",
     "qs": "6.11.0",
     "react": "19.0.0",
+    "react-native": "0.79.5",
     "react-dom": "19.0.0",
+    "react-native-svg": "15.13.0",
+    "react-native-web": "0.19.13",
     "react-refresh": "0.14.0",
     "rehackt": "0.1.0",
     "resolve": "1.22.4",
@@ -168,5 +171,9 @@
     "apps/*",
     "packages/*",
     "config/*"
-  ]
+  ],
+  "patchedDependencies": {
+    "@tamagui/portal@1.136.1": "patches/@tamagui%2Fportal@1.136.1.patch",
+    "@tamagui/static@1.136.1": "patches/@tamagui%2Fstatic@1.136.1.patch"
+  }
 }

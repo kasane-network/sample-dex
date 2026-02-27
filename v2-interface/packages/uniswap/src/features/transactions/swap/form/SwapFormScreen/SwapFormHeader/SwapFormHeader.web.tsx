@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { Flex, Text, TouchableArea } from 'ui/src'
 import { X } from 'ui/src/components/icons/X'
 import { useTransactionModalContext } from 'uniswap/src/features/transactions/components/TransactionModal/TransactionModalContext'
-import { TestID } from 'uniswap/src/test/fixtures/testIDs'
+import { TestID } from 'uniswap/src/constants/testIDs'
 import { isWebPlatform } from 'utilities/src/platform'
 
 export const SwapFormHeader = (): JSX.Element => {

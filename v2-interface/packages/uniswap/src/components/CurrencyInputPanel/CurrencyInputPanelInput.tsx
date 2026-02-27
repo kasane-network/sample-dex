@@ -19,7 +19,7 @@ import type { CurrencyInputPanelProps, CurrencyInputPanelRef } from 'uniswap/src
 import { MAX_FIAT_INPUT_DECIMALS } from 'uniswap/src/constants/transactions'
 import { useAppFiatCurrencyInfo } from 'uniswap/src/features/fiatCurrency/hooks'
 import { useLocalizationContext } from 'uniswap/src/features/language/LocalizationContext'
-import { TestID } from 'uniswap/src/test/fixtures/testIDs'
+import { TestID } from 'uniswap/src/constants/testIDs'
 import { CurrencyField } from 'uniswap/src/types/currency'
 import { NumberType } from 'utilities/src/format/types'
 import { isWebAppDesktop, isWebPlatform } from 'utilities/src/platform'
@@ -142,7 +142,7 @@ export const CurrencyInputPanelInput = memo(
           justifyContent={!currencyInfo ? 'flex-end' : 'space-between'}
           py="$spacing8"
           minHeight={MIN_INPUT_FONT_SIZE + spacing.spacing36}
-          style={shakeStyle}
+          style={!isWebPlatform ? shakeStyle : undefined}
         >
           {isFiatMode && (
             <Text

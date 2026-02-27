@@ -1,8 +1,7 @@
 import { PortfolioBalance } from 'uniswap/src/features/dataApi/types'
-import { portfolioBalances } from 'uniswap/src/test/fixtures'
 
 export function portfolioBalancesById(inputBalances?: PortfolioBalance[]): Record<string, PortfolioBalance> {
-  const balances = inputBalances ?? portfolioBalances()
+  const balances = inputBalances ?? []
 
   return balances.reduce(
     (acc, balance) => {

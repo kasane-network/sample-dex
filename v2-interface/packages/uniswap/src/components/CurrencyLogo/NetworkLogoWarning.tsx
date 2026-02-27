@@ -4,7 +4,7 @@ import { RoundExclamation } from 'ui/src/components/icons/RoundExclamation'
 import { iconSizes, spacing, zIndexes } from 'ui/src/theme'
 import { NetworkLogo } from 'uniswap/src/components/CurrencyLogo/NetworkLogo'
 import { UniverseChainId } from 'uniswap/src/features/chains/types'
-import { TestID } from 'uniswap/src/test/fixtures/testIDs'
+import { TestID } from 'uniswap/src/constants/testIDs'
 
 interface NetworkLogoWarningProps {
   chainId: UniverseChainId

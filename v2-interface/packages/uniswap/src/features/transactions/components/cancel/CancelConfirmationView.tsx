@@ -13,7 +13,7 @@ import Trace from 'uniswap/src/features/telemetry/Trace'
 import { useSelectTransaction } from 'uniswap/src/features/transactions/hooks/useSelectTransaction'
 import { isUniswapX } from 'uniswap/src/features/transactions/swap/utils/routing'
 import { TransactionDetails, TransactionStatus } from 'uniswap/src/features/transactions/types/transactionDetails'
-import { TestID } from 'uniswap/src/test/fixtures/testIDs'
+import { TestID } from 'uniswap/src/constants/testIDs'
 import { NumberType } from 'utilities/src/format/types'
 import { isWebPlatform } from 'utilities/src/platform'
 

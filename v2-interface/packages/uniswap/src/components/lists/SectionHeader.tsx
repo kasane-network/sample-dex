@@ -11,7 +11,7 @@ import { Search } from 'ui/src/components/icons/Search'
 import { Shuffle } from 'ui/src/components/icons/Shuffle'
 import { TrendUp } from 'ui/src/components/icons/TrendUp'
 import { OnchainItemSectionName } from 'uniswap/src/components/lists/OnchainItemList/types'
-import { TestID } from 'uniswap/src/test/fixtures/testIDs'
+import { TestID } from 'uniswap/src/constants/testIDs'
 import { isAndroid } from 'utilities/src/platform'
 
 export type SectionHeaderProps = {

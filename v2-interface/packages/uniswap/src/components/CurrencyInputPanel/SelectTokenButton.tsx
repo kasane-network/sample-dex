@@ -6,7 +6,7 @@ import { RotatableChevron } from 'ui/src/components/icons/RotatableChevron'
 import { iconSizes, spacing, validColor } from 'ui/src/theme'
 import { CurrencyLogo } from 'uniswap/src/components/CurrencyLogo/CurrencyLogo'
 import { CurrencyInfo } from 'uniswap/src/features/dataApi/types'
-import { TestIDType } from 'uniswap/src/test/fixtures/testIDs'
+import { TestIDType } from 'uniswap/src/constants/testIDs'
 import { getSymbolDisplayText } from 'uniswap/src/utils/currency'
 import { isMobileWeb, isWebApp, isWebPlatform } from 'utilities/src/platform'
 

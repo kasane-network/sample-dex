@@ -14,8 +14,6 @@
     "typecheck": {},
     "prepare": {
       "executor": "nx:noop",
-      "dependsOn": ["graphql:generate", "tradingapi:generate"],
-      "parallel": false,
       "cache": false
     },
     "check:deps:usage": {

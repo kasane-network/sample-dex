@@ -15,7 +15,7 @@ import type { TransactionSettingConfig } from 'uniswap/src/features/transactions
 import { ViewOnlyButton } from 'uniswap/src/features/transactions/components/settings/ViewOnlyButton'
 import { ViewOnlyModal } from 'uniswap/src/features/transactions/modals/ViewOnlyModal'
 import { useWallet } from 'uniswap/src/features/wallet/hooks/useWallet'
-import { TestID } from 'uniswap/src/test/fixtures/testIDs'
+import { TestID } from 'uniswap/src/constants/testIDs'
 import { dismissNativeKeyboard } from 'utilities/src/device/keyboard/dismissNativeKeyboard'
 import { isMobileApp, isWebApp } from 'utilities/src/platform'
 import { useEvent } from 'utilities/src/react/hooks'

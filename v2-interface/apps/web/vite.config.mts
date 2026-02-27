@@ -32,6 +32,8 @@ const ENABLE_CLOUDFLARE_DEV = process.env.VITE_ENABLE_CLOUDFLARE_DEV === 'true'
 
 const DEFAULT_PORT = 3000
 const REANIMATED_JSX_IN_JS_RE = /node_modules\/react-native-reanimated\/.*\.js$/
+const REANIMATED_UPDATE_PROPS_RE =
+  /node_modules\/react-native-reanimated\/lib\/module\/ReanimatedModule\/js-reanimated\/index\.js$/
 
 const reactPlugin = () =>
   ENABLE_REACT_COMPILER
@@ -168,6 +170,46 @@ export default defineConfig(({ mode }) => {
 
     plugins: [
       portWarningPlugin(isProduction),
+      {
+        name: 'reanimated-update-props-guard',
+        enforce: 'pre',
+        transform(code: string, id: string) {
+          const cleanId = id.split('?')[0]
+          if (!REANIMATED_UPDATE_PROPS_RE.test(cleanId)) {
+            return null
+          }
+
+          // Keep this robust to upstream formatting changes (OXC transform / minified spacing).
+          const reducePattern =
+            /const\s+\[rawStyles\]\s*=\s*Object\.keys\(updates\)\.reduce\(\(acc,\s*key\)\s*=>\s*\{/m
+          if (!reducePattern.test(code)) {
+            return null
+          }
+
+          let patched = code.replace(
+            reducePattern,
+            'const safeUpdates = updates && typeof updates === "object" ? updates : {}; const [rawStyles] = Object.keys(safeUpdates).reduce((acc, key) => {',
+          )
+          patched = patched.replace(/const\s+value\s*=\s*updates\[key\];/g, 'const value = safeUpdates[key];')
+          patched = patched.replace(
+            /const\s+component\s*=\s*viewRef\.getAnimatableRef\s*\?\s*viewRef\.getAnimatableRef\(\)\s*:\s*viewRef;/m,
+            'const component = viewRef.getAnimatableRef ? viewRef.getAnimatableRef() : viewRef; if (!component || typeof component !== "object") { return; }',
+          )
+          patched = patched.replace(
+            /Object\.keys\(component\.props\)\.length\s*>\s*0/g,
+            'Object.keys(component.props && typeof component.props === "object" ? component.props : {}).length > 0',
+          )
+          patched = patched.replace(
+            /Object\.keys\(component\.props\)\.forEach\(/g,
+            'Object.keys(component.props && typeof component.props === "object" ? component.props : {}).forEach(',
+          )
+          patched = patched.replace(
+            /component\._touchableNode\.setAttribute\(/g,
+            'component._touchableNode?.setAttribute(',
+          )
+          return patched
+        },
+      },
       {
         name: 'reanimated-jsx-in-js-transform',
         enforce: 'pre',
