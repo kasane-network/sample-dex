@@ -7,7 +7,7 @@ import fs from 'fs'
 import path from 'path'
 import process from 'process'
 import { fileURLToPath } from 'url'
-import { defineConfig, loadEnv, type ViteDevServer } from 'vite'
+import { defineConfig, loadEnv, transformWithOxc, type ViteDevServer } from 'vite'
 import bundlesize from 'vite-plugin-bundlesize'
 import commonjs from 'vite-plugin-commonjs'
 import { nodePolyfills } from 'vite-plugin-node-polyfills'
@@ -31,6 +31,7 @@ const ENABLE_PROXY = process.env.VITE_ENABLE_ENTRY_GATEWAY_PROXY === 'true'
 const ENABLE_CLOUDFLARE_DEV = process.env.VITE_ENABLE_CLOUDFLARE_DEV === 'true'
 
 const DEFAULT_PORT = 3000
+const REANIMATED_JSX_IN_JS_RE = /node_modules\/react-native-reanimated\/.*\.js$/
 
 const reactPlugin = () =>
   ENABLE_REACT_COMPILER
@@ -110,6 +111,11 @@ export default defineConfig(({ mode }) => {
   // External package aliases only
   const overrides = {
     'react-native': 'react-native-web',
+    'react-native-is-edge-to-edge': path.resolve(
+      __dirname,
+      '../../node_modules/react-native-is-edge-to-edge/dist/index.mjs',
+    ),
+    invariant: path.resolve(__dirname, 'src/lib/invariant.ts'),
     'uniswap/src': path.resolve(__dirname, '../../packages/uniswap/src'),
     'utilities/src': path.resolve(__dirname, '../../packages/utilities/src'),
     'ui/src': path.resolve(__dirname, '../../packages/ui/src'),
@@ -162,6 +168,23 @@ export default defineConfig(({ mode }) => {
 
     plugins: [
       portWarningPlugin(isProduction),
+      {
+        name: 'reanimated-jsx-in-js-transform',
+        enforce: 'pre',
+        async transform(code: string, id: string) {
+          const cleanId = id.split('?')[0]
+          if (!REANIMATED_JSX_IN_JS_RE.test(cleanId)) {
+            return null
+          }
+
+          return transformWithOxc(code, cleanId, {
+            lang: 'jsx',
+            jsx: {
+              runtime: 'automatic',
+            },
+          })
+        },
+      },
       reactPlugin(),
       isProduction || isStaging
         ? tamaguiPlugin({
@@ -311,7 +334,7 @@ export default defineConfig(({ mode }) => {
         '@visx/responsive',
       ],
       // Libraries that shouldn't be pre-bundled
-      exclude: ['@connectrpc/connect'],
+      exclude: ['@connectrpc/connect', 'react-native-reanimated'],
       esbuildOptions: {
         resolveExtensions: ['.web.js', '.web.ts', '.web.tsx', '.js', '.ts', '.tsx'],
         loader: {
