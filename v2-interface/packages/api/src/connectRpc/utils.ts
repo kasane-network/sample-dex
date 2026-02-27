@@ -3,12 +3,19 @@ import { Platform, type PlatformAddress, type WalletAccount } from '@uniswap/cli
 import { ProtocolVersion } from '@uniswap/client-data-api/dist/data/v1/poolTypes_pb'
 import { type ProtectionInfo as ProtectionInfoProtobuf } from '@uniswap/client-explore/dist/uniswap/explore/v1/service_pb'
 import {
-  ProtectionAttackType,
-  type ProtectionInfo,
-  ProtectionResult,
-  SafetyLevel,
-} from '@universe/api/src/clients/graphql/__generated__/schema-types'
+  ProtectionAttackType as ProtectionAttackTypeValues,
+  ProtectionResult as ProtectionResultValues,
+  SafetyLevel as SafetyLevelValues,
+} from '@universe/api/src/clients/graphql/generated'
 import { logger } from 'utilities/src/logger/logger'
+
+type SafetyLevel = string
+type ProtectionResult = string
+type ProtectionAttackType = string
+type ProtectionInfo = {
+  attackTypes: ProtectionAttackType[]
+  result: ProtectionResult
+}
 
 /**
  * Helper functions to parse string enum fields from REST API responses.
@@ -24,7 +31,7 @@ export function parseSafetyLevel(safetyLevel?: string): SafetyLevel | undefined 
   if (!safetyLevel) {
     return undefined
   }
-  const validSafetyLevels: SafetyLevel[] = Object.values(SafetyLevel)
+  const validSafetyLevels: string[] = Object.values(SafetyLevelValues)
   if (validSafetyLevels.includes(safetyLevel as SafetyLevel)) {
     return safetyLevel as SafetyLevel
   } else {
@@ -49,7 +56,7 @@ export function parseProtectionInfo(protectionInfo?: ProtectionInfoProtobuf): Pr
   //   ...
   // }
   // So result and attackTypes are a capitalized string instead of an uppercase enum value
-  const validProtectionResults: string[] = Object.values(ProtectionResult)
+  const validProtectionResults: string[] = Object.values(ProtectionResultValues)
   if (validProtectionResults.includes(protectionInfo.result.toUpperCase())) {
     protectionResult = protectionInfo.result.toUpperCase() as ProtectionResult
   } else {
@@ -61,7 +68,7 @@ export function parseProtectionInfo(protectionInfo?: ProtectionInfoProtobuf): Pr
     return undefined
   }
 
-  const validAttackTypes: string[] = Object.values(ProtectionAttackType)
+  const validAttackTypes: string[] = Object.values(ProtectionAttackTypeValues)
   const attackTypes = protectionInfo.attackTypes
     .filter((at) => validAttackTypes.includes(at.toUpperCase()))
     .map((at) => at.toUpperCase() as ProtectionAttackType)
