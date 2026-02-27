@@ -20,11 +20,14 @@ export function AdaptiveWebPopoverContent({
   children,
   isOpen,
   webBottomSheetProps,
+  animation: _animation,
+  enterStyle: _enterStyle,
+  exitStyle: _exitStyle,
   ...popoverContentProps
 }: AdaptiveWebPopoverContentProps): JSX.Element {
   return (
     <>
-      <Popover.Content zIndex={zIndexes.popover} {...popoverContentProps}>
+      <Popover.Content zIndex={zIndexes.popover} backgroundColor="$surface1" animation={null} {...popoverContentProps}>
         {children}
       </Popover.Content>
       <Popover.Adapt when="sm">

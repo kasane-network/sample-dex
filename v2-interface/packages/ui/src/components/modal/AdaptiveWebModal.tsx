@@ -240,6 +240,7 @@ export function AdaptiveWebModal({
             bordered={borderWidth !== 0}
             animateOnly={[]}
             animation={null}
+            backgroundColor="$surface1"
             borderColor="$surface3"
             borderWidth={borderWidth}
             borderRadius="$rounded16"

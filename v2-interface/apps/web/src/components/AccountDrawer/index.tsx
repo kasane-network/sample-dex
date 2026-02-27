@@ -85,17 +85,11 @@ const DropdownContainer = styled(Flex, {
   ...sharedContainerStyles,
   maxHeight: `calc(100vh - ${INTERFACE_NAV_HEIGHT + 16}px)`,
   borderRadius: '$rounded20',
-  animation: 'fastHeavy',
   transformOrigin: 'right top',
-  enterStyle: { opacity: 0, scale: 0.98 },
-  exitStyle: { opacity: 0, scale: 0.98 },
 })
 
 const SideDrawerWrapper = styled(Flex, {
   row: true,
-  animation: 'fastHeavy',
-  enterStyle: { x: '100%' },
-  exitStyle: { x: '100%' },
 })
 
 const SideDrawerContainer = styled(Flex, {
@@ -128,9 +122,6 @@ const CloseDrawer = styled(Flex, {
 const ChevronBackground = styled(Flex, {
   centered: true,
   width: 'max-content',
-  animation: 'fastHeavy',
-  enterStyle: { opacity: 0 },
-  exitStyle: { opacity: 0 },
   variants: {
     backgroundFilled: {
       true: {
@@ -167,7 +158,6 @@ function AccountDropdown({ isOpen, onClose, children }: AccountDrawerProps) {
       {isOpen && (
         <DropdownContainer
           ref={modalRef}
-          animation="fastHeavy"
           backgroundColor={colors.surface1.val}
           borderColor={colors.surface3.val}
           {...shadowProps}

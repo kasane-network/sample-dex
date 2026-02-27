@@ -114,12 +114,7 @@ export function ContextMenu({
         ref={containerRef}
         key={`${menuPosition.x}-${menuPosition.y}`} // This key ensures that the component re-renders when the menu position changes so we get a re-animation
         backgroundColor="transparent"
-        animation="125ms"
-        enterStyle={{
-          opacity: 0,
-          scale: 0.98,
-          transform: [{ translateY: -4 }],
-        }}
+        animation={null}
         zIndex={zIndexes.popover}
       >
         <MenuContent
