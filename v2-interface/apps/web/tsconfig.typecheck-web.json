@@ -8,6 +8,9 @@
   "include": [
     "src/index.tsx",
     "src/env.d.ts",
+    "src/react-app-env.d.ts",
+    "src/theme/styled.d.ts",
+    "src/lib/ethereum.d.ts",
     "vite.config.mts"
   ]
 }

@@ -14,6 +14,10 @@ const CustomButtonFrameWithoutCustomProps = styled(XStack, {
   group: 'item',
   '$platform-web': {
     containerType: 'normal',
+    // Keep web motion via CSS transition while avoiding unstable animated-driver paths.
+    transition: 'transform 120ms ease, filter 120ms ease, background-color 120ms ease, border-color 120ms ease',
+    animation: undefined,
+    animateOnly: [],
   },
   animation: 'fast',
   // TODO(WALL-6057): Ideally we'd like to animate everything; however, there's an issue when animating colors with alpha channels

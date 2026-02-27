@@ -1,4 +1,5 @@
 import {
+  BackendApi,
   useTokenBasicInfoPartsFragment as useTokenBasicInfoPartsFragmentFromApi,
   useTokenBasicProjectPartsFragment as useTokenBasicProjectPartsFragmentFromApi,
   useTokenMarketPartsFragment as useTokenMarketPartsFragmentFromApi,
@@ -9,12 +10,12 @@ import { toGraphQLChain } from 'uniswap/src/features/chains/utils'
 import { currencyIdToChain, currencyIdToGraphQLAddress } from 'uniswap/src/utils/currencyId'
 
 function currencyIdToGraphQLTokenVariables(currencyId: string): {
-  // The GraphQL `address` is `null` for native ETH
-  address: string | null
-  chain: string
+  // The GraphQL `address` is omitted for native ETH
+  address: string | undefined
+  chain: BackendApi.Chain
 } {
   const chainId = currencyIdToChain(currencyId)
-  const address = currencyIdToGraphQLAddress(currencyId)
+  const address = currencyIdToGraphQLAddress(currencyId) ?? undefined
 
   if (!chainId) {
     throw new Error(`Unable to find chainId for currencyId: ${currencyId}`)

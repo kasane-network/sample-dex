@@ -167,6 +167,7 @@ export function usePoolData(params: {
       feeTier: {
         feeAmount: snapshot?.fee_tier_bps ?? V2_DEFAULT_FEE_TIER,
         isDynamic: false,
+        tickSpacing: 0,
       },
       token0: {
         id: token0Address.toLowerCase(),
@@ -177,8 +178,10 @@ export function usePoolData(params: {
         decimals: resolvedToken0Decimals,
         standard: BackendApi.TokenStandard.Erc20,
         project: {
+          id: `${token0Address.toLowerCase()}-project`,
           name: token0Name ?? snapshot?.token0_name ?? token0Symbol ?? 'Token 0',
-          logo: snapshot?.token0_logo_uri ? { url: snapshot.token0_logo_uri } : undefined,
+          tokens: [],
+          logo: snapshot?.token0_logo_uri ? { id: snapshot.token0_logo_uri, url: snapshot.token0_logo_uri } : undefined,
         },
       },
       token1: {
@@ -190,8 +193,10 @@ export function usePoolData(params: {
         decimals: resolvedToken1Decimals,
         standard: BackendApi.TokenStandard.Erc20,
         project: {
+          id: `${token1Address.toLowerCase()}-project`,
           name: token1Name ?? snapshot?.token1_name ?? token1Symbol ?? 'Token 1',
-          logo: snapshot?.token1_logo_uri ? { url: snapshot.token1_logo_uri } : undefined,
+          tokens: [],
+          logo: snapshot?.token1_logo_uri ? { id: snapshot.token1_logo_uri, url: snapshot.token1_logo_uri } : undefined,
         },
       },
       token0Price: token0PriceFromTvl ?? token0PriceFromRatio,

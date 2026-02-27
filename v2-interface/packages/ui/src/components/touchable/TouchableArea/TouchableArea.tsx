@@ -17,7 +17,7 @@ import { useEvent } from 'utilities/src/react/hooks'
 export type TouchableAreaEvent = GestureResponderEvent
 
 // TODO(MOB-2826): tests are picking up weird animationStyle on snapshots...
-const DEFAULT_ANIMATION_PROPS: Partial<YStackProps> = isTestEnv()
+const DEFAULT_ANIMATION_PROPS: Partial<YStackProps> = isTestEnv() || isWebPlatform
   ? {}
   : {
       animation: 'simple',
@@ -132,6 +132,10 @@ const TouchableAreaComponentWithoutMemo = forwardRef<TamaguiElement, TouchableAr
   // Solution: only include animation/animateOnly in props spread when explicitly set (not null)
   const animationAndAnimateOnly: { animation?: YStackProps['animation']; animateOnly?: YStackProps['animateOnly'] } =
     useMemo(() => {
+      if (isWebPlatform && animationProp === undefined && animateOnlyProp === undefined) {
+        return {}
+      }
+
       const animation = isTestEnv() ? undefined : (animationProp ?? DEFAULT_ANIMATION_PROPS.animation)
       const animateOnly = isTestEnv() ? undefined : (animateOnlyProp ?? DEFAULT_ANIMATION_PROPS.animateOnly)
 

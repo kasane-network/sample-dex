@@ -53,7 +53,7 @@ function useContractMultichain<T extends BaseContract>({
             : undefined
       const hasValidAddress = Boolean(address && address !== AddressZero && isEVMAddressWithChecksum(address))
       if (provider && hasValidAddress) {
-        acc[chainId] = getContract({ address, ABI, provider }) as T
+        acc[chainId] = getContract({ address: address ?? AddressZero, ABI, provider }) as T
       }
       return acc
     }, {})

@@ -20,6 +20,7 @@ import { UniverseChainId } from 'uniswap/src/features/chains/types'
 import { MenuContent } from 'uniswap/src/components/menus/ContextMenuContent'
 import { MenuOptionItem } from 'uniswap/src/components/menus/ContextMenuV2'
 import { ModalName } from 'uniswap/src/features/telemetry/constants'
+import type { V2PairInfo } from 'components/Liquidity/types'
 
 function formatAmount(raw: string, decimals: number): string {
   const numeric = Number(raw)
@@ -35,13 +36,13 @@ function formatShareRatio(ratio: number): string {
   return `${(ratio * 100).toFixed(4)}%`
 }
 
-function toV2PositionInfo(row: UserV2PositionItem) {
+function toV2PositionInfo(row: UserV2PositionItem): V2PairInfo {
   const token0 = new Token(row.chainId, row.token0Address, row.token0Decimals, row.token0Symbol)
   const token1 = new Token(row.chainId, row.token1Address, row.token1Decimals, row.token1Symbol)
   const liquidityToken = new Token(row.chainId, row.pairAddress, 18, `${row.token0Symbol}-${row.token1Symbol} LP`)
 
   return {
-    status: PositionStatus.OPEN,
+    status: PositionStatus.IN_RANGE,
     version: ProtocolVersion.V2,
     chainId: row.chainId,
     poolId: row.pairAddress,

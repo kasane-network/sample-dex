@@ -149,6 +149,7 @@ type AccountDrawerProps = {
 }
 
 function AccountDropdown({ isOpen, onClose, children }: AccountDrawerProps) {
+  const colors = useSporeColors()
   const shadowProps = useShadowPropsMedium()
   const scrollbarStyles = useScrollbarStyles()
   const modalRef = useRef<HTMLDivElement>(null)
@@ -167,6 +168,8 @@ function AccountDropdown({ isOpen, onClose, children }: AccountDrawerProps) {
         <DropdownContainer
           ref={modalRef}
           animation="fastHeavy"
+          backgroundColor={colors.surface1.val}
+          borderColor={colors.surface3.val}
           {...shadowProps}
           style={scrollbarStyles}
           $platform-web={{ overflow: 'auto' }}
@@ -207,7 +210,11 @@ function AccountSideDrawer({ isOpen, onClose, children }: AccountDrawerProps) {
                 </CloseDrawer>
               </TouchableArea>
             </Trace>
-            <SideDrawerContainer {...shadowProps}>
+            <SideDrawerContainer
+              backgroundColor={colors.surface1.val}
+              borderColor={colors.surface3.val}
+              {...shadowProps}
+            >
               {/* id used for child InfiniteScrolls to reference when it has reached the bottom of the component */}
               <AccountDrawerScrollWrapper
                 ref={scrollRef}

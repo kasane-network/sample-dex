@@ -74,7 +74,6 @@ export function WebBottomSheet({
   )
 
   const sheetOverrideStyles: FlexProps = {
-    ...(rest as FlexProps),
     width: '100%',
     maxWidth: '100%',
     minWidth: '100%',
@@ -99,13 +98,15 @@ export function WebBottomSheet({
         dismissOnOverlayPress
         dismissOnSnapToBottom
         modal
-        animation={null}
+        animation={undefined}
         disableDrag={isTouchDevice && !isHandlePressed}
         open={isOpen}
         snapPointsMode="fit"
         onOpenChange={handleClose}
       >
         <Sheet.Frame
+          unstyled={false}
+          backgroundColor="$surface1"
           borderBottomWidth="$none"
           borderColor="$surface3"
           borderTopLeftRadius="$rounded16"
@@ -134,7 +135,7 @@ export function WebBottomSheet({
           </Flex>
         </Sheet.Frame>
         <Sheet.Overlay
-          animation={null}
+          animation={undefined}
           backgroundColor="$scrim"
         />
       </Sheet>

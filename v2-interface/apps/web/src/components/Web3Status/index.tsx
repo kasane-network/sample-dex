@@ -134,7 +134,7 @@ function Web3StatusInner() {
       <Trace logPress eventOnTrigger={InterfaceEventName.MiniPortfolioToggled} properties={{ type: 'open' }}>
         <AnimatePresence exitBeforeEnter>
           {showLoadingState ? (
-            <Flex key="pending" animation="125ms" enterStyle={{ opacity: 0, y: -2 }} exitStyle={{ opacity: 0, y: 2 }}>
+            <Flex key="pending" animation="125ms" enterStyle={{ y: -2 }} exitStyle={{ y: 2 }}>
               <Web3StatusGeneric
                 data-testid={TestID.Web3StatusConnected}
                 onPress={handleWalletDropdownClick}
@@ -149,7 +149,7 @@ function Web3StatusInner() {
               </Web3StatusGeneric>
             </Flex>
           ) : (
-            <Flex key="normal" animation="125ms" enterStyle={{ opacity: 0, y: -2 }} exitStyle={{ opacity: 0, y: 2 }}>
+            <Flex key="normal" animation="125ms" enterStyle={{ y: -2 }} exitStyle={{ y: 2 }}>
               <Web3StatusGeneric
                 data-testid={TestID.Web3StatusConnected}
                 onPress={handleWalletDropdownClick}
