@@ -34,47 +34,6 @@ jest.mock('redux-persist', () => {
   }
 })
 
-// Mock expo libs due to native deps.
-jest.mock(
-  'expo-clipboard',
-  () => ({
-    setString: jest.fn(),
-    setStringAsync: jest.fn(),
-    getStringAsync: () => Promise.resolve(),
-  }),
-  { virtual: true },
-)
-jest.mock('expo-blur', () => ({ BlurView: {} }), { virtual: true })
-jest.mock(
-  'expo-haptics',
-  () => ({
-    impactAsync: jest.fn(),
-    notificationAsync: jest.fn(),
-    ImpactFeedbackStyle: jest.fn(),
-  }),
-  { virtual: true },
-)
-jest.mock('expo-linear-gradient', () => ({ LinearGradient: () => 'ExpoLinearGradient' }), { virtual: true })
-jest.mock('expo-screen-capture', () => ({ addScreenshotListener: jest.fn() }), { virtual: true })
-jest.mock(
-  'expo-secure-store',
-  () => ({
-    getItemAsync: jest.fn(() => Promise.resolve(null)),
-    setItemAsync: jest.fn(() => Promise.resolve()),
-    deleteItemAsync: jest.fn(() => Promise.resolve()),
-  }),
-  { virtual: true },
-)
-jest.mock(
-  'expo-local-authentication',
-  () => ({
-    authenticateAsync: jest.fn(() => Promise.resolve({ success: true })),
-    hasHardwareAsync: jest.fn(() => Promise.resolve(true)),
-    isEnrolledAsync: jest.fn(() => Promise.resolve(true)),
-    supportedAuthenticationTypesAsync: jest.fn(() => Promise.resolve([1, 2])),
-  }),
-  { virtual: true },
-)
 // Mock Amplitde log reporting
 jest.mock('@amplitude/analytics-react-native', () => ({
   flush: () => jest.fn(),
@@ -160,9 +119,5 @@ jest.mock('@universe/gating', () => {
     },
   }
 })
-
-// TODO: Remove this mock after mocks in jest-expo are fixed
-// (see the issue: https://github.com/expo/expo/issues/26893)
-jest.mock('expo-web-browser', () => ({}), { virtual: true })
 
 global.__DEV__ = true
