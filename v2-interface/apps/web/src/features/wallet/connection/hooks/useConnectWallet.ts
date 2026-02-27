@@ -16,20 +16,8 @@ import { getCurrentPageFromLocation } from 'utils/urlRoutes'
 function wrapConnectionServiceWithLogging(baseService: ConnectionService): ConnectionService {
   return {
     connect: async (params) => {
-      logger.debug(
-        'wrapConnectWalletServiceWithLogging',
-        'features/wallet/connection/hooks/useConnectWallet',
-        `Connection activating: ${params.wallet.name}`,
-      )
       try {
         const result = await baseService.connect(params)
-        if (result.connected) {
-          logger.debug(
-            'wrapConnectWalletServiceWithLogging',
-            'features/wallet/connection/hooks/useConnectWallet',
-            `Connection activated: ${params.wallet.name}`,
-          )
-        }
         return result
       } catch (error) {
         logger.warn(

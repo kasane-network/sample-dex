@@ -7,7 +7,7 @@ import { ColorTokens, Flex, SegmentedControl, useMedia, useSporeColors } from 'u
 
 const CandlestickIcon = ({ color, isDisabled }: { color: ColorTokens; isDisabled?: boolean }) => {
   return (
-    <Flex row centered width="$spacing.18">
+    <Flex row centered width={18}>
       <CandlestickChartIcon
         color={color}
         width={14}

@@ -1,6 +1,5 @@
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { formatTimestamp } from 'components/AccountDrawer/MiniPortfolio/formatTimestamp'
-import Row from 'components/deprecated/Row'
 import { LoadingRow } from 'components/Loader/styled'
 import { DetailLineItem, LineItemData } from 'components/swap/DetailLineItem'
 import { GasBreakdownTooltip } from 'components/swap/GasBreakdownTooltip'
@@ -134,7 +133,7 @@ function useLineItem(props: SwapLineItemProps): LineItemData | undefined {
       }
       return {
         Label: () => <Trans i18nKey="common.expiry" />,
-        Value: () => <Row>{formatTimestamp({ timestamp: trade.deadline, includeYear: true })}</Row>,
+        Value: () => <>{formatTimestamp({ timestamp: trade.deadline, includeYear: true })}</>,
       }
   }
 }

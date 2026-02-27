@@ -15,10 +15,10 @@ export function opacify(opacity: number, color: string): ColorTokens {
 }
 
 /**
- * Adds opacity to the input color and returns a string. RGBA is intentionally not supported.
+ * Adds opacity to the input color and returns a string.
  *
  * @param opacity Opacity value to apply from 0-100
- * @param color Hex or RGB to apply the opacity to.
+ * @param color Hex, RGB, or RGBA to apply the opacity to.
  * @returns
  */
 export function opacifyRaw(opacity: number, color: string): string {
@@ -31,17 +31,17 @@ export function opacifyRaw(opacity: number, color: string): string {
     if (color.startsWith('#')) {
       return _opacifyHex(opacity, color)
     }
-    if (color.startsWith('rgb(')) {
-      return _opacifyRgba(opacity, color)
+    if (color.startsWith('rgb(') || color.startsWith('rgba(')) {
+      return _opacifyRgb(opacity, color)
     }
-    throw new Error(`provided color ${color} is neither a hex nor an rgb color`)
+    throw new Error(`provided color ${color} is neither a hex nor an rgb/rgba color`)
   } catch (e) {
     logger.warn('color/utils', 'opacifyRaw', `Error opacifying color ${color} with opacity ${opacity}: ${e}`)
   }
   return color
 }
 
-function _opacifyRgba(opacity: number, color: string): string {
+function _opacifyRgb(opacity: number, color: string): string {
   const match = color.match(/rgba?\(([^)]+)\)/)
   if (!match) {
     throw new Error(`provided color ${color} is invalid rgb format`)

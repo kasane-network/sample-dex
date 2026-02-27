@@ -122,7 +122,7 @@ export default defineConfig(({ mode }) => {
   // External package aliases only
   const overrides = {
     // External package aliases
-    'react-native': 'react-native-web',
+    'react-native': path.resolve(__dirname, '../../node_modules/react-native-web'),
     'react-native-is-edge-to-edge': path.resolve(
       __dirname,
       '../../node_modules/react-native-is-edge-to-edge/dist/index.mjs',
@@ -389,12 +389,9 @@ export default defineConfig(({ mode }) => {
       ],
       // Libraries that shouldn't be pre-bundled
       exclude: ['expo-clipboard', '@connectrpc/connect', 'react-native-reanimated'],
-      esbuildOptions: {
-        resolveExtensions: ['.web.js', '.web.ts', '.web.tsx', '.js', '.ts', '.tsx'],
-        loader: {
-          '.js': 'jsx',
-          '.ts': 'ts',
-          '.tsx': 'tsx',
+      rollupOptions: {
+        resolve: {
+          extensions: ['.web.js', '.web.ts', '.web.tsx', '.js', '.ts', '.tsx'],
         },
       },
     },

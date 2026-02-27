@@ -394,26 +394,40 @@ const CandlestickTooltipRow = styled(Flex, {
 function CandlestickTooltip({ data }: { data: PriceChartData }) {
   const { convertFiatAmountFormatted } = useLocalizationContext()
   return (
-    <>
-      <Text variant="body3" color="$neutral1">
-        <CandlestickTooltipRow>
+    <Flex>
+      <CandlestickTooltipRow>
+        <Text variant="body3" color="$neutral1">
           <Trans i18nKey="chart.price.label.open" />
-          <Flex>{convertFiatAmountFormatted(data.open, NumberType.FiatTokenPrice)}</Flex>
-        </CandlestickTooltipRow>
-        <CandlestickTooltipRow>
+        </Text>
+        <Text variant="body3" color="$neutral1">
+          {convertFiatAmountFormatted(data.open, NumberType.FiatTokenPrice)}
+        </Text>
+      </CandlestickTooltipRow>
+      <CandlestickTooltipRow>
+        <Text variant="body3" color="$neutral1">
           <Trans i18nKey="chart.price.label.high" />
-          <Flex>{convertFiatAmountFormatted(data.high, NumberType.FiatTokenPrice)}</Flex>
-        </CandlestickTooltipRow>
-        <CandlestickTooltipRow>
+        </Text>
+        <Text variant="body3" color="$neutral1">
+          {convertFiatAmountFormatted(data.high, NumberType.FiatTokenPrice)}
+        </Text>
+      </CandlestickTooltipRow>
+      <CandlestickTooltipRow>
+        <Text variant="body3" color="$neutral1">
           <Trans i18nKey="chart.price.label.low" />
-          <Flex>{convertFiatAmountFormatted(data.low, NumberType.FiatTokenPrice)}</Flex>
-        </CandlestickTooltipRow>
-        <CandlestickTooltipRow>
+        </Text>
+        <Text variant="body3" color="$neutral1">
+          {convertFiatAmountFormatted(data.low, NumberType.FiatTokenPrice)}
+        </Text>
+      </CandlestickTooltipRow>
+      <CandlestickTooltipRow>
+        <Text variant="body3" color="$neutral1">
           <Trans i18nKey="chart.price.label.close" />
-          <Flex>{convertFiatAmountFormatted(data.close, NumberType.FiatTokenPrice)}</Flex>
-        </CandlestickTooltipRow>
-      </Text>
-    </>
+        </Text>
+        <Text variant="body3" color="$neutral1">
+          {convertFiatAmountFormatted(data.close, NumberType.FiatTokenPrice)}
+        </Text>
+      </CandlestickTooltipRow>
+    </Flex>
   )
 }
 

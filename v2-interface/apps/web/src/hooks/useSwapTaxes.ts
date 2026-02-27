@@ -14,8 +14,6 @@ import { logger } from 'utilities/src/logger/logger'
 // TODO(WEB-4058): Move all of these contract addresses into the top-level wagmi config
 function getFeeOnTransferAddress(chainId?: UniverseChainId) {
   switch (chainId) {
-    case UniverseChainId.Kasane:
-      return '0x19C97dc2a25845C7f9d1d519c8C2d4809c58b43f'
     case UniverseChainId.Optimism:
       return '0xa7c17505B43955A474fb6AFE61E093907a7567c9'
     case UniverseChainId.Bnb:
@@ -62,6 +60,10 @@ const AMOUNT_TO_BORROW = 10000 // smallest amount that has full precision over b
 
 const FEE_CACHE: { [address in string]?: { sellTax?: Percent; buyTax?: Percent } } = {}
 
+export function supportsFeeOnTransferDetection(chainId: UniverseChainId): boolean {
+  return Boolean(getFeeOnTransferAddress(chainId))
+}
+
 async function getSwapTaxes({
   fotDetector,
   inputTokenAddress,
@@ -73,6 +75,10 @@ async function getSwapTaxes({
   outputTokenAddress?: string
   chainId: UniverseChainId
 }) {
+  if (!supportsFeeOnTransferDetection(chainId)) {
+    return { inputTax: ZERO_PERCENT, outputTax: ZERO_PERCENT }
+  }
+
   const addresses = []
   if (inputTokenAddress && FEE_CACHE[inputTokenAddress] === undefined) {
     addresses.push(inputTokenAddress)
@@ -120,9 +126,16 @@ export function useSwapTaxes({
   const [{ inputTax, outputTax }, setTaxes] = useState({ inputTax: ZERO_PERCENT, outputTax: ZERO_PERCENT })
 
   useEffect(() => {
-    if (!fotDetector || !chainId) {
+    if (!chainId || !supportsFeeOnTransferDetection(chainId)) {
+      setTaxes({ inputTax: ZERO_PERCENT, outputTax: ZERO_PERCENT })
       return
     }
+
+    if (!fotDetector) {
+      setTaxes({ inputTax: ZERO_PERCENT, outputTax: ZERO_PERCENT })
+      return
+    }
+
     getSwapTaxes({ fotDetector, inputTokenAddress, outputTokenAddress, chainId }).then(setTaxes)
   }, [fotDetector, inputTokenAddress, outputTokenAddress, chainId])
 

@@ -7,7 +7,6 @@ import { useCallback } from 'react'
 import { useAppDispatch } from 'state/hooks'
 import { fetchTokenList } from 'state/lists/actions'
 import { UniverseChainId } from 'uniswap/src/features/chains/types'
-import { logger } from 'utilities/src/logger/logger'
 
 export function useFetchListCallback(): (listUrl: string, skipValidation?: boolean) => Promise<TokenList> {
   const dispatch = useAppDispatch()
@@ -27,7 +26,6 @@ export function useFetchListCallback(): (listUrl: string, skipValidation?: boole
           return tokenList
         })
         .catch((error) => {
-          logger.debug('useFetchListCallback', 'useFetchListCallback', 'Failed to fetch list', { error, listUrl })
           dispatch(fetchTokenList.rejected({ url: listUrl, requestId, errorMessage: error.message }))
           throw error
         })

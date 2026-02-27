@@ -182,7 +182,7 @@ export function ChartSkeleton({
   const neutral3Opacified = colors.neutral3.val
 
   const fillColor = errorText || dim ? neutral3Opacified : colors.neutral3.val
-  const tickColor = errorText ? opacify(12.5, colors.neutral3.val) : neutral3Opacified
+  const tickColor = errorText ? opacify(12.5, colors.neutral1.val) : neutral3Opacified
 
   const maskId = `mask-${type}-${height}`
 

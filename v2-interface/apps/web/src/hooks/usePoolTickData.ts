@@ -13,7 +13,6 @@ import { PositionField } from 'types/position'
 import { ZERO_ADDRESS } from 'uniswap/src/constants/misc'
 import { useGetPoolsByTokens } from 'uniswap/src/data/rest/getPools'
 import { UniverseChainId } from 'uniswap/src/features/chains/types'
-import { logger } from 'utilities/src/logger/logger'
 import computeSurroundingTicks, { TickProcessed } from 'utils/computeSurroundingTicks'
 
 const PRICE_FIXED_DIGITS = 8
@@ -239,12 +238,6 @@ export function usePoolActiveLiquidity({
     const pivot = ticks.findIndex((tickData) => tickData?.tick && tickData.tick > activeTick) - 1
 
     if (pivot < 0) {
-      // consider setting a local error
-      logger.debug('usePoolTickData', 'usePoolActiveLiquidity', 'TickData pivot not found', {
-        token0: token0.isToken ? token0.address : ZERO_ADDRESS,
-        token1: token1.isToken ? token1.address : ZERO_ADDRESS,
-        chainId: token0.chainId,
-      })
       return {
         isLoading,
         error,
@@ -259,14 +252,7 @@ export function usePoolActiveLiquidity({
         version === ProtocolVersion.V3
           ? tickToPriceV3(token0 as Token, token1 as Token, activeTick)
           : tickToPriceV4(token0, token1, activeTick)
-    } catch (e) {
-      logger.debug('usePoolTickData', 'usePoolActiveLiquidity', 'Error getting price', {
-        error: e,
-        token0: token0.isToken ? token0.address : ZERO_ADDRESS,
-        token1: token1.isToken ? token1.address : ZERO_ADDRESS,
-        chainId: token0.chainId,
-      })
-
+    } catch {
       return {
         isLoading,
         error,

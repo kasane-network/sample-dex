@@ -128,10 +128,6 @@ function fetchClaim(account: string): Promise<UserClaimData> {
           return result[formatted]
         }
         throw new Error(`Claim for ${formatted} was not found in claim file!`)
-      })
-      .catch((error) => {
-        logger.debug('claim/hooks', 'fetchClaim', 'Claim fetch failed', error)
-        throw error
       }))
   )
 }

@@ -150,7 +150,6 @@ export class EmbeddedWalletProvider {
       }) as Nullable<HexString>) || undefined
 
     if (!address) {
-      logger.debug('EmbeddedWalletProvider.ts', 'getAccount', 'No embedded wallet connected')
       return undefined
     }
 
@@ -271,8 +270,7 @@ export class EmbeddedWalletProvider {
       const signedTx = await account.signTransaction(tx)
       const txHash = await publicClient.sendRawTransaction({ serializedTransaction: signedTx })
       return txHash
-    } catch (e: any) {
-      logger.debug('EmbeddedWalletProvider.ts', 'sendTransaction', e, transactions)
+    } catch {
       return undefined
     }
   }

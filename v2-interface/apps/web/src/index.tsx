@@ -27,6 +27,7 @@ import { Provider } from 'react-redux'
 import { BrowserRouter, HashRouter, useLocation } from 'react-router'
 import store from 'state'
 import { ThemedGlobalStyle, ThemeProvider } from 'theme'
+import { SystemThemeUpdater, ThemeColorMetaUpdater } from 'theme/components/ThemeToggle'
 import { TamaguiProvider } from 'theme/tamaguiProvider'
 import { PortalProvider } from 'ui/src'
 import { ReactRouterUrlProvider } from 'uniswap/src/contexts/UrlContext'
@@ -51,10 +52,6 @@ if (window.ethereum) {
 initializePortfolioQueryOverrides({ store })
 
 const loadListsUpdater = () => import('state/lists/updater')
-const loadSystemThemeUpdater = () =>
-  import('theme/components/ThemeToggle').then((m) => ({ default: m.SystemThemeUpdater }))
-const loadThemeColorMetaUpdater = () =>
-  import('theme/components/ThemeToggle').then((m) => ({ default: m.ThemeColorMetaUpdater }))
 const loadApplicationUpdater = () => import('state/application/updater')
 const loadActivityStateUpdater = () =>
   import('state/activity/updater').then((m) => ({ default: m.ActivityStateUpdater }))
@@ -69,8 +66,6 @@ function Updaters() {
   const location = useLocation()
 
   const ListsUpdater = useDeferredComponent(loadListsUpdater)
-  const SystemThemeUpdater = useDeferredComponent(loadSystemThemeUpdater)
-  const ThemeColorMetaUpdater = useDeferredComponent(loadThemeColorMetaUpdater)
   const ApplicationUpdater = useDeferredComponent(loadApplicationUpdater)
   const ActivityStateUpdater = useDeferredComponent(loadActivityStateUpdater)
   const LogsUpdater = useDeferredComponent(loadLogsUpdater)
@@ -83,8 +78,8 @@ function Updaters() {
         <link rel="canonical" href={getCanonicalUrl(location.pathname)} />
       </Helmet>
       {ListsUpdater && <ListsUpdater />}
-      {SystemThemeUpdater && <SystemThemeUpdater />}
-      {ThemeColorMetaUpdater && <ThemeColorMetaUpdater />}
+      <SystemThemeUpdater />
+      <ThemeColorMetaUpdater />
       {ApplicationUpdater && <ApplicationUpdater />}
       {ActivityStateUpdater && <ActivityStateUpdater />}
       {LogsUpdater && <LogsUpdater />}

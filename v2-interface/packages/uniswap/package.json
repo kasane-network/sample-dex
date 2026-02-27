@@ -104,6 +104,9 @@
     "zustand": "5.0.6"
   },
   "devDependencies": {
+    "@babel/plugin-proposal-export-namespace-from": "7.18.9",
+    "@babel/plugin-proposal-logical-assignment-operators": "7.20.7",
+    "@babel/plugin-proposal-numeric-separator": "7.18.6",
     "@faker-js/faker": "7.6.0",
     "@graphql-tools/graphql-file-loader": "8.0.0",
     "@graphql-tools/load": "8.0.1",
@@ -119,6 +122,7 @@
     "@typescript-eslint/utils": "6.20.0",
     "@uniswap/eslint-config": "workspace:^",
     "@walletconnect/types": "2.23.0",
+    "babel-plugin-transform-inline-environment-variables": "0.4.4",
     "depcheck": "1.4.7",
     "eslint": "8.57.1",
     "eslint-plugin-rulesdir": "0.2.2",
@@ -128,6 +132,7 @@
     "jest-extended": "4.0.2",
     "jest-presets": "workspace:^",
     "react-dom": "19.0.0",
+    "react-native-dotenv": "3.4.11",
     "tsafe": "1.6.4",
     "typechain": "5.2.0",
     "typescript": "5.8.3"

@@ -85,12 +85,7 @@ export function usePollPendingBridgeTransactions(onActivityUpdate: OnActivityUpd
               })
             }
           }
-        } catch {
-          logger.debug('bridge', `usePollPendingBridgeTransactions`, 'failed to fetch from swapStatus', {
-            chainId,
-            txHashes,
-          })
-        }
+        } catch {}
       }
     },
     [onActivityUpdate],

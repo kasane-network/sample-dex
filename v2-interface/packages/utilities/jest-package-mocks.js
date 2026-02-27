@@ -29,7 +29,7 @@ jest.mock('expo-localization', () => ({
       temperatureUnit: null,
     },
   ],
-}))
+}), { virtual: true })
 
 jest.mock('utilities/src/environment/env', () => ({
   isTestEnv: jest.fn(() => true),

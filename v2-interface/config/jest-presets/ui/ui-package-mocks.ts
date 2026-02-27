@@ -11,7 +11,7 @@ jest.mock('react-native-safe-area-context', () => ({
   useSafeAreaInsets: jest.fn().mockImplementation(() => ({})),
   useSafeAreaFrame: jest.fn().mockImplementation(() => ({})),
   SafeAreaProvider: jest.fn(({ children }) => children),
-}))
+}), { virtual: true })
 
 jest.mock('ui/src/assets', () => {
   const assets = {
@@ -30,6 +30,6 @@ jest.mock('react-native-webview', () => {
   return {
     WebView: View,
   }
-})
+}, { virtual: true })
 
 jest.mock('ui/src/hooks/useDeviceInsets', () => jest.requireActual('ui/src/hooks/useDeviceInsets.web.ts'))

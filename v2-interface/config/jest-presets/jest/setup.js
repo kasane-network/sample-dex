@@ -1,9 +1,18 @@
 // Sets up global.chrome in jest environment
 //
 const storage = require('mem-storage-area')
-const mockRNCNetInfo = require('@react-native-community/netinfo/jest/netinfo-mock.js')
 const mockAsyncStorage = require('@react-native-async-storage/async-storage/jest/async-storage-mock')
-const mockRNDeviceInfo = require('react-native-device-info/jest/react-native-device-info-mock')
+
+const optionalRequire = (path, fallback) => {
+  try {
+    return require(path)
+  } catch {
+    return fallback
+  }
+}
+
+const mockRNCNetInfo = optionalRequire('@react-native-community/netinfo/jest/netinfo-mock.js', {})
+const mockRNDeviceInfo = optionalRequire('react-native-device-info/jest/react-native-device-info-mock', {})
 
 // required polyfill for rtk-query baseQueryFn
 require('cross-fetch/polyfill')
@@ -41,10 +50,10 @@ jest.mock('@amplitude/analytics-react-native', () => ({
   init: () => jest.fn(),
   setDeviceId: () => jest.fn(),
   track: () => jest.fn(),
-}))
+}), { virtual: true })
 
 jest.mock('react-native/Libraries/EventEmitter/NativeEventEmitter')
-jest.mock('react-native-device-info', () => mockRNDeviceInfo)
+jest.mock('react-native-device-info', () => mockRNDeviceInfo, { virtual: true })
 
 // Mock WalletConnect v2 packages
 jest.mock('@reown/walletkit', () => ({
@@ -74,7 +83,7 @@ jest.mock('react-native-appsflyer', () => {
   return {
     initSdk: jest.fn(),
   }
-})
+}, { virtual: true })
 
 // NetInfo mock does not export typescript types
 const NetInfoStateType = {
@@ -89,7 +98,7 @@ const NetInfoStateType = {
   other: 'other',
 }
 
-jest.mock('@react-native-community/netinfo', () => ({ ...mockRNCNetInfo, NetInfoStateType }))
+jest.mock('@react-native-community/netinfo', () => ({ ...mockRNCNetInfo, NetInfoStateType }), { virtual: true })
 
 jest.mock('@universe/gating', () => {
   const actual = jest.requireActual('@universe/gating')

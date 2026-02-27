@@ -36,7 +36,7 @@ export function getCurrencyAmount<T extends Currency>({
   }
 
   try {
-    let parsedValue = sanitizeTokenAmount({ value, valueType })
+    let parsedValue = sanitizeTokenAmount({ value, valueType, decimals: currency.decimals })
 
     if (valueType === ValueType.Exact) {
       parsedValue = parseUnits(parsedValue, currency.decimals).toString()
@@ -64,8 +64,20 @@ export function getCurrencyAmount<T extends Currency>({
   }
 }
 
-const sanitizeTokenAmount = ({ value, valueType }: { value: string; valueType: ValueType }): string => {
+const sanitizeTokenAmount = ({
+  value,
+  valueType,
+  decimals,
+}: {
+  value: string
+  valueType: ValueType
+  decimals: number
+}): string => {
   let sanitizedValue = convertScientificNotationToNumber(value)
+
+  if (valueType === ValueType.Exact) {
+    sanitizedValue = normalizeExactAmountPrecision({ value: sanitizedValue, decimals })
+  }
 
   if (sanitizedValue === '.') {
     // Prevents an error being thrown when calling `BigNumber.from('.')`
@@ -82,4 +94,19 @@ const sanitizeTokenAmount = ({ value, valueType }: { value: string; valueType: V
   }
 
   return sanitizedValue
+}
+
+function normalizeExactAmountPrecision({ value, decimals }: { value: string; decimals: number }): string {
+  const normalizedValue = value.replace(',', '.')
+  const [wholePart, fractionalPart = ''] = normalizedValue.split('.')
+
+  if (!fractionalPart) {
+    return normalizedValue
+  }
+
+  if (decimals === 0) {
+    return wholePart || '0'
+  }
+
+  return `${wholePart || '0'}.${fractionalPart.slice(0, decimals)}`
 }
