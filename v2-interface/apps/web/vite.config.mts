@@ -5,7 +5,6 @@ import { execSync } from 'child_process'
 import { config as dotenvConfig } from 'dotenv'
 import fs from 'fs'
 import path from 'path'
-import { createHash } from 'node:crypto'
 import process from 'process'
 import { fileURLToPath } from 'url'
 import { defineConfig, loadEnv, transformWithOxc, type ViteDevServer } from 'vite'
@@ -34,46 +33,6 @@ const DEFAULT_PORT = 3000
 const REANIMATED_JSX_IN_JS_RE = /node_modules\/react-native-reanimated\/.*\.js$/
 const REANIMATED_UPDATE_PROPS_RE =
   /node_modules\/react-native-reanimated\/lib\/module\/ReanimatedModule\/js-reanimated\/index\.js$/
-
-/**
- * Vite's optimizeDeps cache hash doesn't include `define` values, so changing env vars
- * (which are injected via `define` as `process.env.X` replacements) won't invalidate the
- * pre-bundled deps cache. This compares a hash of the resolved env defines against a stored
- * hash and forces a re-bundle only when env values actually changed.
- */
-function shouldInvalidateOptimizeDepsForEnv({
-  defines,
-  cacheDir,
-}: {
-  defines: Record<string, unknown>
-  cacheDir: string
-}): boolean {
-  const hash = createHash('md5').update(JSON.stringify(defines)).digest('hex').slice(0, 16)
-  const hashFile = path.join(cacheDir, '.env-defines-hash')
-
-  try {
-    if (fs.existsSync(hashFile)) {
-      const stored = fs.readFileSync(hashFile, 'utf-8').trim()
-      if (stored === hash) {
-        return false
-      }
-    }
-  } catch {
-    return true
-  }
-
-  try {
-    if (!fs.existsSync(cacheDir)) {
-      fs.mkdirSync(cacheDir, { recursive: true })
-    }
-    fs.writeFileSync(hashFile, hash)
-  } catch {
-    return true
-  }
-
-  return true
-}
-
 const reactPlugin = () =>
   ENABLE_REACT_COMPILER
     ? react({
@@ -196,12 +155,8 @@ export default defineConfig(({ mode }) => {
     ...envDefines,
   }
 
-  const cacheDir = path.resolve(__dirname, 'node_modules/.vite')
-  const forceOptimize = shouldInvalidateOptimizeDepsForEnv({ defines, cacheDir })
-
   return {
     root,
-
     define: defines,
 
     resolve: {
@@ -413,7 +368,6 @@ export default defineConfig(({ mode }) => {
     ].filter(Boolean as unknown as <T>(x: T) => x is NonNullable<T>),
 
     optimizeDeps: {
-      force: forceOptimize,
       entries: ['index.html'],
       include: [
         'react-native-web',

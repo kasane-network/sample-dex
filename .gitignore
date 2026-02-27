@@ -24,3 +24,10 @@ v2-periphery/cache/
 # Local vendor comparison artifacts
 v2-interface/vender/
 v2-interface/vendor/
+
+# Playwright artifacts
+.playwright/
+.playwright-cli/
+**/playwright-report/
+**/test-results/
+**/playwright/.auth/

@@ -141,7 +141,7 @@ function Web3StatusInner() {
                 onDisabledPress={handleWalletDropdownClick}
                 loading
                 ref={ref}
-                icon={undefined}
+                icon={<StatusIcon size={24} showMiniIcons={false} />}
               >
                 <TextStyled>
                   <Trans i18nKey="activity.pending" values={{ pendingActivityCount }} />
