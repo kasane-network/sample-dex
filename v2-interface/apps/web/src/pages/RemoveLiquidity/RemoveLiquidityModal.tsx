@@ -10,7 +10,7 @@ import {
 import { RemoveLiquidityReview } from 'pages/RemoveLiquidity/RemoveLiquidityReview'
 import { RemoveLiquidityTxContextProvider } from 'pages/RemoveLiquidity/RemoveLiquidityTxContext'
 import { useTranslation } from 'react-i18next'
-import { HeightAnimator } from 'ui/src'
+import { Flex } from 'ui/src'
 import { Modal } from 'uniswap/src/components/modals/Modal'
 import { ModalName } from 'uniswap/src/features/telemetry/constants'
 import { LPTransactionSettingsStoreContextProvider } from 'uniswap/src/features/transactions/components/settings/stores/transactionSettingsStore/LPTransactionSettingsStoreContextProvider'
@@ -45,7 +45,7 @@ function RemoveLiquidityModalInner() {
             showSettings={false}
             goBack={step === DecreaseLiquidityStep.Review ? () => setStep(DecreaseLiquidityStep.Input) : undefined}
           />
-          <HeightAnimator useInitialHeight>{modalContent}</HeightAnimator>
+          <Flex width="100%">{modalContent}</Flex>
         </Modal>
       </RemoveLiquidityTxContextProvider>
     </LPTransactionSettingsStoreContextProvider>
