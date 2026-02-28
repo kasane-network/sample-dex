@@ -14,7 +14,7 @@ import { useUnitagsAddressQuery } from 'uniswap/src/data/apiClients/unitagsApi/u
 import { ModalName } from 'uniswap/src/features/telemetry/constants'
 import { useWallet } from 'uniswap/src/features/wallet/hooks/useWallet'
 import { shortenAddress } from 'utilities/src/addresses'
-import { isBetaEnv, isDevEnv } from 'utilities/src/environment/env'
+import { isDevEnv } from 'utilities/src/environment/env'
 import { useEvent } from 'utilities/src/react/hooks'
 
 export default function TopLevelModals() {
@@ -45,7 +45,7 @@ export default function TopLevelModals() {
     )
   })
 
-  const shouldShowDevFlags = isDevEnv() || isBetaEnv()
+  const shouldShowDevFlags = isDevEnv()
 
   // On landing page we need to be very careful about what modals we show
   // because too many modals attached to the dom can cause performance issues
