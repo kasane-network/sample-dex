@@ -134,10 +134,7 @@ export function WebBottomSheet({
             {children}
           </Flex>
         </Sheet.Frame>
-        <Sheet.Overlay
-          animation={undefined}
-          backgroundColor="$scrim"
-        />
+        <Sheet.Overlay animation={undefined} backgroundColor="$scrim" />
       </Sheet>
     </RemoveScroll>
   )
