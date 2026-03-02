@@ -43,10 +43,7 @@
     "vitest": "3.2.1",
     "vitest-presets": "workspace:^"
   },
-  "files": [
-    "types",
-    "dist"
-  ],
+  "files": ["types", "dist"],
   "main": "./src/index.ts",
   "module:jsx": "src",
   "private": true,
@@ -65,8 +62,6 @@
   "nx": {
     "includedScripts": []
   },
-  "sideEffects": [
-    "*.css"
-  ],
+  "sideEffects": ["*.css"],
   "types": "./types/index"
 }

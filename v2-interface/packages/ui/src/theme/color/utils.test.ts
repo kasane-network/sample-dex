@@ -1,6 +1,5 @@
-import { describe, expect, it } from 'vitest'
-
 import { opacifyRaw } from 'ui/src/theme/color/utils'
+import { describe, expect, it } from 'vitest'
 
 describe('opacifyRaw', () => {
   it('supports rgb colors', () => {

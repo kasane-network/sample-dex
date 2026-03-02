@@ -17,12 +17,13 @@ import { useEvent } from 'utilities/src/react/hooks'
 export type TouchableAreaEvent = GestureResponderEvent
 
 // TODO(MOB-2826): tests are picking up weird animationStyle on snapshots...
-const DEFAULT_ANIMATION_PROPS: Partial<YStackProps> = isTestEnv() || isWebPlatform
-  ? {}
-  : {
-      animation: 'simple',
-      animateOnly: ['transform', 'opacity'],
-    }
+const DEFAULT_ANIMATION_PROPS: Partial<YStackProps> =
+  isTestEnv() || isWebPlatform
+    ? {}
+    : {
+        animation: 'simple',
+        animateOnly: ['transform', 'opacity'],
+      }
 const WithInjectedColors = memo(function WithInjectedColors({
   children,
   disabled,
