@@ -26,16 +26,19 @@ export function CurrencyInputPanelBalance({
   // Hide balance if balance is not loaded, output balance is exactly zero, or caller explicitly hides it.
   const hideCurrencyBalance = !currencyBalance || (isOutput && currencyBalance.equalTo(0)) || hideBalance
 
-  if (!currencyInfo || hideCurrencyBalance) {
+  if (hideCurrencyBalance) {
     return null
   }
+
+  const symbol = currencyInfo?.currency.symbol ?? currencyBalance.currency.symbol
+
   return (
     <Text color={showInsufficientBalanceWarning ? '$statusCritical' : '$neutral2'} variant="body3">
       {formatCurrencyAmount({
         value: currencyBalance,
         type: NumberType.TokenTx,
       })}{' '}
-      {getSymbolDisplayText(currencyInfo.currency.symbol)}
+      {getSymbolDisplayText(symbol)}
     </Text>
   )
 }

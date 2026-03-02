@@ -1,14 +1,25 @@
+import { skipToken, useQuery } from '@tanstack/react-query'
+import { BackendApi } from '@universe/api'
+import { Contract, utils } from 'ethers/lib/ethers'
 import { useMemo } from 'react'
 import { getCommonBase } from 'uniswap/src/constants/routing'
 import { UniverseChainId } from 'uniswap/src/features/chains/types'
 import { useSearchTokens } from 'uniswap/src/features/dataApi/searchTokens'
-import { CurrencyInfo } from 'uniswap/src/features/dataApi/types'
+import { CurrencyInfo, TokenList } from 'uniswap/src/features/dataApi/types'
+import { buildCurrency, buildCurrencyInfo } from 'uniswap/src/features/dataApi/utils/buildCurrency'
+import { createEthersProvider } from 'uniswap/src/features/providers/createEthersProvider'
 import {
   buildNativeCurrencyId,
   buildWrappedNativeCurrencyId,
   currencyIdToAddress,
   currencyIdToChain,
 } from 'uniswap/src/utils/currencyId'
+
+const ERC20_METADATA_ABI = [
+  'function decimals() view returns (uint8)',
+  'function symbol() view returns (string)',
+  'function name() view returns (string)',
+]
 
 function parseCurrencyId(_currencyId?: string): { chainId: UniverseChainId | null; address?: Address } {
   const chainId = _currencyId ? currencyIdToChain(_currencyId) : null
@@ -38,11 +49,118 @@ function findByAddress(currencyInfos: CurrencyInfo[] | undefined, address?: Addr
   })
 }
 
+function normalizeTokenStringValue(value: unknown): string | undefined {
+  if (typeof value !== 'string') {
+    return undefined
+  }
+
+  if (value.startsWith('0x') && value.length === 66) {
+    try {
+      const parsed = utils.parseBytes32String(value)
+      return parsed.trim() || undefined
+    } catch {
+      return undefined
+    }
+  }
+
+  const trimmed = value.trim()
+  return trimmed || undefined
+}
+
+function normalizeTokenDecimalsValue(value: unknown): number | undefined {
+  const isValidDecimals = (decimals: number): boolean =>
+    Number.isInteger(decimals) && decimals >= 0 && decimals <= 255
+
+  if (typeof value === 'number' && Number.isFinite(value)) {
+    return isValidDecimals(value) ? value : undefined
+  }
+
+  if (typeof value === 'string') {
+    const parsed = Number(value)
+    return Number.isFinite(parsed) && isValidDecimals(parsed) ? parsed : undefined
+  }
+
+  if (typeof value === 'object' && value !== null && 'toString' in value && typeof value.toString === 'function') {
+    const parsed = Number(value.toString())
+    return Number.isFinite(parsed) && isValidDecimals(parsed) ? parsed : undefined
+  }
+
+  return undefined
+}
+
+export async function fetchKasaneOnchainCurrencyInfo({
+  currencyId,
+  tokenAddress,
+}: {
+  currencyId: string
+  tokenAddress: Address
+}): Promise<CurrencyInfo | undefined> {
+  const provider = createEthersProvider({ chainId: UniverseChainId.Kasane })
+  if (!provider) {
+    return undefined
+  }
+
+  const contract = new Contract(tokenAddress, ERC20_METADATA_ABI, provider)
+  const callStatic = contract.callStatic
+  if (!callStatic?.decimals || !callStatic?.symbol || !callStatic?.name) {
+    return undefined
+  }
+
+  const [decimalsResult, symbolResult, nameResult] = await Promise.allSettled([
+    callStatic.decimals(),
+    callStatic.symbol(),
+    callStatic.name(),
+  ])
+
+  if (decimalsResult.status !== 'fulfilled') {
+    return undefined
+  }
+
+  const decimals = normalizeTokenDecimalsValue(decimalsResult.value)
+  if (decimals === undefined) {
+    return undefined
+  }
+
+  const symbol =
+    symbolResult.status === 'fulfilled' ? normalizeTokenStringValue(symbolResult.value) ?? 'UNKNOWN' : 'UNKNOWN'
+  const name = nameResult.status === 'fulfilled' ? normalizeTokenStringValue(nameResult.value) ?? symbol : symbol
+
+  const currency = buildCurrency({
+    chainId: UniverseChainId.Kasane,
+    address: tokenAddress,
+    decimals,
+    symbol,
+    name,
+  })
+  if (!currency) {
+    return undefined
+  }
+
+  return buildCurrencyInfo({
+    currency,
+    currencyId,
+    logoUrl: null,
+    safetyInfo: {
+      tokenList: TokenList.NonDefault,
+      protectionResult: BackendApi.ProtectionResult.Benign,
+    },
+    isSpam: false,
+  })
+}
+
 function useCurrencyInfoQuery(
   _currencyId?: string,
   options?: { refetch?: boolean; skip?: boolean },
 ): { currencyInfo: Maybe<CurrencyInfo>; loading: boolean; error?: Error } {
   const { chainId: currencyChainId, address: currencyAddressFromId } = parseCurrencyId(_currencyId)
+
+  const commonBase = useMemo(() => {
+    if (!currencyChainId || !currencyAddressFromId || !_currencyId) {
+      return undefined
+    }
+
+    return getCommonBase(currencyChainId, currencyAddressFromId)
+  }, [_currencyId, currencyAddressFromId, currencyChainId])
 
   const {
     data: fallbackCurrencyInfos,
@@ -51,9 +169,35 @@ function useCurrencyInfoQuery(
   } = useSearchTokens({
     searchQuery: currencyAddressFromId ?? null,
     chainFilter: currencyChainId === UniverseChainId.Kasane ? UniverseChainId.Kasane : null,
-    skip: options?.skip === true || currencyChainId !== UniverseChainId.Kasane || !currencyAddressFromId,
+    skip: options?.skip === true || currencyChainId === UniverseChainId.Kasane || !currencyAddressFromId,
     hideWSOL: false,
     size: 20,
+  })
+
+  const shouldFetchOnchainCurrencyInfo =
+    Boolean(_currencyId) &&
+    currencyChainId === UniverseChainId.Kasane &&
+    !!currencyAddressFromId &&
+    !commonBase &&
+    options?.skip !== true
+
+  const {
+    data: onchainCurrencyInfo,
+    isLoading: onchainCurrencyInfoLoading,
+    error: onchainCurrencyInfoError,
+  } = useQuery<CurrencyInfo | undefined>({
+    queryKey: ['kasane-onchain-currency-info', _currencyId ?? '', currencyAddressFromId ?? ''],
+    queryFn:
+      shouldFetchOnchainCurrencyInfo && _currencyId && currencyAddressFromId
+        ? async () =>
+            await fetchKasaneOnchainCurrencyInfo({
+              currencyId: _currencyId,
+              tokenAddress: currencyAddressFromId,
+            })
+        : skipToken,
+    staleTime: 30_000,
+    gcTime: 60_000,
+    retry: false,
   })
 
   const currencyInfo = useMemo(() => {
@@ -61,31 +205,38 @@ function useCurrencyInfoQuery(
       return undefined
     }
 
-    const chainId = currencyChainId
-    const address = currencyAddressFromId
-    if (chainId && address) {
-      const commonBase = getCommonBase(chainId, address)
-      if (commonBase) {
-        const copyCommonBase = { ...commonBase }
-        copyCommonBase.currencyId = _currencyId
-        return copyCommonBase
-      }
+    if (commonBase) {
+      const copyCommonBase = { ...commonBase }
+      copyCommonBase.currencyId = _currencyId
+      return copyCommonBase
     }
 
-    if (chainId === UniverseChainId.Kasane && address) {
-      const fallbackMatch = findByAddress(fallbackCurrencyInfos, address)
+    if (currencyChainId === UniverseChainId.Kasane && currencyAddressFromId) {
+      const fallbackMatch = findByAddress(fallbackCurrencyInfos, currencyAddressFromId)
       if (fallbackMatch) {
         return fallbackMatch
       }
     }
 
-    return undefined
-  }, [_currencyId, currencyAddressFromId, currencyChainId, fallbackCurrencyInfos])
+    return onchainCurrencyInfo
+  }, [
+    _currencyId,
+    commonBase,
+    currencyChainId,
+    currencyAddressFromId,
+    fallbackCurrencyInfos,
+    onchainCurrencyInfo,
+  ])
+
+  const queryError =
+    currencyInfo !== undefined
+      ? undefined
+      : fallbackCurrencyInfosError ?? (onchainCurrencyInfoError instanceof Error ? onchainCurrencyInfoError : undefined)
 
   return {
     currencyInfo,
-    loading: fallbackCurrencyInfosLoading,
-    error: fallbackCurrencyInfosError,
+    loading: fallbackCurrencyInfosLoading || onchainCurrencyInfoLoading,
+    error: queryError,
   }
 }
 
@@ -112,23 +263,36 @@ export function useCurrencyInfos(
   _currencyIds: string[],
   options?: { refetch?: boolean; skip?: boolean },
 ): Maybe<CurrencyInfo>[] {
-  const kasaneAddresses = useMemo(() => {
-    const addresses: Address[] = []
+  const kasaneCurrencyParams = useMemo(() => {
+    const params: Array<{ currencyId: string; address: Address }> = []
     for (const _currencyId of _currencyIds) {
       const { chainId, address } = parseCurrencyId(_currencyId)
       if (chainId === UniverseChainId.Kasane && address) {
-        addresses.push(address)
+        params.push({ currencyId: _currencyId, address })
       }
     }
-    return addresses
+    return params
   }, [_currencyIds])
 
-  const { data: kasaneCurrencies } = useSearchTokens({
-    searchQuery: null,
-    chainFilter: UniverseChainId.Kasane,
-    skip: options?.skip === true || kasaneAddresses.length === 0,
-    hideWSOL: false,
-    size: Math.max(100, kasaneAddresses.length * 2),
+  const { data: kasaneOnchainCurrencyInfos } = useQuery<CurrencyInfo[]>({
+    queryKey: ['kasane-onchain-currency-infos', ...kasaneCurrencyParams.map((param) => param.currencyId)],
+    queryFn:
+      options?.skip === true || kasaneCurrencyParams.length === 0
+        ? skipToken
+        : async () => {
+            const infos = await Promise.all(
+              kasaneCurrencyParams.map(async ({ currencyId, address }) => {
+                return await fetchKasaneOnchainCurrencyInfo({
+                  currencyId,
+                  tokenAddress: address,
+                })
+              }),
+            )
+            return infos.filter((info): info is CurrencyInfo => info !== undefined)
+          },
+    staleTime: 30_000,
+    gcTime: 60_000,
+    retry: false,
   })
 
   return useMemo(() => {
@@ -146,12 +310,12 @@ export function useCurrencyInfos(
       }
 
       if (chainId === UniverseChainId.Kasane) {
-        return findByAddress(kasaneCurrencies, address)
+        return findByAddress(kasaneOnchainCurrencyInfos, address)
       }
 
       return undefined
     })
-  }, [_currencyIds, kasaneCurrencies])
+  }, [_currencyIds, kasaneOnchainCurrencyInfos])
 }
 
 export function useNativeCurrencyInfo(chainId: UniverseChainId): Maybe<CurrencyInfo> {

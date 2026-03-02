@@ -2,6 +2,10 @@ import { memo, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { NoResultsFound } from 'uniswap/src/components/lists/NoResultsFound'
 import { useAddToSearchHistory } from 'uniswap/src/components/TokenSelector/hooks/useAddToSearchHistory'
+import {
+  addManualKasaneTokenAddress,
+  normalizeKasaneTokenAddress,
+} from 'uniswap/src/components/TokenSelector/hooks/manualKasaneTokenStorage'
 import { useTokenSectionsForSearchResults } from 'uniswap/src/components/TokenSelector/hooks/useTokenSectionsForSearchResults'
 import { TokenSelectorList } from 'uniswap/src/components/TokenSelector/TokenSelectorList'
 import { OnSelectCurrency } from 'uniswap/src/components/TokenSelector/types'
@@ -44,6 +48,7 @@ function _TokenSelectorSearchResultsList({
     evmAddress,
     svmAddress,
     chainFilter: null,
+    manualChainFilter: parsedChainFilter ?? chainFilter,
     searchFilter: debouncedParsedSearchFilter ?? debouncedSearchFilter,
     isBalancesOnlySearch,
     input,
@@ -53,6 +58,18 @@ function _TokenSelectorSearchResultsList({
   const onSelectCurrency: OnSelectCurrency = (currencyInfo, section, index) => {
     parentOnSelectCurrency(currencyInfo, section, index)
     registerSearchTokenCurrencyInfo(currencyInfo)
+
+    const normalizedSearchFilter = debouncedParsedSearchFilter ?? debouncedSearchFilter
+    const normalizedSearchAddress = normalizeKasaneTokenAddress(normalizedSearchFilter)
+    if (
+      (parsedChainFilter ?? chainFilter) === UniverseChainId.Kasane &&
+      normalizedSearchAddress &&
+      currencyInfo.currency.isToken &&
+      currencyInfo.currency.chainId === UniverseChainId.Kasane &&
+      currencyInfo.currency.address.toLowerCase() === normalizedSearchAddress.toLowerCase()
+    ) {
+      addManualKasaneTokenAddress(currencyInfo.currency.address)
+    }
   }
 
   const userIsTyping = Boolean(searchFilter && debouncedSearchFilter !== searchFilter)
