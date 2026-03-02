@@ -4,6 +4,8 @@ import { TokenOption } from 'uniswap/src/components/lists/items/types'
 import { type OnchainItemSection, OnchainItemSectionName } from 'uniswap/src/components/lists/OnchainItemList/types'
 import { useOnchainItemListSection } from 'uniswap/src/components/lists/utils'
 import { MAX_DEFAULT_TRENDING_TOKEN_RESULTS_AMOUNT } from 'uniswap/src/components/TokenSelector/constants'
+import { useCurrencyInfosToTokenOptions } from 'uniswap/src/components/TokenSelector/hooks/useCurrencyInfosToTokenOptions'
+import { useKasaneManualTokenCandidates } from 'uniswap/src/components/TokenSelector/hooks/useKasaneManualTokenCandidates'
 import { useRecentlySearchedTokens } from 'uniswap/src/components/TokenSelector/hooks/useRecentlySearchedTokens'
 import { useTrendingTokensOptions } from 'uniswap/src/components/TokenSelector/hooks/useTrendingTokensOptions'
 import { TokenSectionsHookProps } from 'uniswap/src/components/TokenSelector/types'
@@ -15,8 +17,26 @@ export function useTokenSectionsForEmptySearch({
   chainFilter,
 }: Omit<TokenSectionsHookProps, 'oppositeSelectedToken'>): GqlResult<OnchainItemSection<TokenOption>[]> {
   const { data: trendingTokenOptions, loading } = useTrendingTokensOptions({ evmAddress, svmAddress, chainFilter })
+  const {
+    currencyInfos: manualCandidateCurrencyInfos,
+    loading: manualCandidatesLoading,
+  } = useKasaneManualTokenCandidates({
+    chainFilter,
+    searchFilter: null,
+    includePersistedAddresses: true,
+  })
+  const manualTokenOptions = useCurrencyInfosToTokenOptions({
+    currencyInfos: manualCandidateCurrencyInfos,
+    portfolioBalancesById: undefined,
+  })
 
   const recentlySearchedTokenOptions = useRecentlySearchedTokens(chainFilter)
+
+  const manualSection = useOnchainItemListSection({
+    sectionKey: OnchainItemSectionName.SearchResults,
+    options: manualTokenOptions,
+    name: 'Manual tokens',
+  })
 
   const recentSection = useOnchainItemListSection({
     sectionKey: OnchainItemSectionName.RecentSearches,
@@ -29,15 +49,15 @@ export function useTokenSectionsForEmptySearch({
     options: trendingTokenOptions?.slice(0, MAX_DEFAULT_TRENDING_TOKEN_RESULTS_AMOUNT),
   })
   const sections = useMemo(
-    () => [...(recentSection ?? []), ...(trendingSection ?? [])],
-    [trendingSection, recentSection],
+    () => [...(manualSection ?? []), ...(recentSection ?? []), ...(trendingSection ?? [])],
+    [manualSection, trendingSection, recentSection],
   )
 
   return useMemo(
     () => ({
       data: sections,
-      loading,
+      loading: loading || manualCandidatesLoading,
     }),
-    [loading, sections],
+    [loading, manualCandidatesLoading, sections],
   )
 }

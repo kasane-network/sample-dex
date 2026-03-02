@@ -88,7 +88,7 @@ function normalizeTokenDecimalsValue(value: unknown): number | undefined {
   return undefined
 }
 
-async function fetchKasaneOnchainCurrencyInfo({
+export async function fetchKasaneOnchainCurrencyInfo({
   currencyId,
   tokenAddress,
 }: {
@@ -101,11 +101,15 @@ async function fetchKasaneOnchainCurrencyInfo({
   }
 
   const contract = new Contract(tokenAddress, ERC20_METADATA_ABI, provider)
+  const callStatic = contract.callStatic
+  if (!callStatic?.decimals || !callStatic?.symbol || !callStatic?.name) {
+    return undefined
+  }
 
   const [decimalsResult, symbolResult, nameResult] = await Promise.allSettled([
-    contract.callStatic.decimals(),
-    contract.callStatic.symbol(),
-    contract.callStatic.name(),
+    callStatic.decimals(),
+    callStatic.symbol(),
+    callStatic.name(),
   ])
 
   if (decimalsResult.status !== 'fulfilled') {
