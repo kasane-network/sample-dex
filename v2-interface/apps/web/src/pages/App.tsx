@@ -14,6 +14,8 @@ import { isPathBlocked } from 'utils/blockedPaths'
 import { MICROSITE_LINK } from 'utils/openDownloadApp'
 import { getCurrentPageFromLocation } from 'utils/urlRoutes'
 
+let hasInitializedScrollWatcher = false
+
 export default function App() {
   const colors = useSporeColors()
 
@@ -24,7 +26,11 @@ export default function App() {
   useFeatureFlagUrlOverrides()
 
   useEffect(() => {
+    if (hasInitializedScrollWatcher) {
+      return
+    }
     initializeScrollWatcher()
+    hasInitializedScrollWatcher = true
   }, [])
 
   // redirect address to landing pages until implemented

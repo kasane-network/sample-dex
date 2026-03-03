@@ -17,7 +17,6 @@ import { LanguageProvider } from 'i18n/LanguageProvider'
 import { BlockNumberProvider } from 'lib/hooks/useBlockNumber'
 import { WebNotificationServiceManager } from 'notification-service/WebNotificationService'
 import { NuqsAdapter } from 'nuqs/adapters/react-router/v7'
-import App from 'pages/App'
 import type { PropsWithChildren } from 'react'
 import { StrictMode, useEffect, useMemo } from 'react'
 import { createRoot } from 'react-dom/client'
@@ -59,6 +58,7 @@ const loadLogsUpdater = () => import('state/logs/updater')
 const loadFiatOnRampTransactionsUpdater = () => import('state/fiatOnRampTransactions/updater')
 const loadWebAccountsStoreUpdater = () =>
   import('features/accounts/store/updater').then((m) => ({ default: m.WebAccountsStoreUpdater }))
+const loadApp = () => import('pages/App')
 
 
 
@@ -133,6 +133,8 @@ const container = document.getElementById('root') as HTMLElement
 const Router = isBrowserRouterEnabled() ? BrowserRouter : HashRouter
 
 const RootApp = (): JSX.Element => {
+  const App = useDeferredComponent(loadApp)
+
   return (
     <StrictMode>
       <HelmetProvider>
@@ -158,7 +160,7 @@ const RootApp = (): JSX.Element => {
                                             <PortalProvider>
                                               <WebNotificationServiceManager />
                                               <ThemedGlobalStyle />
-                                              <App />
+                                              {App && <App />}
                                             </PortalProvider>
                                           </TamaguiProvider>
                                         </ThemeProvider>

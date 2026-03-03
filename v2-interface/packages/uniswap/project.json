@@ -14,7 +14,7 @@
       "dependsOn": ["prepare", "^build", "contracts", "graphql:generate"]
     },
     "contracts:compile:abi": {
-      "command": "typechain --target ethers-v5 --out-dir src/abis/types \"./src/abis/**/*.json\"",
+      "command": "env -u NO_COLOR typechain --target ethers-v5 --out-dir src/abis/types \"./src/abis/**/*.json\"",
       "options": {
         "cwd": "{projectRoot}"
       },
@@ -23,7 +23,7 @@
       "outputs": ["{projectRoot}/src/abis/types/*.ts", "{projectRoot}/src/abis/types/factories"]
     },
     "contracts:compile:v3": {
-      "command": "typechain --target ethers-v5 --out-dir src/abis/types/v3 \"../../node_modules/@uniswap/**/artifacts/contracts/**/*[!dbg].json\"",
+      "command": "env -u NO_COLOR typechain --target ethers-v5 --out-dir src/abis/types/v3 \"../../node_modules/@uniswap/**/artifacts/contracts/**/*[!dbg].json\"",
       "options": {
         "cwd": "{projectRoot}"
       },

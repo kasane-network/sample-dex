@@ -45,13 +45,8 @@ import 'global.css'
 import 'polyfills'
 import 'tracing'
 
-// We intentionally import this to ensure that the WalletConnect provider is bundled as an entrypoint chunk,
-// because it will always be requested anyway and we don't want to have a waterfall request pattern.
-import * as WalletConnect from '@walletconnect/ethereum-provider'
 import { setupWagmiAutoConnect } from 'components/Web3Provider/wagmiAutoConnect'
 import { setupVitePreloadErrorHandler } from 'utils/setupVitePreloadErrorHandler'
-
-void WalletConnect
 
 // adding these so webpack won't tree shake this away, sideEffects was giving trouble
 setupi18n()

@@ -9,8 +9,8 @@
     ".": "./compiled/base.json"
   },
   "scripts": {
-    "prepare": "nx prepare biome-config",
-    "test": "nx test biome-config"
+    "prepare": "../../scripts/nx.sh prepare biome-config",
+    "test": "../../scripts/nx.sh test biome-config"
   },
   "nx": {
     "includedScripts": []

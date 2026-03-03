@@ -9,6 +9,21 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 EXPECTED_NODE="$(tr -d '\r\n' < "${ROOT_DIR}/.nvmrc")"
 
+# where/what/why:
+# - where: this wrapper is the single entry point for Nx in this repo
+# - what: disable daemon socket and plugin isolation workers
+# - why: certain environments fail to create daemon sockets or plugin worker processes, causing hard failures
+export NX_DAEMON="${NX_DAEMON:-false}"
+export NX_ISOLATE_PLUGINS="${NX_ISOLATE_PLUGINS:-false}"
+
+# where/what/why:
+# - where: Nx wrapper process environment
+# - what: always unset NO_COLOR in this wrapper process tree
+# - why: Nx and child tools may set FORCE_COLOR; keeping NO_COLOR causes persistent Node warnings
+if [ "${NO_COLOR+x}" = "x" ]; then
+  unset NO_COLOR
+fi
+
 run_nx() {
   exec "${ROOT_DIR}/node_modules/.bin/nx" "$@"
 }

@@ -1,4 +1,3 @@
-import react from '@vitejs/plugin-react'
 import path from 'path'
 import { defineConfig } from 'vitest/config'
 
@@ -21,8 +20,10 @@ export default defineConfig({
       '.nx',
     ],
     testTimeout: 15000,
-    deps: {
-      inline: [/packages\/ui/, /packages\/utilities/, /packages\/uniswap/],
+    server: {
+      deps: {
+        inline: [/packages\/ui/, /packages\/utilities/, /packages\/uniswap/],
+      },
     },
     reporters: ['verbose'],
     coverage: {
@@ -46,10 +47,6 @@ export default defineConfig({
   build: {
     sourcemap: false,
   },
-  esbuild: {
-    sourcemap: false,
-  },
-  plugins: [react()],
   optimizeDeps: {
     include: ['ui/src', 'utilities/src', 'uniswap/src'],
     exclude: ['d3-array'],
