@@ -2,19 +2,19 @@
   "name": "uniswap",
   "version": "0.0.0",
   "scripts": {
-    "prepare": "nx prepare uniswap",
-    "build": "nx build uniswap",
-    "contracts:compile:abi": "nx contracts:compile:abi uniswap",
-    "contracts:compile:v3": "nx contracts:compile:v3 uniswap",
-    "contracts": "nx contracts uniswap",
-    "check:deps:usage": "nx check:deps:usage uniswap",
-    "lint:biome": "nx lint:biome uniswap",
-    "lint:biome:fix": "nx lint:biome:fix uniswap",
-    "lint": "nx lint uniswap",
-    "lint:fix": "nx lint:fix uniswap",
-    "test": "nx test uniswap",
-    "snapshots": "nx snapshots uniswap",
-    "typecheck": "nx typecheck uniswap"
+    "prepare": "../../scripts/nx.sh prepare uniswap",
+    "build": "../../scripts/nx.sh build uniswap",
+    "contracts:compile:abi": "../../scripts/nx.sh contracts:compile:abi uniswap",
+    "contracts:compile:v3": "../../scripts/nx.sh contracts:compile:v3 uniswap",
+    "contracts": "../../scripts/nx.sh contracts uniswap",
+    "check:deps:usage": "../../scripts/nx.sh check:deps:usage uniswap",
+    "lint:biome": "../../scripts/nx.sh lint:biome uniswap",
+    "lint:biome:fix": "../../scripts/nx.sh lint:biome:fix uniswap",
+    "lint": "../../scripts/nx.sh lint uniswap",
+    "lint:fix": "../../scripts/nx.sh lint:fix uniswap",
+    "test": "../../scripts/nx.sh test uniswap",
+    "snapshots": "../../scripts/nx.sh snapshots uniswap",
+    "typecheck": "../../scripts/nx.sh typecheck uniswap"
   },
   "nx": {
     "includedScripts": []

@@ -241,14 +241,35 @@ export function getEnabledChains({
   featureFlaggedChainIds: UniverseChainId[]
   includeTestnets?: boolean
 }): EnabledChainsInfo {
-  const enabledChainInfos = ORDERED_CHAINS.filter((chainInfo) => {
+  const featureFlaggedChainInfos = ORDERED_CHAINS.filter((chainInfo) => {
+    if (platform !== undefined && platform !== chainInfo.platform) {
+      return false
+    }
+
+    return featureFlaggedChainIds.includes(chainInfo.id)
+  })
+
+  const hasFeatureFlaggedTestnet = featureFlaggedChainInfos.some((chainInfo) => isTestnetChain(chainInfo.id))
+  const hasFeatureFlaggedMainnet = featureFlaggedChainInfos.some((chainInfo) => !isTestnetChain(chainInfo.id))
+
+  // Kasane-only forks can have a persisted mainnet-mode flag on first deploy load.
+  // If only one mode exists in feature-flagged chains, force that mode so chain-dependent
+  // hooks (balances, selectors, routing defaults) remain consistent.
+  const resolvedIsTestnetModeEnabled =
+    includeTestnets || (hasFeatureFlaggedTestnet && hasFeatureFlaggedMainnet)
+      ? isTestnetModeEnabled
+      : hasFeatureFlaggedTestnet
+        ? true
+        : false
+
+  let enabledChainInfos = ORDERED_CHAINS.filter((chainInfo) => {
     // Filter by platform
     if (platform !== undefined && platform !== chainInfo.platform) {
       return false
     }
 
     // Filter by testnet mode
-    if (!includeTestnets && isTestnetModeEnabled !== isTestnetChain(chainInfo.id)) {
+    if (!includeTestnets && resolvedIsTestnetModeEnabled !== isTestnetChain(chainInfo.id)) {
       return false
     }
 
@@ -260,6 +281,31 @@ export function getEnabledChains({
     return true
   })
 
+  // If no chain survives the mode filter, fall back to a deterministic chain so
+  // environments with only testnet-enabled chains (Kasane-only deployments) do not
+  // end up with an empty chain set on first load.
+  if (enabledChainInfos.length === 0) {
+    const fallbackDefaultChainId = getDefaultChainId({ platform, isTestnetModeEnabled: resolvedIsTestnetModeEnabled })
+    const fallbackDefaultChainInfo = ORDERED_CHAINS.find(
+      (chainInfo) =>
+        chainInfo.id === fallbackDefaultChainId &&
+        (platform === undefined || chainInfo.platform === platform) &&
+        featureFlaggedChainIds.includes(chainInfo.id),
+    )
+
+    if (fallbackDefaultChainInfo) {
+      enabledChainInfos = [fallbackDefaultChainInfo]
+    } else {
+      const fallbackFeatureFlaggedChainInfo = ORDERED_CHAINS.find(
+        (chainInfo) =>
+          (platform === undefined || chainInfo.platform === platform) && featureFlaggedChainIds.includes(chainInfo.id),
+      )
+      if (fallbackFeatureFlaggedChainInfo) {
+        enabledChainInfos = [fallbackFeatureFlaggedChainInfo]
+      }
+    }
+  }
+
   // Extract chain IDs and GQL chains from filtered results
   const chains = enabledChainInfos.map((chainInfo) => chainInfo.id)
   const gqlChains = enabledChainInfos.map((chainInfo) => chainInfo.backendChain.chain)
@@ -267,8 +313,8 @@ export function getEnabledChains({
   const result = {
     chains,
     gqlChains,
-    defaultChainId: getDefaultChainId({ platform, isTestnetModeEnabled }),
-    isTestnetModeEnabled,
+    defaultChainId: getDefaultChainId({ platform, isTestnetModeEnabled: resolvedIsTestnetModeEnabled }),
+    isTestnetModeEnabled: resolvedIsTestnetModeEnabled,
   }
 
   return result

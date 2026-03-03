@@ -19,6 +19,9 @@ function usePendingBatches(): PendingBatchDetails[] {
 
   return useMemo(() => {
     if (account.status === 'connected') {
+      if (!account.connector) {
+        return []
+      }
       const connectorId = account.connector.id
 
       const shouldAttemptCheck = (tx: PendingTransactionDetails): tx is PendingBatchDetails => {

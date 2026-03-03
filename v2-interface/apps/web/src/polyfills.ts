@@ -12,6 +12,7 @@ flatMap.shim()
 declare global {
   interface Window {
     Buffer: typeof Buffer
+    global?: typeof globalThis
   }
 }
 
@@ -21,6 +22,10 @@ if (!window.__DEV__) {
 
 if (!window.Buffer) {
   window.Buffer = Buffer
+}
+
+if (!window.global) {
+  window.global = globalThis
 }
 
 if (!window.ResizeObserver) {

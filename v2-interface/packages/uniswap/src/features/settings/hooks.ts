@@ -1,8 +1,6 @@
 import { useSelector } from 'react-redux'
 import { useEnabledChains } from 'uniswap/src/features/chains/hooks/useEnabledChains'
 import {
-  // biome-ignore lint/style/noRestrictedImports: expected usage here
-  selectIsTestnetModeEnabled,
   selectWalletHideReportedActivitySetting,
   selectWalletHideSmallBalancesSetting,
   selectWalletHideSpamTokensSetting,
@@ -25,17 +23,13 @@ export function useHideReportedActivitySetting(): boolean {
 
 export const TESTNET_MODE_BANNER_HEIGHT = 44
 
-function useIsTestnetModeEnabled(): boolean {
-  return useSelector(selectIsTestnetModeEnabled)
-}
-
 /**
  * Use to account for an inset when `useAppInsets()` is not available
  *
  * @returns The height of the testnet mode banner if testnet mode is enabled, otherwise 0
  */
 export function useTestnetModeBannerHeight(): number {
-  const isTestnetModeEnabled = useIsTestnetModeEnabled()
+  const { isTestnetModeEnabled } = useEnabledChains()
 
   return isTestnetModeEnabled && isMobileApp ? TESTNET_MODE_BANNER_HEIGHT : 0
 }

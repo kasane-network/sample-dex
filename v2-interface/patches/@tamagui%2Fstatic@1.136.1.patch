@@ -1,5 +1,5 @@
 diff --git a/dist/extractor/concatClassName.js b/dist/extractor/concatClassName.js
-index 707d78c8a4f9d10836087392660b01a78e33b05e..1c1fdb51faa119c354d985131498e669112a9c7b 100644
+index 707d78c..1c1fdb5 100644
 --- a/dist/extractor/concatClassName.js
 +++ b/dist/extractor/concatClassName.js
 @@ -18,7 +18,7 @@ __export(concatClassName_exports, {
@@ -35,7 +35,7 @@ index 707d78c8a4f9d10836087392660b01a78e33b05e..1c1fdb51faa119c354d985131498e669
  const pseudoInvert = {
    hover: "hoverStyle",
 diff --git a/dist/extractor/concatClassName.mjs b/dist/extractor/concatClassName.mjs
-index c07180192a4b573accba9454bd839bae0d0ba28f..df0127e10c88fb938fd476e04f680aede7cb0f4b 100644
+index c071801..df0127e 100644
 --- a/dist/extractor/concatClassName.mjs
 +++ b/dist/extractor/concatClassName.mjs
 @@ -25,7 +25,7 @@ __export(concatClassName_exports, {
@@ -72,7 +72,7 @@ index c07180192a4b573accba9454bd839bae0d0ba28f..df0127e10c88fb938fd476e04f680aed
  const pseudoInvert = {
    hover: "hoverStyle",
 diff --git a/dist/extractor/extractToClassNames.js b/dist/extractor/extractToClassNames.js
-index 5c4b6f5d7223e48d962c7304b57edbd4a5f6d5a0..3808fe7659cf4d5b26482debebec28b8a3886150 100644
+index 5c4b6f5..3808fe7 100644
 --- a/dist/extractor/extractToClassNames.js
 +++ b/dist/extractor/extractToClassNames.js
 @@ -38,7 +38,7 @@ async function extractToClassNames({
@@ -113,7 +113,7 @@ index 5c4b6f5d7223e48d962c7304b57edbd4a5f6d5a0..3808fe7659cf4d5b26482debebec28b8
  `, styles)), printLog(res), {
      ast,
 diff --git a/dist/extractor/extractToClassNames.mjs b/dist/extractor/extractToClassNames.mjs
-index e07ac40389c6cea5eadcc68bcac2f2ebb3ffdb2f..ef04a032c10efe9b59bc365d46ddcc8b39c0f019 100644
+index e07ac40..ef04a03 100644
 --- a/dist/extractor/extractToClassNames.mjs
 +++ b/dist/extractor/extractToClassNames.mjs
 @@ -63,7 +63,7 @@ async function extractToClassNames({
@@ -150,3 +150,41 @@ index e07ac40389c6cea5eadcc68bcac2f2ebb3ffdb2f..ef04a032c10efe9b59bc365d46ddcc8b
  
  `, styles)), printLog(res), {
      ast,
+diff --git a/dist/registerRequire.js b/dist/registerRequire.js
+index 7aee7ed..3ced1d9 100644
+--- a/dist/registerRequire.js
++++ b/dist/registerRequire.js
+@@ -56,12 +56,14 @@ function registerRequire(platform, { proxyWormImports } = {
+       return og.apply(this, ["react-native-web/package.json"]);
+     if (path === "@tamagui/react-native-web-lite" || path === "react-native" || path.startsWith("react-native/"))
+       try {
+-        return og.apply("react-native");
++        return og.apply(this, ["react-native"]);
+       } catch {
+         return og.apply(this, ["@tamagui/react-native-web-lite"]);
+       }
+     if (!whitelisted[path] && proxyWormImports && !path.includes(".tamagui-dynamic-eval"))
+       return path === "tamagui" ? og.apply(this, [path]) : proxyWorm;
++    if (path === "punycode")
++      return og.apply(this, ["punycode/"]);
+     try {
+       return og.apply(this, arguments);
+     } catch (err) {
+diff --git a/dist/registerRequire.mjs b/dist/registerRequire.mjs
+index d87ab8d..3f7fd6b 100644
+--- a/dist/registerRequire.mjs
++++ b/dist/registerRequire.mjs
+@@ -64,11 +64,12 @@ function registerRequire(platform, {
+     if (path === "react-native-svg") return og.apply(this, ["@tamagui/react-native-svg"]);
+     if (path === "react-native/package.json") return og.apply(this, ["react-native-web/package.json"]);
+     if (path === "@tamagui/react-native-web-lite" || path === "react-native" || path.startsWith("react-native/")) try {
+-      return og.apply("react-native");
++      return og.apply(this, ["react-native"]);
+     } catch {
+       return og.apply(this, ["@tamagui/react-native-web-lite"]);
+     }
+     if (!whitelisted[path] && proxyWormImports && !path.includes(".tamagui-dynamic-eval")) return path === "tamagui" ? og.apply(this, [path]) : proxyWorm;
++    if (path === "punycode") return og.apply(this, ["punycode/"]);
+     try {
+       return og.apply(this, arguments);
+     } catch (err) {

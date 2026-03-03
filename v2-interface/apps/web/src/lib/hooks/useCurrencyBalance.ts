@@ -1,8 +1,10 @@
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { useAccount } from 'hooks/useAccount'
 import JSBI from 'jsbi'
-import { useMemo } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
+import { UniverseChainId } from 'uniswap/src/features/chains/types'
 import { isEVMAddress } from 'utilities/src/addresses/evm/evm'
+import { logger } from 'utilities/src/logger/logger'
 import { assume0xAddress } from 'utils/wagmi'
 import { erc20Abi } from 'viem'
 import { useBalance, useReadContracts } from 'wagmi'
@@ -13,13 +15,14 @@ import { useBalance, useReadContracts } from 'wagmi'
 export function useRpcTokenBalancesWithLoadingIndicator({
   address,
   tokens,
+  chainId,
   skip,
 }: {
   address?: string
   tokens?: (Token | undefined)[]
+  chainId?: number
   skip?: boolean
 }): [{ [tokenAddress: string]: CurrencyAmount<Token> | undefined }, boolean] {
-  const { chainId } = useAccount()
   const validatedTokens: Token[] = useMemo(
     () =>
       skip
@@ -36,7 +39,7 @@ export function useRpcTokenBalancesWithLoadingIndicator({
           (token) =>
             ({
               address: assume0xAddress(token.address),
-              chainId,
+              chainId: token.chainId,
               abi: erc20Abi,
               functionName: 'balanceOf',
               args: [address],
@@ -44,8 +47,28 @@ export function useRpcTokenBalancesWithLoadingIndicator({
         ),
       [address, chainId, validatedTokens],
     ),
-    query: { enabled: !!address },
+    query: { enabled: !!address && !!chainId },
   })
+  const lastLogKeyRef = useRef<string | null>(null)
+
+  useEffect(() => {
+    if (!address || !chainId || !tokens?.length) {
+      return
+    }
+
+    if (!balancesLoading && !data?.length) {
+      const logKey = `${address}-${chainId}-empty-token-balances`
+      if (lastLogKeyRef.current === logKey) {
+        return
+      }
+      lastLogKeyRef.current = logKey
+      logger.warn('useCurrencyBalance', 'useRpcTokenBalancesWithLoadingIndicator', 'No token balances returned', {
+        address,
+        chainId,
+        tokenCount: tokens.length,
+      })
+    }
+  }, [address, balancesLoading, chainId, data, tokens])
 
   return useMemo(
     () => [
@@ -59,7 +82,7 @@ export function useRpcTokenBalancesWithLoadingIndicator({
 
             const amount = value ? JSBI.BigInt(value.toString()) : undefined
             if (amount) {
-              memo[token.address] = CurrencyAmount.fromRawAmount(token, amount)
+              memo[token.address.toLowerCase()] = CurrencyAmount.fromRawAmount(token, amount)
             }
             return memo
           }, {})
@@ -73,44 +96,80 @@ export function useRpcTokenBalancesWithLoadingIndicator({
 function useRpcTokenBalances(
   address?: string,
   tokens?: (Token | undefined)[],
+  chainId?: number,
 ): { [tokenAddress: string]: CurrencyAmount<Token> | undefined } {
-  return useRpcTokenBalancesWithLoadingIndicator({ address, tokens })[0]
+  return useRpcTokenBalancesWithLoadingIndicator({ address, tokens, chainId })[0]
 }
 
 function useRpcCurrencyBalances(
   account?: string,
   currencies?: (Currency | undefined)[],
 ): (CurrencyAmount<Currency> | undefined)[] {
+  const { chainId: connectedChainId } = useAccount()
+  const activeChainId = UniverseChainId.Kasane
+  const chainDebugKeyRef = useRef<string | null>(null)
+
   const tokens = useMemo(
-    () => currencies?.filter((currency): currency is Token => currency?.isToken ?? false) ?? [],
+    () =>
+      currencies?.filter(
+        (currency): currency is Token =>
+          currency !== undefined && currency !== null && currency.isToken && currency.chainId === UniverseChainId.Kasane,
+      ) ?? [],
     [currencies],
   )
 
-  const { chainId } = useAccount()
-  const tokenBalances = useRpcTokenBalances(account, tokens)
+  const tokenBalances = useRpcTokenBalances(account, tokens, activeChainId)
   const containsETH: boolean = useMemo(() => currencies?.some((currency) => currency?.isNative) ?? false, [currencies])
   const { data: nativeBalance } = useBalance({
     address: assume0xAddress(account),
-    chainId,
-    query: { enabled: containsETH && !!account },
+    chainId: activeChainId,
+    query: { enabled: containsETH && !!account && !!activeChainId },
   })
+
+  useEffect(() => {
+    if (!account || !currencies?.length) {
+      return
+    }
+
+    if (!connectedChainId || connectedChainId === UniverseChainId.Kasane) {
+      return
+    }
+
+    const currencyChainIds = currencies
+      .filter((currency): currency is Currency => Boolean(currency))
+      .map((currency) => currency.chainId)
+    const logKey = `${account}-${currencyChainIds.join(',')}-non-kasane-chain`
+    if (chainDebugKeyRef.current === logKey) {
+      return
+    }
+    chainDebugKeyRef.current = logKey
+    logger.warn('useCurrencyBalance', 'useRpcCurrencyBalances', 'Non-Kasane chain connected in Kasane-only build', {
+      account,
+      connectedChainId,
+      currencyChainIds,
+    })
+  }, [account, connectedChainId, currencies])
 
   return useMemo(
     () =>
       currencies?.map((currency) => {
-        if (!account || !currency || currency.chainId !== chainId) {
+        if (!account || !currency) {
+          return undefined
+        }
+
+        if (currency.chainId !== UniverseChainId.Kasane) {
           return undefined
         }
 
         if (currency.isToken) {
-          return tokenBalances[currency.address]
+          return tokenBalances[currency.address.toLowerCase()]
         } else if (nativeBalance?.value) {
           return CurrencyAmount.fromRawAmount(currency, nativeBalance.value.toString())
         } else {
           return undefined
         }
       }) ?? [],
-    [account, chainId, currencies, nativeBalance?.value, tokenBalances],
+    [account, connectedChainId, currencies, nativeBalance?.value, tokenBalances],
   )
 }
 
